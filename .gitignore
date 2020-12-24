@@ -17,6 +17,7 @@ UnityVS.meta
 [Ee]xported[Oo]bj/
 /*.userprefs
 /*.csproj
+/*_[Tt]est*
 /*.pidb
 /*.suo
 /*.sln*
