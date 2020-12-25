@@ -2,7 +2,7 @@
 using System.Collections;
 
 public enum GunStyles{
-	nonautomatic,automatic
+	nonautomatic,automatic,shotgun
 }
 public class GunScript : MonoBehaviour {
 	private MouseLook mouseLook;
@@ -55,6 +55,8 @@ public class GunScript : MonoBehaviour {
 	[Tooltip("Rounds per second if weapon is set to automatic.")]
 	public float roundsPerSecond;
 	public float damage;
+	private int projectileCount = 10;
+	private float shotgunSpread = 10f;
 	private float waitTillNextFire;
 
 	[Header("Reload Time")]
@@ -85,18 +87,18 @@ public class GunScript : MonoBehaviour {
 	private float recoilAmount_y = 0.5f;
 	[Header("Recoil While Not Aiming")]
 	[Tooltip("Recoil amount on Z axis")]
-	[HideInInspector] public float recoilAmount_z_non = 0.02f;
+	public float recoilAmount_z_non = 0.02f;
 	[Tooltip("Recoil amount on X axis")]
-	[HideInInspector] public float recoilAmount_x_non = 0.01f;
+	public float recoilAmount_x_non = 0.01f;
 	[Tooltip("Recoil amount on y axis")]
-	[HideInInspector] public float recoilAmount_y_non = 0.01f;
+	public float recoilAmount_y_non = 0.01f;
 	[Header("Recoil While Aiming")]
 	[Tooltip("Recoil amount on Z axis")]
-	[HideInInspector] public float recoilAmount_z_ = 0.01f;
+	public float recoilAmount_z_ = 0.01f;
 	[Tooltip("Recoil amount on X axis")]
-	[HideInInspector] public float recoilAmount_x_ = 0.005f;
+	public float recoilAmount_x_ = 0.005f;
 	[Tooltip("Recoil amount on y axis")]
-	[HideInInspector] public float recoilAmount_y_ = 0.005f;
+	public float recoilAmount_y_ = 0.005f;
 	[HideInInspector] public float velocity_z_recoil, velocity_x_recoil, velocity_y_recoil;
 	[Header("Recoil reset time")]
 	[Tooltip("The time that takes weapon to get back on its original axis after recoil.(The smaller number the faster it gets back to original position)")]
@@ -341,9 +343,16 @@ public class GunScript : MonoBehaviour {
 					ShootMethod ();
 				}
 			}
-			if (currentStyle == GunStyles.automatic) {
+			else if (currentStyle == GunStyles.automatic) {
 				if (Input.GetButton ("Fire1")) {
 					ShootMethod ();
+				}
+			}
+			else
+			{
+				if (Input.GetButtonDown("Fire1"))
+				{
+					ShootMethod();
 				}
 			}
 		}
@@ -356,8 +365,24 @@ public class GunScript : MonoBehaviour {
 			if (bulletsInTheGun > 0)
 			{
 				int randomNumberForMuzzelFlash = Random.Range(0, 5);
-				if (bullet)
-					Instantiate(bullet, bulletSpawnPlace.transform.position, bulletSpawnPlace.transform.rotation);
+				if (bullet) {
+					if (currentStyle == GunStyles.shotgun)
+					{
+						for (int i = 0; i < projectileCount; i++)
+						{
+							Vector3 rotation = player.transform.rotation.eulerAngles;
+							Vector3 camRotation = mainCamera.transform.rotation.eulerAngles;
+							camRotation.y = 0f;
+							rotation += camRotation;
+							rotation = new Vector3(rotation.x + Random.Range(-shotgunSpread, shotgunSpread), rotation.y + Random.Range(-shotgunSpread, shotgunSpread), 0f);
+							Instantiate(bullet, bulletSpawnPlace.transform.position, Quaternion.Euler(rotation));
+						}
+					}
+					else
+					{
+						Instantiate(bullet, bulletSpawnPlace.transform.position, bulletSpawnPlace.transform.rotation);
+					}
+				}
 				else
 					print("Missing the bullet prefab");
 				holdFlash = Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position /*- muzzelPosition*/, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90)) as GameObject;

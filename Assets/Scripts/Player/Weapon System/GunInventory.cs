@@ -34,6 +34,7 @@ public class GunInventory : MonoBehaviour {
 	void Awake(){
 		StartCoroutine(UpdateIconsFromResources());
 		StartCoroutine(SpawnWeaponUponStart());
+		PopulateWeapons();
 
 		if (gunsIHave.Count == 0)
 			print ("No guns in the inventory");
@@ -59,6 +60,17 @@ public class GunInventory : MonoBehaviour {
 			icons[i] = (Texture)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Weapon Icons/" + gunsIHave[i].ToString() + "_img.png", typeof(Texture));
 		}
 
+	}
+	private void PopulateWeapons()
+	{
+		int index = myWeapons.Count;
+		for(int i = index; i < gunsIHave.Count; i++)
+		{
+			GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + gunsIHave[i].ToString() + ".prefab", typeof(GameObject));
+			GameObject weapon = (GameObject)Instantiate(resource, transform.position, Quaternion.identity);
+			weapon.SetActive(false);
+			myWeapons.Add(weapon);
+		}
 	}
 	/*
 	 * Returns 1 if Ammo is added successfully.
@@ -95,6 +107,7 @@ public class GunInventory : MonoBehaviour {
 		if (gunsIHave.IndexOf(weaponName) == -1)
 		{
 			gunsIHave.Add(weaponName);
+			PopulateWeapons();
 			StartCoroutine(UpdateIconsFromResources());
 			Debug.Log("Added Weapon " + weaponName);
 			return true;
@@ -143,9 +156,9 @@ public class GunInventory : MonoBehaviour {
 		{
 			currentHAndsAnimator.SetBool("changingWeapon", true);
 			yield return new WaitForSeconds(0.8f);
-			myWeapons[prevIndex].SetActive(false);
 			try
 			{
+				myWeapons[prevIndex].SetActive(false);
 				currentGun = myWeapons[_redniBroj];
 				currentGun.SetActive(true);
 				AssignHandsAnimator();
@@ -159,10 +172,12 @@ public class GunInventory : MonoBehaviour {
 			}
 		}
 		else{
-			GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + gunsIHave[_redniBroj].ToString() + ".prefab", typeof(GameObject));
-			currentGun = (GameObject) Instantiate(resource, transform.position, Quaternion.identity);
+			//GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + gunsIHave[_redniBroj].ToString() + ".prefab", typeof(GameObject));
+			//currentGun = (GameObject) Instantiate(resource, transform.position, Quaternion.identity);
+			currentGun = myWeapons[_redniBroj];
+			currentGun.SetActive(true);
 			AssignHandsAnimator();
-			myWeapons.Add(currentGun);
+			//myWeapons.Add(currentGun);
 		}
 	}
 

@@ -2305,11 +2305,11 @@ MonoBehaviour:
   size_crosshair_horizontal: {x: 20, y: 10}
   expandValues_crosshair: {x: 0, y: 0}
   recoilAmount_z_non: 0.02
-  recoilAmount_x_non: 0.01
-  recoilAmount_y_non: 0.01
+  recoilAmount_x_non: 0.02
+  recoilAmount_y_non: 0.02
   recoilAmount_z_: 0.01
-  recoilAmount_x_: 0.005
-  recoilAmount_y_: 0.005
+  recoilAmount_x_: 0.01
+  recoilAmount_y_: 0.01
   velocity_z_recoil: 0
   velocity_x_recoil: 0
   velocity_y_recoil: 0

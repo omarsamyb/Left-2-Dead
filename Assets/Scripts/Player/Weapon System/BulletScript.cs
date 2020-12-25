@@ -15,8 +15,10 @@ public class BulletScript : MonoBehaviour {
 		floatInfrontOfWall = 0.1f;	// Good values is between 0.01 to 0.1
 	}
 	void Update () {
-		if(Physics.Raycast(transform.position, transform.forward, out hit, maxDistance, ~ignoreLayer)){
-			if(hit.transform.tag == "World"){
+		Ray ray1 = new Ray(transform.position, transform.forward);
+		Debug.DrawRay(ray1.origin, ray1.direction * 20f, Color.red);
+		if (Physics.Raycast(transform.position, transform.forward, out hit, maxDistance, ~ignoreLayer)){
+			if(hit.transform.tag == "Untagged"){
 				Instantiate(decalHitWall, hit.point + hit.normal * floatInfrontOfWall, Quaternion.LookRotation(hit.normal));
 				Destroy(gameObject);
 			}
