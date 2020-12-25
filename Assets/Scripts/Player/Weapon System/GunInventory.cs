@@ -60,6 +60,48 @@ public class GunInventory : MonoBehaviour {
 		}
 
 	}
+	/*
+	 * Returns 1 if Ammo is added successfully.
+	 * Returns 0 if we don't have the corresponding Ammo's weapon in the Inventory.
+	 * Returns -1 if we already have the Max Capacity of Ammo.
+	 */
+	public int AddAmmo(string weaponName, int amount)
+	{
+		int index = gunsIHave.IndexOf(weaponName);
+		if (index != -1)
+		{
+			GunScript weapon = myWeapons[index].GetComponent<GunScript>();
+			float currentBulletCount = weapon.bulletsIHave;
+			if (currentBulletCount == weapon.maxCapacity)
+			{
+				Debug.Log("Max Ammo Capacity Reached");
+				return -1;
+			}
+			float newCount = currentBulletCount + amount;
+			if (newCount > weapon.maxCapacity)
+				newCount = weapon.maxCapacity;
+			weapon.bulletsIHave = newCount;
+			return 1;
+		}
+		Debug.Log("We don't have this Ammo's Weapon");
+		return 0;
+	}
+	/*
+	 * Returns true if we can successfully pick up the weapon.
+	 * Returns false if we aleady have this weapon in our Inventory.
+	 */
+	public bool AddWeapon(string weaponName)
+	{
+		if (gunsIHave.IndexOf(weaponName) == -1)
+		{
+			gunsIHave.Add(weaponName);
+			StartCoroutine(UpdateIconsFromResources());
+			Debug.Log("Added Weapon " + weaponName);
+			return true;
+		}
+		Debug.Log("Already have weapon");
+		return false;
+	}
 
 	void Create_Weapon(){
 		int prevWeaponCounter = currentGunCounter;
@@ -128,9 +170,12 @@ public class GunInventory : MonoBehaviour {
 		currentHAndsAnimator = currentGun.GetComponent<GunScript>().handsAnimator;
 	}
 
-	void OnGUI(){
-		if(currentGun){
-			for(int i = 0; i < gunsIHave.Count; i++){
+	void OnGUI()
+	{
+		if (currentGun)
+		{
+			for (int i = 0; i < gunsIHave.Count; i++)
+			{
 				DrawCorrespondingImage(i);
 			}
 		}
@@ -138,29 +183,37 @@ public class GunInventory : MonoBehaviour {
 
 	void DrawCorrespondingImage(int _number){
 		string deleteCloneFromName = currentGun.name.Substring(0,currentGun.name.Length - 7);
-
-		if(menuStyle == MenuStyle.horizontal){
-			if(deleteCloneFromName == gunsIHave[_number]){
-				GUI.DrawTexture(new Rect(vec2(beginPosition).x +(_number*position_x(spacing)),vec2(beginPosition).y,//position variables
-					vec2(size).x, vec2(size).y),//size
-					icons[_number]);
+		if (icons.Length == gunsIHave.Count)
+		{
+			if (menuStyle == MenuStyle.horizontal)
+			{
+				if (deleteCloneFromName == gunsIHave[_number])
+				{
+					GUI.DrawTexture(new Rect(vec2(beginPosition).x + (_number * position_x(spacing)), vec2(beginPosition).y,//position variables
+						vec2(size).x, vec2(size).y),//size
+						icons[_number]);
+				}
+				else
+				{
+					GUI.DrawTexture(new Rect(vec2(beginPosition).x + (_number * position_x(spacing) + 10), vec2(beginPosition).y + 10,//position variables
+						vec2(size).x - 20, vec2(size).y - 20),//size
+						icons[_number]);
+				}
 			}
-			else{			
-				GUI.DrawTexture(new Rect(vec2(beginPosition).x +(_number*position_x(spacing) + 10),vec2(beginPosition).y + 10,//position variables
-					vec2(size).x - 20, vec2(size).y- 20),//size
-					icons[_number]);
-			}
-		}
-		else if(menuStyle == MenuStyle.vertical){
-			if(deleteCloneFromName == gunsIHave[_number]){
-				GUI.DrawTexture(new Rect(vec2(beginPosition).x,vec2(beginPosition).y +(_number*position_y(spacing)),//position variables
-					vec2(size).x, vec2(size).y),//size
-					icons[_number]);
-			}
-			else{			
-				GUI.DrawTexture(new Rect(vec2(beginPosition).x,vec2(beginPosition).y + 10  +(_number*position_y(spacing)),//position variables
-					vec2(size).x - 20, vec2(size).y- 20),//size
-					icons[_number]);
+			else if (menuStyle == MenuStyle.vertical)
+			{
+				if (deleteCloneFromName == gunsIHave[_number])
+				{
+					GUI.DrawTexture(new Rect(vec2(beginPosition).x, vec2(beginPosition).y + (_number * position_y(spacing)),//position variables
+						vec2(size).x, vec2(size).y),//size
+						icons[_number]);
+				}
+				else
+				{
+					GUI.DrawTexture(new Rect(vec2(beginPosition).x, vec2(beginPosition).y + 10 + (_number * position_y(spacing)),//position variables
+						vec2(size).x - 20, vec2(size).y - 20),//size
+						icons[_number]);
+				}
 			}
 		}
 	}
