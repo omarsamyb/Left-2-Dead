@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5dde3cbc81d56489b759f4fe2acd7a, type: 3}
+  m_Name: Rag
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 6461343009731709124, guid: 26b1c72ddd7c7d0489571b48715927c5, type: 3}
+  type: 0
