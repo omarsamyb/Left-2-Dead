@@ -26,7 +26,7 @@ public class GunScript : MonoBehaviour {
 	private GameObject holdSmoke;
 
 	[Tooltip("Audios for shootingSound, and reloading.")]
-	public AudioSource shoot_sound_source, reloadSound_source;
+	public AudioClip shootSFX, reloadSFX;
 	[Tooltip("Sound that plays after successful attack bullet hit.")]
 	public static AudioSource hitMarker;
 
@@ -387,8 +387,8 @@ public class GunScript : MonoBehaviour {
 					print("Missing the bullet prefab");
 				holdFlash = Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position /*- muzzelPosition*/, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90)) as GameObject;
 				holdFlash.transform.parent = muzzelSpawn.transform;
-				if (shoot_sound_source)
-					shoot_sound_source.Play();
+				if (shootSFX)
+					AudioManager.instance.Play("ShootSFX");
 				else
 					print("Missing 'Shoot Sound Source'.");
 
@@ -408,42 +408,52 @@ public class GunScript : MonoBehaviour {
 		hitMarker.Play();
 	}
 	IEnumerator Reload_Animation(){
-		if(bulletsIHave > 0 && bulletsInTheGun < amountOfBulletsPerLoad && !reloading){
-			if (reloadSound_source.isPlaying == false && reloadSound_source != null) {
-				if (reloadSound_source)
-					reloadSound_source.Play ();
-				else
-					print ("'Reload Sound Source' missing.");
+		if (bulletsIHave > 0 && bulletsInTheGun < amountOfBulletsPerLoad && !reloading)
+		{
+			if (AudioManager.instance.isPlaying("ReloadSFX") == false && reloadSFX != null)
+			{
+				AudioManager.instance.Play("ReloadSFX");
 			}
-			handsAnimator.SetBool("reloading",true);
+			handsAnimator.SetBool("reloading", true);
 			yield return new WaitForSeconds(0.5f);
-			handsAnimator.SetBool("reloading",false);
+			handsAnimator.SetBool("reloading", false);
 
-			yield return new WaitForSeconds (reloadChangeBulletsTime - 0.5f);
-			if (meeleAttack == false && playerController.currentSpeed != runningSpeed) {
+			yield return new WaitForSeconds(reloadChangeBulletsTime - 0.5f);
+			if (meeleAttack == false && playerController.currentSpeed != runningSpeed)
+			{
 				//if (player.GetComponent<PlayerMovementScript> ()._freakingZombiesSound)
 				//	player.GetComponent<PlayerMovementScript> ()._freakingZombiesSound.Play ();
 				//else
 				//	print ("Missing Freaking Zombies Sound");
-				
-				if (bulletsIHave - amountOfBulletsPerLoad >= 0) {
+
+				if (bulletsIHave - amountOfBulletsPerLoad >= 0)
+				{
 					bulletsIHave -= amountOfBulletsPerLoad - bulletsInTheGun;
 					bulletsInTheGun = amountOfBulletsPerLoad;
-				} else if (bulletsIHave - amountOfBulletsPerLoad < 0) {
+				}
+				else if (bulletsIHave - amountOfBulletsPerLoad < 0)
+				{
 					float valueForBoth = amountOfBulletsPerLoad - bulletsInTheGun;
-					if (bulletsIHave - valueForBoth < 0) {
+					if (bulletsIHave - valueForBoth < 0)
+					{
 						bulletsInTheGun += bulletsIHave;
 						bulletsIHave = 0;
-					} else {
+					}
+					else
+					{
 						bulletsIHave -= valueForBoth;
 						bulletsInTheGun += valueForBoth;
 					}
 				}
-			} else {
-				reloadSound_source.Stop ();
-				print ("Reload interrupted via meele attack");
+			}
+			else
+			{
+				AudioManager.instance.Stop("ReloadSFX");
+				print("Reload interrupted via meele attack");
 			}
 		}
+		else
+			AudioManager.instance.Play("EmptyClipSFX");
 	}
 	void OnGUI(){
 		if(!HUD_bullets){
