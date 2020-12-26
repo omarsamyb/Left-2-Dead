@@ -20,7 +20,7 @@ public class GunInventory : MonoBehaviour {
 
 	[Header("Sounds")]
 	[Tooltip("Sound of weapon changing.")]
-	public AudioSource weaponChanging;
+	public AudioClip switchWeaponSFX;
 
 	private Animator currentHAndsAnimator;
 	private int currentGunCounter = 0;
@@ -148,8 +148,8 @@ public class GunInventory : MonoBehaviour {
 	}
 
 	IEnumerator Spawn(int prevIndex, int _redniBroj){
-		if (weaponChanging)
-			weaponChanging.Play ();
+		if (switchWeaponSFX)
+			AudioManager.instance.Play("SwitchWeaponSFX");
 		else
 			print ("Missing Weapon Changing music clip.");
 		if(currentGun)
@@ -172,13 +172,12 @@ public class GunInventory : MonoBehaviour {
 			}
 		}
 		else{
-			//GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + gunsIHave[_redniBroj].ToString() + ".prefab", typeof(GameObject));
-			//currentGun = (GameObject) Instantiate(resource, transform.position, Quaternion.identity);
 			currentGun = myWeapons[_redniBroj];
 			currentGun.SetActive(true);
 			AssignHandsAnimator();
-			//myWeapons.Add(currentGun);
 		}
+		AudioManager.instance.SetClip("ShootSFX", currentGun.GetComponent<GunScript>().shootSFX);
+		AudioManager.instance.SetClip("ReloadSFX", currentGun.GetComponent<GunScript>().reloadSFX);
 	}
 
 	void AssignHandsAnimator(){
