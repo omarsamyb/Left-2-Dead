@@ -1,30 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using UnityEngine.AI;
 public class EnemyContoller : MonoBehaviour
 {
     NavMeshAgent nm;
     public Transform target;
-    public enum AIState { idle, chasing, attack, patrol, dead };
+    public enum AIState { idle, chasing, attack, patrol, dead, stunned };
     public AIState aiState = AIState.idle;
     public Animator animator;
     private float attackDistance = 0.5f;
     private Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
-    // Start is called before the first frame update
+
+    private float timer = 0;
+
     void Start()
     {
         nm = GetComponent<NavMeshAgent>();
-        // target = GameObject.FindGameObjectWithTag("Player").transform;
-        // StartCoroutine(Think());
         patrolling = new Vector3[2];
         patrolling[0] = transform.position + new Vector3(2, 0, 0);
         patrolling[1] = transform.position + new Vector3(-2, 0, 0);
     }
-
+    public void stun()
+    {
+        aiState = AIState.stunned;
+        nm.SetDestination(transform.position);
+        animator.SetBool("isStunned", true);
+    }
     void chase()
     {
         aiState = AIState.chasing;
@@ -62,31 +66,44 @@ public class EnemyContoller : MonoBehaviour
     }
     void Update()
     {
+        if (aiState != AIState.patrol)
+        {
+            patrolling[0] = transform.position + new Vector3(2, 0, 0);
+            patrolling[1] = transform.position + new Vector3(-2, 0, 0);
+        }
+        if (aiState == AIState.stunned)
+        {
+            timer = timer + Time.deltaTime;
+            if (timer > 3.0f)
+            {
+                animator.SetBool("isStunned", false);
+                animator.SetBool("isChasing", false);
+                animator.SetBool("isAttacking", false);
+                nm.SetDestination(transform.position);
+                aiState = AIState.idle;
+                timer = 0;
+            }
+
+            return;
+
+        }
         // after take damage is actually called, remove second condition and nm.setdestination
         if (aiState == AIState.dead || animator.GetBool("isDying"))
         {
-
             nm.SetDestination(transform.position);
             return;
         }
-        if (InRange(target, transform, attackDistance))
+        if (canSeePlayer(attackDistance, 90f))
         {
-
             attack();
         }
-        //  || sound() || raycast()
-        // InRange(target, transform, 5f) ||
+        //  || sound() 
         else if (canSeePlayer(5f, 90f))
         {
             chase();
         }
         else
         {
-            // int randomNumber = Random.Range(0, 2);
-
-            // if (randomNumber == 0)
-            //     idle();
-            // else
             patrol();
         }
     }
@@ -122,7 +139,7 @@ public class EnemyContoller : MonoBehaviour
         float angle = Vector3.Angle(transform.forward, direction);
         Ray ray = new Ray(transform.position, direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
-        if (checkDistance && hit.collider.tag == "Player" && Math.Abs(angle) < rangeAngle)
+        if (checkDistance && hit.collider.tag == "Player" && Mathf.Abs(angle) < rangeAngle)
         {
             return true;
         }
