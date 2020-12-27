@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 575554492705830659, guid: 7350230f232cecb4c8d57b080bd1c4c6, type: 3}
       propertyPath: m_Name
-      value: Rag Variant
+      value: Rag
       objectReference: {fileID: 0}
     - target: {fileID: 2218205257038705106, guid: 7350230f232cecb4c8d57b080bd1c4c6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -65,11 +65,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2218205257038705106, guid: 7350230f232cecb4c8d57b080bd1c4c6, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 78.62022
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2218205257038705106, guid: 7350230f232cecb4c8d57b080bd1c4c6, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 52.846283
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2218205257038705106, guid: 7350230f232cecb4c8d57b080bd1c4c6, type: 3}
       propertyPath: m_AnchorMin.x

@@ -37,4 +37,8 @@ public class InventorySlot
     public void addAmount(int val){
         amount += val;
     }
+
+    public void resetAmount(){
+        amount = 0;
+    }
 }

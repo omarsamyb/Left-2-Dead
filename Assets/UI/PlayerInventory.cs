@@ -16,8 +16,10 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    // void OnApplicationQuit()
-    // {
-    //     inventory.container.Clear(); 
-    // }
+    void OnApplicationQuit()
+    {
+        for(int i = 0; i < inventory.container.Count; i++){
+            inventory.container[i].resetAmount();
+        }
+    }
 }
