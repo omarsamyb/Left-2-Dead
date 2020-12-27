@@ -366,6 +366,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: gunsIHave.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: gunsIHave.Array.data[0]
+      value: PistolNew
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: gunsIHave.Array.data[1]
+      value: Pistol
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
 --- !u!1001 &2000156191
