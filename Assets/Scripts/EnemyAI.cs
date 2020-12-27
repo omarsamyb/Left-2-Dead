@@ -6,57 +6,54 @@ public class EnemyAI : MonoBehaviour
 {
     NavMeshAgent nm;
     public Transform target;
-    public enum AIState { idle,chasing,attack};
+    public enum AIState { idle, chasing, attack };
     public AIState aiState = AIState.idle;
     public Animator animator;
     // Start is called before the first frame update
     void Start()
     {
         nm = GetComponent<NavMeshAgent>();
-       // target = GameObject.FindGameObjectWithTag("Player").transform;
-        StartCoroutine(Think());
+        // target = GameObject.FindGameObjectWithTag("Player").transform;
+        // StartCoroutine(Think());
     }
-    IEnumerator Think()
+    void chase()
     {
-        while (true)
+        aiState = AIState.chasing;
+        animator.SetBool("isChasing", true);
+        animator.SetBool("isAttacking", false);
+        nm.SetDestination(target.position);
+    }
+    void attack()
+    {
+        aiState = AIState.attack;
+        animator.SetBool("isAttacking", true);
+        // animator.SetBool("isChasing", false);
+        nm.SetDestination(transform.position);
+    }
+    void idle()
+    {
+        aiState = AIState.idle;
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isChasing", false);
+        nm.SetDestination(transform.position);
+    }
+    void Update()
+    {
+        if (InRange(target, transform, 0.5f)) // attack
         {
-            switch (aiState)
-            {
-                case AIState.idle:
-                    if(InRange(target,transform,5f))
-                    {
-                        aiState = AIState.chasing;
-                        animator.SetBool("isChasing", true);
-                    }
-                    nm.SetDestination(transform.position);
-                    break;
-                case AIState.chasing:
-                    if (!InRange(target, transform, 5f))
-                    {
-                        aiState = AIState.idle;
-                        animator.SetBool("isChasing", false);
-                    }
-                    if(InRange(target, transform, 0.5f))
-                    {
-                        aiState = AIState.attack;
-                        animator.SetBool("isAttacking", true);
-                    }
-                    nm.SetDestination(target.position); 
-                    break;
-                case AIState.attack:
-                    nm.SetDestination(transform.position);
-                    if (!InRange(target, transform, 0.5f))
-                    {
-                        aiState = AIState.chasing;
-                        animator.SetBool("isAttacking", false);
-                    }
-                    break;
-                default:
-                    break;
-            }
-            yield return new WaitForSeconds(0.2f);
-        }
 
+            attack();
+        }
+        //  || sound() || raycast()
+        else if (InRange(target, transform, 5f))
+        {
+            chase();
+        }
+        else
+        {
+
+            idle();
+        }
     }
     private bool InRange(Transform transform1, Transform transform2, float range)
     {
@@ -67,4 +64,5 @@ public class EnemyAI : MonoBehaviour
         }
         return false;
     }
+
 }
