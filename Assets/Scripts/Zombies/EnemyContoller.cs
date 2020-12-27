@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 public class EnemyContoller : MonoBehaviour
@@ -74,7 +75,8 @@ public class EnemyContoller : MonoBehaviour
             attack();
         }
         //  || sound() || raycast()
-        else if (InRange(target, transform, 5f))
+        // InRange(target, transform, 5f) ||
+        else if (canSeePlayer(5f, 90f))
         {
             chase();
         }
@@ -112,6 +114,21 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isDying", true);
         nm.SetDestination(transform.position);
         aiState = AIState.dead;
+    }
+
+    public bool canSeePlayer(float rangeDistance, float rangeAngle)
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, direction);
+        Ray ray = new Ray(transform.position, direction);
+        bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
+        if (checkDistance && hit.collider.tag == "Player" && Math.Abs(angle) < rangeAngle)
+        {
+            return true;
+        }
+        return false;
+
+
     }
 
 }
