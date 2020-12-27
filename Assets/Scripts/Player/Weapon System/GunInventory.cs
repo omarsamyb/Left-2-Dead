@@ -35,6 +35,7 @@ public class GunInventory : MonoBehaviour {
 		StartCoroutine(UpdateIconsFromResources());
 		StartCoroutine(SpawnWeaponUponStart());
 		PopulateWeapons();
+		AudioManager.instance.Play("SwitchWeaponSFX");
 
 		if (gunsIHave.Count == 0)
 			print ("No guns in the inventory");
@@ -148,17 +149,18 @@ public class GunInventory : MonoBehaviour {
 	}
 
 	IEnumerator Spawn(int prevIndex, int _redniBroj){
-		if (switchWeaponSFX)
-			AudioManager.instance.Play("SwitchWeaponSFX");
-		else
-			print ("Missing Weapon Changing music clip.");
-		if(currentGun)
+		if (currentGun)
 		{
+			AudioManager.instance.Play("SwitchWeaponSFX");
+			Vector3 resetPosition = myWeapons[prevIndex].transform.GetChild(0).localPosition;
 			currentHAndsAnimator.SetBool("changingWeapon", true);
 			yield return new WaitForSeconds(0.8f);
+			AudioManager.instance.PlayOneShot("ReadySFX");
 			try
 			{
 				myWeapons[prevIndex].SetActive(false);
+				myWeapons[prevIndex].transform.GetChild(0).localPosition = resetPosition;
+				myWeapons[prevIndex].transform.GetChild(0).localRotation = Quaternion.identity;
 				currentGun = myWeapons[_redniBroj];
 				currentGun.SetActive(true);
 				AssignHandsAnimator();
@@ -175,9 +177,11 @@ public class GunInventory : MonoBehaviour {
 			currentGun = myWeapons[_redniBroj];
 			currentGun.SetActive(true);
 			AssignHandsAnimator();
+			AudioManager.instance.PlayOneShot("ReadySFX");
 		}
 		AudioManager.instance.SetClip("ShootSFX", currentGun.GetComponent<GunScript>().shootSFX);
 		AudioManager.instance.SetClip("ReloadSFX", currentGun.GetComponent<GunScript>().reloadSFX);
+		AudioManager.instance.SetClip("ReadySFX", currentGun.GetComponent<GunScript>().readySFX);
 	}
 
 	void AssignHandsAnimator(){

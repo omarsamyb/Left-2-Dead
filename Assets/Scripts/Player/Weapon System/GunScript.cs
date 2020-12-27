@@ -27,7 +27,7 @@ public class GunScript : MonoBehaviour {
 	private GameObject holdSmoke;
 
 	[Tooltip("Audios for shootingSound, and reloading.")]
-	public AudioClip shootSFX, reloadSFX;
+	public AudioClip shootSFX, reloadSFX, readySFX;
 	[Tooltip("Sound that plays after successful attack bullet hit.")]
 	public static AudioSource hitMarker;
 
@@ -453,7 +453,7 @@ public class GunScript : MonoBehaviour {
 				print("Reload interrupted via meele attack");
 			}
 		}
-		else
+		else if(bulletsIHave == 0)
 			AudioManager.instance.Play("EmptyClipSFX");
 	}
 	void OnGUI(){

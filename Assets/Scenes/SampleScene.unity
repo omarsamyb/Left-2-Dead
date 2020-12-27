@@ -304,13 +304,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997012725}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.00034529547, w: 0.99999994}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5.1246924, y: 1, z: 6.604897}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.04}
 --- !u!1001 &1889515475
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -368,15 +368,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
       propertyPath: gunsIHave.Array.size
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
       propertyPath: gunsIHave.Array.data[0]
-      value: PistolNew
+      value: Pistol
       objectReference: {fileID: 0}
     - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
       propertyPath: gunsIHave.Array.data[1]
-      value: Pistol
+      value: Submachine Gun
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: gunsIHave.Array.data[2]
+      value: Tactical Shotgun
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: gunsIHave.Array.data[3]
+      value: Assault Rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019212214358615, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: gunsIHave.Array.data[4]
+      value: Hunting Rifle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
