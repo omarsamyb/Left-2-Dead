@@ -6,16 +6,16 @@ public class EnemyContoller : MonoBehaviour
 {
     NavMeshAgent nm;
     public Transform target;
-    public enum AIState { idle, chasing, attack, patrol };
+    public enum AIState { idle, chasing, attack, patrol, dead };
     public AIState aiState = AIState.idle;
     public Animator animator;
     private float attackDistance = 0.5f;
     private Vector3[] patrolling;
     private int patrollingIdx = 0;
+    public int health;
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Parent");
         nm = GetComponent<NavMeshAgent>();
         // target = GameObject.FindGameObjectWithTag("Player").transform;
         // StartCoroutine(Think());
@@ -23,9 +23,7 @@ public class EnemyContoller : MonoBehaviour
         patrolling[0] = transform.position + new Vector3(2, 0, 0);
         patrolling[1] = transform.position + new Vector3(-2, 0, 0);
     }
-    public virtual void getInitialHealth()
-    {
-    }
+
     void chase()
     {
         aiState = AIState.chasing;
@@ -63,6 +61,13 @@ public class EnemyContoller : MonoBehaviour
     }
     void Update()
     {
+        // after take damage is actually called, remove second condition and nm.setdestination
+        if (aiState == AIState.dead || animator.GetBool("isDying"))
+        {
+
+            nm.SetDestination(transform.position);
+            return;
+        }
         if (InRange(target, transform, attackDistance))
         {
 
@@ -91,6 +96,22 @@ public class EnemyContoller : MonoBehaviour
             return true;
         }
         return false;
+    }
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+
+            Die();
+        }
+
+    }
+    public void Die()
+    {
+        animator.SetBool("isDying", true);
+        nm.SetDestination(transform.position);
+        aiState = AIState.dead;
     }
 
 }
