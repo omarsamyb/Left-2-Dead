@@ -1147,6 +1147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64cace7a314d5af4b8645669a8c2498e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponName: Pistol
   handsAnimator: {fileID: 9596676}
   reloading: 0
   muzzelFlash:

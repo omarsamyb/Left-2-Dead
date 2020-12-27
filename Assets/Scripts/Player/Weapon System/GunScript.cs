@@ -11,6 +11,7 @@ public class GunScript : MonoBehaviour {
 	private Transform mainCamera;
 	private Camera secondCamera;
 	private PlayerController playerController;
+	public string weaponName;
 	public Animator handsAnimator;
 	private string reloadAnimationName = "Player_Reload";
 	private string aimingAnimationName = "Player_AImpose";
@@ -187,7 +188,7 @@ public class GunScript : MonoBehaviour {
 		playerController = player.GetComponent<PlayerController>();
 
 		bulletSpawnPlace = GameObject.FindGameObjectWithTag("BulletSpawn");
-		hitMarker = transform.Find ("hitMarkerSound").GetComponent<AudioSource>();
+		//hitMarker = transform.Find ("hitMarkerSound").GetComponent<AudioSource>();
 
 		rotationLastY = mouseLook.yRotation;
 		rotationLastX= mouseLook.xRotation;
