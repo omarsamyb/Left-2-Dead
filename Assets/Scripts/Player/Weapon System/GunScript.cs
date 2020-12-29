@@ -16,6 +16,8 @@ public class GunScript : MonoBehaviour
     public string weaponName;
     public Animator handsAnimator;
     private string reloadingAnimationName = "Reloading";
+    private string shotgunReloadShellAnimationName = "Reloading_Shell";
+    private string shotgunReloadResetAnimationName = "Reloading_Reset";
     private string meleeAnimationName = "Melee";
     private string takeoutAnimationName = "Weapon_TakeOut";
     private string takedownAnimationName = "Weapon_TakeDown";
@@ -274,7 +276,10 @@ public class GunScript : MonoBehaviour
     // Stats
     private void AnimationStats()
     {
-        isReloading = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName);
+        if(currentStyle == GunStyles.shotgun)
+            isReloading = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(shotgunReloadShellAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(shotgunReloadResetAnimationName);
+        else
+            isReloading = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName);
         isMelee = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(meleeAnimationName);
         isSwitching = (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName));
     }
@@ -349,28 +354,47 @@ public class GunScript : MonoBehaviour
     {
         if (bulletsIHave > 0 && bulletsInTheGun < amountOfBulletsPerLoad && !isReloading)
         {
-            AudioManager.instance.Play("ReloadSFX");
-            handsAnimator.SetTrigger("isReloading");
-            yield return new WaitUntil(() => isReloading);
-            yield return new WaitUntil(() => !isReloading);
-
-            if (bulletsIHave - amountOfBulletsPerLoad >= 0)
+            if (currentStyle == GunStyles.shotgun)
             {
-                bulletsIHave -= amountOfBulletsPerLoad - bulletsInTheGun;
-                bulletsInTheGun = amountOfBulletsPerLoad;
-            }
-            else if (bulletsIHave - amountOfBulletsPerLoad < 0)
-            {
-                float valueForBoth = amountOfBulletsPerLoad - bulletsInTheGun;
-                if (bulletsIHave - valueForBoth < 0)
+                AudioManager.instance.Play("ReloadSFX");
+                handsAnimator.SetBool("isReloading", true);
+                yield return new WaitForSeconds(0.1f);
+                handsAnimator.SetBool("isReloadingShells", true);
+                while(bulletsInTheGun < amountOfBulletsPerLoad && bulletsIHave > 0)
                 {
-                    bulletsInTheGun += bulletsIHave;
-                    bulletsIHave = 0;
+                    AudioManager.instance.Play("ReloadSFX");
+                    yield return new WaitForSeconds(0.5f);
+                    bulletsIHave--;
+                    bulletsInTheGun++;
                 }
-                else
+                handsAnimator.SetBool("isReloadingShells", false);
+                handsAnimator.SetBool("isReloading", false);
+            }
+            else
+            {
+                AudioManager.instance.Play("ReloadSFX");
+                handsAnimator.SetTrigger("isReloading");
+                yield return new WaitUntil(() => isReloading);
+                yield return new WaitUntil(() => !isReloading);
+
+                if (bulletsIHave - amountOfBulletsPerLoad >= 0)
                 {
-                    bulletsIHave -= valueForBoth;
-                    bulletsInTheGun += valueForBoth;
+                    bulletsIHave -= amountOfBulletsPerLoad - bulletsInTheGun;
+                    bulletsInTheGun = amountOfBulletsPerLoad;
+                }
+                else if (bulletsIHave - amountOfBulletsPerLoad < 0)
+                {
+                    float valueForBoth = amountOfBulletsPerLoad - bulletsInTheGun;
+                    if (bulletsIHave - valueForBoth < 0)
+                    {
+                        bulletsInTheGun += bulletsIHave;
+                        bulletsIHave = 0;
+                    }
+                    else
+                    {
+                        bulletsIHave -= valueForBoth;
+                        bulletsInTheGun += valueForBoth;
+                    }
                 }
             }
         }
