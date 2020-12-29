@@ -6,7 +6,7 @@ public class EnemyContoller : MonoBehaviour
 {
     NavMeshAgent navMeshAgent;
     public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned};
+    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe };
     private State currentState;
     public Animator animator;
     public float attackDistance = 1.0f,chaseDistance = 5.0f;
@@ -14,8 +14,10 @@ public class EnemyContoller : MonoBehaviour
     private int patrollingIdx = 0;
     public int health;
     private Transform attackTarget; // can be player of zombie (if confused)
-    private float timer = 0, confusionTimer = 0;
+    private float stunTimer = 0, confusionTimer = 0;  private float pipeTimer = 0;
     private bool isConfused;
+    private float chaseSpeed=2.0f;
+    private float patrolSpeed=0.3f;
     public void Confuse()
     {
        
@@ -36,8 +38,6 @@ public class EnemyContoller : MonoBehaviour
         isConfused = true;
         int random = Random.Range(0,enemies.Count);
         attackTarget = (Transform)enemies[random];
-
-        
     }
     void Start()
     {
@@ -47,11 +47,10 @@ public class EnemyContoller : MonoBehaviour
         patrolling = new Vector3[2];
         patrolling[0] = transform.position + new Vector3(2, 0, 0);
         patrolling[1] = transform.position + new Vector3(-2, 0, 0);
-        Invoke("Confuse",4);
     }
     public void stun()
     {
-        timer = 0;
+        stunTimer = 0;
         currentState = State.stunned;
         navMeshAgent.SetDestination(transform.position);
         animator.SetBool("isChasing",false);
@@ -60,7 +59,7 @@ public class EnemyContoller : MonoBehaviour
     }
     void chase(Transform target)
     {
-        navMeshAgent.speed= 2.0f;
+        navMeshAgent.speed=chaseSpeed;
         currentState = State.chasing;
         animator.SetBool("isChasing", true);
         animator.SetBool("isAttacking", false);
@@ -83,7 +82,7 @@ public class EnemyContoller : MonoBehaviour
     // }
     void patrol()
     {
-        navMeshAgent.speed=0.3f;
+        navMeshAgent.speed=patrolSpeed;
         if (currentState != State.patrol)
         {
             currentState = State.patrol;
@@ -109,8 +108,8 @@ public class EnemyContoller : MonoBehaviour
             return;
         if (currentState == State.stunned)
         {
-            timer = timer + Time.deltaTime;
-            if (timer > 3.0f)
+            stunTimer = stunTimer + Time.deltaTime;
+            if (stunTimer > 3.0f)
             {
                 animator.SetBool("isStunned", false);
                 patrol();
@@ -156,9 +155,23 @@ public class EnemyContoller : MonoBehaviour
                 chase(attackTarget);
             }
         }
+        else if (currentState == State.pipe)
+        {
+            pipeTimer = pipeTimer + Time.deltaTime;
+            if (pipeTimer > 4.0f)
+            {
+                animator.SetBool("isReachedPipe",false);
+                animator.SetBool("isPiped", false);
+                patrol();
+            }
+            else if(navMeshAgent.remainingDistance<1f)
+            {
+                animator.SetBool("isReachedPipe",true);
+            }
+
+        }
     }
-        
-       
+
     private bool InRange(Transform transform1, Transform transform2, float range)
     {
         float distance = Vector3.Distance(transform1.position, transform2.position);
@@ -202,4 +215,64 @@ public class EnemyContoller : MonoBehaviour
 
     }
 
+    private float CalculatePathLength(Vector3 targetPosition)
+    {
+        NavMeshPath path = new NavMeshPath();
+
+        if(navMeshAgent.enabled)
+        navMeshAgent.CalculatePath(targetPosition, path);
+
+
+        float pathLength = 0f;
+
+        if (path.corners.Length == 0)
+        {
+            pathLength = Vector3.Distance(transform.position, targetPosition);
+
+        }
+        else
+        {
+            pathLength = Vector3.Distance(transform.position, path.corners[0]);
+            pathLength += Vector3.Distance(path.corners[path.corners.Length-1], targetPosition);
+        }
+        for (int i = 0; i < path.corners.Length-1; i++)
+        {
+            pathLength+= Vector3.Distance(path.corners[i], path.corners[i+1]);
+        }
+
+        return pathLength;
+    }
+    public void canHearPlayer(float radius)
+    {
+        if (currentState == State.chasing || currentState == State.attack|| currentState == State.dead|| currentState == State.stunned) return;
+        if (CalculatePathLength(playerTransform.position) < radius)
+        {
+            currentState = State.chasing;
+        }
+    }
+    public void pipeGrenade( Vector3 grenadePosition)
+    {
+        // float grenadeRadius, as parameter 
+        if (currentState == State.dead || currentState == State.stunned) return;
+
+
+        //if (CalculatePathLength(grenadePosition) < grenadeRadius)
+        //{
+        //    navMeshAgent.SetDestination(grenadePosition);
+        //    currentState = State.pipe;
+        //    animator.SetBool("isPiped", true);
+        //    animator.SetBool("isAttacking", false);
+        //    animator.SetBool("isChasing", false);
+        //    pipeTimer = 0f;
+        //    // what I am missing here the animator controller to add isPipe 
+        //}
+
+            navMeshAgent.SetDestination(grenadePosition);
+            currentState = State.pipe;
+            navMeshAgent.speed= chaseSpeed;
+            animator.SetBool("isPiped", true);
+            animator.SetBool("isAttacking", false);
+            animator.SetBool("isChasing", false);
+            pipeTimer = 0f;
+    }
 }
