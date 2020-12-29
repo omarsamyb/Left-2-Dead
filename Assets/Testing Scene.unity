@@ -813,6 +813,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 2010250614}
+    - target: {fileID: 970390278, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 2010250614}
     - target: {fileID: 3029563786236463361, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
       propertyPath: m_Name
       value: Normal Infected
@@ -860,6 +864,10 @@ PrefabInstance:
     - target: {fileID: 3029563786236463362, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3029563786236463364, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
+      propertyPath: m_Speed
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
