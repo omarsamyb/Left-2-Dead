@@ -7,7 +7,6 @@ TagManager:
   - Weapon
   - SecondCamera
   - BulletSpawn
-  - Enemy
   layers:
   - Default
   - TransparentFX
