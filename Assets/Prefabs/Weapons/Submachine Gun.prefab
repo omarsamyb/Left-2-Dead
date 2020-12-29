@@ -57,10 +57,10 @@ MonoBehaviour:
   reloadSFX: {fileID: 8300000, guid: 85ba586890fba5b40850769e0ac17b89, type: 3}
   readySFX: {fileID: 8300000, guid: 92970370bad415a419ba26032a6b4471, type: 3}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  wallDecalEffect: {fileID: 179232, guid: b2ac1383a96f94a50b7ed458be173bbd, type: 3}
   bulletSpawnPlace: {fileID: 0}
-  bullet: {fileID: 128836, guid: c9e619a669d974fd28b5c89e43f2bce2, type: 3}
   currentStyle: 1
-  bulletsIHave: 20
+  bulletsIHave: 2000
   bulletsInTheGun: 50
   amountOfBulletsPerLoad: 50
   maxCapacity: 700
@@ -95,6 +95,8 @@ MonoBehaviour:
   restPlacePosition: {x: -0.07, y: -0.06, z: 0.4}
   aimPlacePosition: {x: 0, y: -0.05, z: 0.29}
   gunAimTime: 0.05
+  isSwitching: 0
+  isReloading: 0
   gunPrecision_notAiming: 300
   gunPrecision_aiming: 100
   cameraZoomRatio_notAiming: 60

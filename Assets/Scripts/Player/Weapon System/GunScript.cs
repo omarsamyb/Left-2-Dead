@@ -16,8 +16,6 @@ public class GunScript : MonoBehaviour
     public string weaponName;
     public Animator handsAnimator;
     private string reloadingAnimationName = "Reloading";
-    private string shotgunReloadShellAnimationName = "Reloading_Shell";
-    private string shotgunReloadResetAnimationName = "Reloading_Reset";
     private string meleeAnimationName = "Melee";
     private string takeoutAnimationName = "Weapon_TakeOut";
     private string takedownAnimationName = "Weapon_TakeDown";
@@ -30,14 +28,12 @@ public class GunScript : MonoBehaviour
     [Tooltip("Audios for shootingSound, and reloading.")]
     public AudioClip shootSFX, reloadSFX, readySFX;
 
-    [Header("Blood For Meele Attacks")]
-    [Tooltip("Put your particle blood effect here.")]
+    [Header("Effects")]
     public GameObject bloodEffect;
+    public GameObject wallDecalEffect;
 
     [Header("Shooting setup - MUSTDO")]
     [HideInInspector] public Transform bulletSpawnPlace;
-    [Tooltip("Bullet prefab that this weapon will shoot.")]
-    public GameObject bullet;
 
     [Tooltip("Selects type of waepon to shoot rapidly or one bullet per click.")]
     public GunStyles currentStyle;
@@ -134,8 +130,8 @@ public class GunScript : MonoBehaviour
     private float secondCameraZoomVelocity;
 
     private bool isMelee;
-    private bool isSwitching;
-    private bool isReloading;
+    public bool isSwitching;
+    public bool isReloading;
 
     [Header("Gun Precision")]
     [Tooltip("Gun rate precision when player is not aiming. This is calculated with recoil.")]
@@ -178,7 +174,7 @@ public class GunScript : MonoBehaviour
         rotationLastY = mouseLook.yRotation;
         rotationLastX = mouseLook.xRotation;
 
-        ignoreLayer = 1 << LayerMask.NameToLayer("Player");
+        ignoreLayer = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Weapon"));
     }
     void Update()
     {
@@ -276,12 +272,8 @@ public class GunScript : MonoBehaviour
     // Stats
     private void AnimationStats()
     {
-        if(currentStyle == GunStyles.shotgun)
-            isReloading = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(shotgunReloadShellAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(shotgunReloadResetAnimationName);
-        else
-            isReloading = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName);
         isMelee = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(meleeAnimationName);
-        isSwitching = (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName));
+        isSwitching = (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName) | handsAnimator.IsInTransition(0));
     }
 
     // Positioning & Rotations
@@ -331,12 +323,14 @@ public class GunScript : MonoBehaviour
                         camRotation.y = 0f;
                         rotation += camRotation;
                         rotation = new Vector3(rotation.x + Random.Range(-shotgunSpread, shotgunSpread), rotation.y + Random.Range(-shotgunSpread, shotgunSpread), 0f);
-                        Instantiate(bullet, bulletSpawnPlace.position, Quaternion.Euler(rotation));
+                        //Instantiate(bullet, bulletSpawnPlace.position, Quaternion.Euler(rotation));
+                        Bullet(Quaternion.Euler(rotation));
                     }
                 }
                 else
                 {
-                    Instantiate(bullet, bulletSpawnPlace.position, bulletSpawnPlace.rotation);
+                    Bullet(bulletSpawnPlace.rotation);
+                    //Instantiate(bullet, bulletSpawnPlace.position, bulletSpawnPlace.rotation);
                 }
                 Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
                 AudioManager.instance.Play("ShootSFX");
@@ -350,22 +344,43 @@ public class GunScript : MonoBehaviour
             }
         }
     }
+    private void Bullet(Quaternion rotation)
+    {
+        float infrontOfWallDistance = 0.1f; // Good values is between 0.01 to 0.1
+        float maxDistance = 1000000;
+        ray1 = new Ray(bulletSpawnPlace.position, rotation * Vector3.forward);
+        Debug.DrawRay(ray1.origin, ray1.direction * 20f, Color.red);
+
+        if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer))
+        {
+            if (hitInfo.transform.tag == "Untagged")
+            {
+                Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
+            }
+            else if (hitInfo.transform.tag == "Enemy")
+            {
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+            }
+        }
+    }
     private IEnumerator Reload()
     {
         if (bulletsIHave > 0 && bulletsInTheGun < amountOfBulletsPerLoad && !isReloading)
         {
+            isReloading = true;
             if (currentStyle == GunStyles.shotgun)
             {
-                AudioManager.instance.Play("ReloadSFX");
                 handsAnimator.SetBool("isReloading", true);
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForEndOfFrame();
                 handsAnimator.SetBool("isReloadingShells", true);
-                while(bulletsInTheGun < amountOfBulletsPerLoad && bulletsIHave > 0)
+                while (bulletsInTheGun < amountOfBulletsPerLoad && bulletsIHave > 0)
                 {
                     AudioManager.instance.Play("ReloadSFX");
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.54f);
                     bulletsIHave--;
                     bulletsInTheGun++;
+                    if (Input.GetButton("Fire1"))
+                        break;
                 }
                 handsAnimator.SetBool("isReloadingShells", false);
                 handsAnimator.SetBool("isReloading", false);
@@ -374,8 +389,8 @@ public class GunScript : MonoBehaviour
             {
                 AudioManager.instance.Play("ReloadSFX");
                 handsAnimator.SetTrigger("isReloading");
-                yield return new WaitUntil(() => isReloading);
-                yield return new WaitUntil(() => !isReloading);
+                yield return new WaitUntil(() => handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName));
+                yield return new WaitUntil(() => !handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(reloadingAnimationName));
 
                 if (bulletsIHave - amountOfBulletsPerLoad >= 0)
                 {
@@ -397,6 +412,7 @@ public class GunScript : MonoBehaviour
                     }
                 }
             }
+            isReloading = false;
         }
         else if (bulletsIHave == 0)
             AudioManager.instance.Play("EmptyClipSFX");
