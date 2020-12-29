@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a87a1a3370d19454d826cdce50787a3b, type: 3}
-  m_Name: player Inventory
+  m_Name: ingredient Inventory
   m_EditorClassIdentifier: 
   container:
   - item: {fileID: 11400000, guid: cedf43beb2dd7dc47bc9c46ad9d736a6, type: 2}
