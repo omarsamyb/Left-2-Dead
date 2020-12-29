@@ -47,7 +47,7 @@ MonoBehaviour:
   sounds:
   - name: ShootSFX
     source: {fileID: 0}
-    audioClip: {fileID: 8300000, guid: 7dd8e8c0078ec5f4999c1637d6802184, type: 3}
+    audioClip: {fileID: 8300000, guid: dac03dcf9770c334f82ab112a1dcff77, type: 3}
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
@@ -55,7 +55,7 @@ MonoBehaviour:
     pitch: 1
   - name: ReloadSFX
     source: {fileID: 0}
-    audioClip: {fileID: 8300000, guid: f900d31aafc65cd4f87ae37a4079ca41, type: 3}
+    audioClip: {fileID: 8300000, guid: 43c23b929a24cef4487a7c3bf5429109, type: 3}
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
@@ -63,7 +63,7 @@ MonoBehaviour:
     pitch: 1
   - name: EmptyClipSFX
     source: {fileID: 0}
-    audioClip: {fileID: 8300000, guid: 78e6be27fb7083d4cb4b3af10476bbe0, type: 3}
+    audioClip: {fileID: 8300000, guid: 1ee39f9c6082be54f9575850f4a3baa5, type: 3}
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
@@ -71,7 +71,15 @@ MonoBehaviour:
     pitch: 1
   - name: SwitchWeaponSFX
     source: {fileID: 0}
-    audioClip: {fileID: 8300000, guid: f4b152e24dde78f45801980d2deb6243, type: 3}
+    audioClip: {fileID: 8300000, guid: 13f8082fda153f047b944cbf97685831, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: ReadySFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 63917eec5fde1bb449443cb738be7b01, type: 3}
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
