@@ -6,23 +6,48 @@ public class EnemyContoller : MonoBehaviour
 {
     NavMeshAgent navMeshAgent;
     public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned };
+    public enum State { idle, chasing, attack, patrol, dead, stunned};
     private State currentState;
     public Animator animator;
-    public float attackDistance = 1.0f;
+    public float attackDistance = 1.0f,chaseDistance = 5.0f;
     private Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
+    private Transform attackTarget; // can be player of zombie (if confused)
+    private float timer = 0, confusionTimer = 0;
+    private bool isConfused;
+    public void Confuse()
+    {
+       
+        RaycastHit [] hits=Physics.SphereCastAll(transform.position,chaseDistance,transform.forward,0.0f);
+       
+        ArrayList enemies = new ArrayList(); 
+        foreach (RaycastHit hit in hits)
+        {
+            if(hit.transform.gameObject.tag=="Enemy" && hit.transform.gameObject!=this.gameObject)
+            {
+                enemies.Add(hit.transform);
+            }
+        }
+        
+        if(enemies.Count == 0)
+            return;
+        confusionTimer = 0;
+        isConfused = true;
+        int random = Random.Range(0,enemies.Count);
+        attackTarget = (Transform)enemies[random];
 
-    private float timer = 0;
-
+        
+    }
     void Start()
     {
+        attackTarget = playerTransform;
         currentState = State.patrol;
         navMeshAgent = GetComponent<NavMeshAgent>();
         patrolling = new Vector3[2];
         patrolling[0] = transform.position + new Vector3(2, 0, 0);
         patrolling[1] = transform.position + new Vector3(-2, 0, 0);
+        Invoke("Confuse",4);
     }
     public void stun()
     {
@@ -33,13 +58,13 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isAttacking", false);
         animator.SetBool("isStunned", true);
     }
-    void chase()
+    void chase(Transform target)
     {
         navMeshAgent.speed= 2.0f;
         currentState = State.chasing;
         animator.SetBool("isChasing", true);
         animator.SetBool("isAttacking", false);
-        navMeshAgent.SetDestination(playerTransform.position);
+        navMeshAgent.SetDestination(target.position);
     }
     void attack()
     {
@@ -90,12 +115,24 @@ public class EnemyContoller : MonoBehaviour
                 animator.SetBool("isStunned", false);
                 patrol();
             }
+            else
+                return;
         }
-        else if(currentState==State.patrol)
+        if(isConfused)
         {
-            if (canSeePlayer(5f, 90f))
+            confusionTimer += Time.deltaTime;
+            if(confusionTimer > 5.0f){
+                patrol();
+                attackTarget = playerTransform;
+                isConfused = false;
+                confusionTimer = 0;
+            }
+        }
+        if(currentState==State.patrol)
+        {
+            if (canSee(chaseDistance, 90f, attackTarget))
             {
-                chase();
+                chase(attackTarget);
             }
             else
             {
@@ -103,20 +140,20 @@ public class EnemyContoller : MonoBehaviour
             }
         }
         else if(currentState==State.chasing){
-            if (canSeePlayer(attackDistance, 90f))
+            if (canSee(attackDistance, 90f,attackTarget))
             {
                 attack();
             }
             else
             {
                 // keep chasing
-               navMeshAgent.SetDestination(playerTransform.position);
+               navMeshAgent.SetDestination(attackTarget.position);
             }
         }
         else if(currentState==State.attack){
-            if (!canSeePlayer(attackDistance, 90f))
+            if (!canSee(attackDistance, 90f, attackTarget))
             {
-                chase();
+                chase(attackTarget);
             }
         }
     }
@@ -147,14 +184,16 @@ public class EnemyContoller : MonoBehaviour
         navMeshAgent.SetDestination(transform.position);
         currentState = State.dead;
     }
-
-    public bool canSeePlayer(float rangeDistance, float rangeAngle)
+    public bool canSeePlayer(float rangeDistance, float rangeAngle){
+        return canSee(rangeDistance,rangeAngle,playerTransform);
+    }
+    public bool canSee(float rangeDistance, float rangeAngle,Transform target)
     {
-        Vector3 direction = (playerTransform.position - transform.position).normalized;
+        Vector3 direction = (target.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, direction);
         Ray ray = new Ray(transform.position, direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
-        if (checkDistance && hit.collider.tag == "Player" && Mathf.Abs(angle) < rangeAngle)
+        if (checkDistance && hit.transform==target && Mathf.Abs(angle) < rangeAngle)
         {
             return true;
         }

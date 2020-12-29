@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03d3848fe57f2a64c95988d30cfa14f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  aiState: 0
+  playerTransform: {fileID: 0}
   animator: {fileID: 955558936432446566}
+  attackDistance: 1
+  chaseDistance: 8
   health: 50
 --- !u!1001 &7768179784948113958
 PrefabInstance:
@@ -69,7 +70,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226087, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_Name
-      value: Normal Infected Variant
+      value: Normal Infected
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739249626848226087, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
