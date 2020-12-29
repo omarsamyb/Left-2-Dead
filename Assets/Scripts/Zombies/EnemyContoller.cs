@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.AI;
 public class EnemyContoller : MonoBehaviour
 {
-    NavMeshAgent nm;
-    public Transform target;
-    public enum AIState { idle, chasing, attack, patrol, dead, stunned };
-    public AIState aiState = AIState.idle;
+    NavMeshAgent navMeshAgent;
+    public Transform playerTransform;
+    public enum State { idle, chasing, attack, patrol, dead, stunned };
+    private State currentState;
     public Animator animator;
-    private float attackDistance = 0.5f;
+    public float attackDistance = 1.0f;
     private Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
@@ -18,95 +18,110 @@ public class EnemyContoller : MonoBehaviour
 
     void Start()
     {
-        nm = GetComponent<NavMeshAgent>();
+        currentState = State.patrol;
+        navMeshAgent = GetComponent<NavMeshAgent>();
         patrolling = new Vector3[2];
         patrolling[0] = transform.position + new Vector3(2, 0, 0);
         patrolling[1] = transform.position + new Vector3(-2, 0, 0);
     }
     public void stun()
     {
-        aiState = AIState.stunned;
-        nm.SetDestination(transform.position);
+        timer = 0;
+        currentState = State.stunned;
+        navMeshAgent.SetDestination(transform.position);
+        animator.SetBool("isChasing",false);
+        animator.SetBool("isAttacking", false);
         animator.SetBool("isStunned", true);
     }
     void chase()
     {
-        aiState = AIState.chasing;
+        navMeshAgent.speed= 2.0f;
+        currentState = State.chasing;
         animator.SetBool("isChasing", true);
         animator.SetBool("isAttacking", false);
-        nm.SetDestination(target.position);
+        navMeshAgent.SetDestination(playerTransform.position);
     }
     void attack()
     {
-        aiState = AIState.attack;
+    
+        currentState = State.attack;
         animator.SetBool("isAttacking", true);
-        // animator.SetBool("isChasing", false);
-        nm.SetDestination(transform.position);
-    }
-    void idle()
-    {
-        aiState = AIState.idle;
-        animator.SetBool("isAttacking", false);
         animator.SetBool("isChasing", false);
-        nm.SetDestination(transform.position);
+        navMeshAgent.SetDestination(transform.position);
     }
+    // void idle()
+    // {
+    //     currentState = State.idle;
+    //     animator.SetBool("isAttacking", false);
+    //     animator.SetBool("isChasing", false);
+    //     navMeshAgent.SetDestination(transform.position);
+    // }
     void patrol()
     {
-        aiState = AIState.patrol;
+        navMeshAgent.speed=0.3f;
+        if (currentState != State.patrol)
+        {
+            currentState = State.patrol;
+            patrolling[0] = transform.position + new Vector3(2, 0, 0);
+            patrolling[1] = transform.position + new Vector3(-2, 0, 0);
+            patrollingIdx=0;
+        }
+        
         animator.SetBool("isAttacking", false);
-        animator.SetBool("isChasing", true);
-        nm.SetDestination(patrolling[patrollingIdx]);
-        if (nm.remainingDistance <= 0.5f)
+        animator.SetBool("isChasing", false);
+       
+        if (navMeshAgent.remainingDistance <= 0.5f)
         {
             patrollingIdx++;
             if (patrollingIdx >= patrolling.Length)
                 patrollingIdx = 0;
-            nm.SetDestination(patrolling[patrollingIdx]);
         }
+        navMeshAgent.SetDestination(patrolling[patrollingIdx]);
     }
     void Update()
     {
-        if (aiState != AIState.patrol)
-        {
-            patrolling[0] = transform.position + new Vector3(2, 0, 0);
-            patrolling[1] = transform.position + new Vector3(-2, 0, 0);
-        }
-        if (aiState == AIState.stunned)
+        if(currentState == State.dead)
+            return;
+        if (currentState == State.stunned)
         {
             timer = timer + Time.deltaTime;
             if (timer > 3.0f)
             {
                 animator.SetBool("isStunned", false);
-                animator.SetBool("isChasing", false);
-                animator.SetBool("isAttacking", false);
-                nm.SetDestination(transform.position);
-                aiState = AIState.idle;
-                timer = 0;
+                patrol();
             }
-
-            return;
-
         }
-        // after take damage is actually called, remove second condition and nm.setdestination
-        if (aiState == AIState.dead || animator.GetBool("isDying"))
+        else if(currentState==State.patrol)
         {
-            nm.SetDestination(transform.position);
-            return;
+            if (canSeePlayer(5f, 90f))
+            {
+                chase();
+            }
+            else
+            {
+                patrol();
+            }
         }
-        if (canSeePlayer(attackDistance, 90f))
-        {
-            attack();
+        else if(currentState==State.chasing){
+            if (canSeePlayer(attackDistance, 90f))
+            {
+                attack();
+            }
+            else
+            {
+                // keep chasing
+               navMeshAgent.SetDestination(playerTransform.position);
+            }
         }
-        //  || sound() 
-        else if (canSeePlayer(5f, 90f))
-        {
-            chase();
-        }
-        else
-        {
-            patrol();
+        else if(currentState==State.attack){
+            if (!canSeePlayer(attackDistance, 90f))
+            {
+                chase();
+            }
         }
     }
+        
+       
     private bool InRange(Transform transform1, Transform transform2, float range)
     {
         float distance = Vector3.Distance(transform1.position, transform2.position);
@@ -129,13 +144,13 @@ public class EnemyContoller : MonoBehaviour
     public void Die()
     {
         animator.SetBool("isDying", true);
-        nm.SetDestination(transform.position);
-        aiState = AIState.dead;
+        navMeshAgent.SetDestination(transform.position);
+        currentState = State.dead;
     }
 
     public bool canSeePlayer(float rangeDistance, float rangeAngle)
     {
-        Vector3 direction = (target.position - transform.position).normalized;
+        Vector3 direction = (playerTransform.position - transform.position).normalized;
         float angle = Vector3.Angle(transform.forward, direction);
         Ray ray = new Ray(transform.position, direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
