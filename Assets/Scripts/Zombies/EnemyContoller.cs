@@ -6,7 +6,7 @@ public class EnemyContoller : MonoBehaviour
 {
     NavMeshAgent navMeshAgent;
     public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned };
+    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe };
     private State currentState;
     public Animator animator;
     public float attackDistance = 1.0f;
@@ -15,6 +15,7 @@ public class EnemyContoller : MonoBehaviour
     public int health;
 
     private float timer = 0;
+    private float pipeTimer = 0;
 
     void Start()
     {
@@ -119,9 +120,18 @@ public class EnemyContoller : MonoBehaviour
                 chase();
             }
         }
+        else if (currentState == State.pipe)
+        {
+            pipeTimer = pipeTimer + Time.deltaTime;
+            if (pipeTimer > 4.0f)
+            {
+                animator.SetBool("isPiped", false);
+                patrol();
+            }
+
+        }
     }
-        
-       
+
     private bool InRange(Transform transform1, Transform transform2, float range)
     {
         float distance = Vector3.Distance(transform1.position, transform2.position);
