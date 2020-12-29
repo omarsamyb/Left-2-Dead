@@ -14,8 +14,10 @@ public class EnemyContoller : MonoBehaviour
     private int patrollingIdx = 0;
     public int health;
     private Transform attackTarget; // can be player of zombie (if confused)
-    private float timer = 0, confusionTimer = 0;  private float pipeTimer = 0;
+    private float stunTimer = 0, confusionTimer = 0;  private float pipeTimer = 0;
     private bool isConfused;
+    private float chaseSpeed=2.0f;
+    private float patrolSpeed=0.3f;
     public void Confuse()
     {
        
@@ -48,7 +50,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public void stun()
     {
-        timer = 0;
+        stunTimer = 0;
         currentState = State.stunned;
         navMeshAgent.SetDestination(transform.position);
         animator.SetBool("isChasing",false);
@@ -57,7 +59,7 @@ public class EnemyContoller : MonoBehaviour
     }
     void chase(Transform target)
     {
-        navMeshAgent.speed= 2.0f;
+        navMeshAgent.speed=chaseSpeed;
         currentState = State.chasing;
         animator.SetBool("isChasing", true);
         animator.SetBool("isAttacking", false);
@@ -80,7 +82,7 @@ public class EnemyContoller : MonoBehaviour
     // }
     void patrol()
     {
-        navMeshAgent.speed=0.3f;
+        navMeshAgent.speed=patrolSpeed;
         if (currentState != State.patrol)
         {
             currentState = State.patrol;
@@ -106,8 +108,8 @@ public class EnemyContoller : MonoBehaviour
             return;
         if (currentState == State.stunned)
         {
-            timer = timer + Time.deltaTime;
-            if (timer > 3.0f)
+            stunTimer = stunTimer + Time.deltaTime;
+            if (stunTimer > 3.0f)
             {
                 animator.SetBool("isStunned", false);
                 patrol();
@@ -158,8 +160,13 @@ public class EnemyContoller : MonoBehaviour
             pipeTimer = pipeTimer + Time.deltaTime;
             if (pipeTimer > 4.0f)
             {
+                animator.SetBool("isReachedPipe",false);
                 animator.SetBool("isPiped", false);
                 patrol();
+            }
+            else if(navMeshAgent.remainingDistance<1f)
+            {
+                animator.SetBool("isReachedPipe",true);
             }
 
         }
@@ -208,4 +215,64 @@ public class EnemyContoller : MonoBehaviour
 
     }
 
+    private float CalculatePathLength(Vector3 targetPosition)
+    {
+        NavMeshPath path = new NavMeshPath();
+
+        if(navMeshAgent.enabled)
+        navMeshAgent.CalculatePath(targetPosition, path);
+
+
+        float pathLength = 0f;
+
+        if (path.corners.Length == 0)
+        {
+            pathLength = Vector3.Distance(transform.position, targetPosition);
+
+        }
+        else
+        {
+            pathLength = Vector3.Distance(transform.position, path.corners[0]);
+            pathLength += Vector3.Distance(path.corners[path.corners.Length-1], targetPosition);
+        }
+        for (int i = 0; i < path.corners.Length-1; i++)
+        {
+            pathLength+= Vector3.Distance(path.corners[i], path.corners[i+1]);
+        }
+
+        return pathLength;
+    }
+    public void canHearPlayer(float radius)
+    {
+        if (currentState == State.chasing || currentState == State.attack|| currentState == State.dead|| currentState == State.stunned) return;
+        if (CalculatePathLength(playerTransform.position) < radius)
+        {
+            currentState = State.chasing;
+        }
+    }
+    public void pipeGrenade( Vector3 grenadePosition)
+    {
+        // float grenadeRadius, as parameter 
+        if (currentState == State.dead || currentState == State.stunned) return;
+
+
+        //if (CalculatePathLength(grenadePosition) < grenadeRadius)
+        //{
+        //    navMeshAgent.SetDestination(grenadePosition);
+        //    currentState = State.pipe;
+        //    animator.SetBool("isPiped", true);
+        //    animator.SetBool("isAttacking", false);
+        //    animator.SetBool("isChasing", false);
+        //    pipeTimer = 0f;
+        //    // what I am missing here the animator controller to add isPipe 
+        //}
+
+            navMeshAgent.SetDestination(grenadePosition);
+            currentState = State.pipe;
+            navMeshAgent.speed= chaseSpeed;
+            animator.SetBool("isPiped", true);
+            animator.SetBool("isAttacking", false);
+            animator.SetBool("isChasing", false);
+            pipeTimer = 0f;
+    }
 }
