@@ -8,12 +8,8 @@ public class GrenadeScript : MonoBehaviour
 	molotov,pipe,stun,bile
     } 
     public GrenadeType curNadeType;
-    public GameObject molotovExplosion;
-    public GameObject molotovFire;
-
-    public GameObject stunExplosion;
-    public GameObject pipeExplosion;
-    public GameObject bileExplosion;
+    public GameObject Explosion;
+    public GameObject Fire;
     Rigidbody rb;
     GameObject player;
     Transform mainCam;
@@ -26,6 +22,11 @@ public class GrenadeScript : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         mainCam = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+    }
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, 5);
     }
     void Update()
     {
@@ -49,35 +50,32 @@ public class GrenadeScript : MonoBehaviour
     }
     void ExplodeMolotov()
     {
-        GameObject boom = Instantiate(molotovExplosion);
-        GameObject fire = Instantiate(molotovFire);
+        GameObject boom = Instantiate(Explosion);
+        GameObject fire = Instantiate(Fire);
         boom.transform.position = transform.position;
         fire.transform.position = transform.position;
-        StartCoroutine(applyDamage());
-        Destroy(this.gameObject);
+        StartCoroutine(applyDamage(fire));
+        Renderer[] rs = GetComponentsInChildren<Renderer>();
+        foreach(Renderer r in rs)
+            r.enabled = false;
     }
-    IEnumerator applyDamage()
+    IEnumerator applyDamage(GameObject fire)
     {
-        print("IN");
-        // int radius = 5;
-        yield return new WaitForSeconds(0.1f);
-        // for (int i = 0; i < 5; i++)
-        // {
-        //     // RaycastHit[] hits = Physics.SphereCastAll(fire.transform.position, radius, fire.transform.forward);
-        //     // RaycastHit[] hits = Physics.SphereCastAll(fire.transform.position, radius, fire.transform.forward);
-        //     // foreach (RaycastHit hit in hits)
-        //     // {
-        //     //     GameObject cur = hit.transform.gameObject;
-        //     //     //TODO: Damage zombies in range
-        //     //     // if(cur.tag=="Player")
-        //     //     print(cur.tag+" "+cur.name+" got damaged!");
-        //     // }
-        //     // yield return new WaitForSeconds(1);
-        //     // yield return null;
-        //     print(i);
-        // }
-        print("OUT");
-        // Destroy(fire.gameObject);
+        int radius = 5;
+        for (int i = 0; i < 5; i++)
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(fire.transform.position, radius, fire.transform.forward);
+            foreach (RaycastHit hit in hits)
+            {
+                GameObject cur = hit.transform.gameObject;
+                //TODO: Damage zombies in range
+                if(cur.tag=="Player")
+                    print(cur.tag+" "+cur.name+" got damaged "+i);
+            }
+            yield return new WaitForSeconds(1);
+        }
+        print("DONE!!");
+        Destroy(this.gameObject);
     }
     void MakeNoisePipe()
     {
@@ -95,7 +93,7 @@ public class GrenadeScript : MonoBehaviour
     void ExplodePipe()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward);
-        GameObject boom = Instantiate(pipeExplosion);
+        GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (RaycastHit hit in hits)
         {
@@ -108,7 +106,7 @@ public class GrenadeScript : MonoBehaviour
     void ExplodeStun()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward);
-        GameObject boom = Instantiate(molotovExplosion);
+        GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (RaycastHit hit in hits)
         {
@@ -120,21 +118,22 @@ public class GrenadeScript : MonoBehaviour
     }
     void ExplodeBile()
     {
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward);
-        GameObject boom = Instantiate(bileExplosion);
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward, 0f);
+        GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (RaycastHit hit in hits)
         {
             GameObject cur = hit.transform.gameObject;
             //TODO: Confuse Zombies in range of explosion
-            print("Confused: "+cur.name);
+            print("Confused: "+cur.name+" Dist: "+Vector3.Distance(cur.transform.position,boom.transform.position));
         }
-        Destroy(this.gameObject);
+        // Destroy(this.gameObject);
     }
     private void OnTriggerEnter(Collider other) 
     {
         if(thrown && other.gameObject.tag=="Untagged") //TODO: Fix layer
         {
+            rb.velocity = new Vector3(0,0,0);
             if(curNadeType == GrenadeType.bile)
                 ExplodeBile();
             else if (curNadeType == GrenadeType.molotov)

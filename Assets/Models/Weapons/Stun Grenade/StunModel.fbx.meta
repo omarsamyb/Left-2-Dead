@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cbfa49cfb306ff74b809d7b72530628d
+guid: ba21a06e38f04f74db6000da8350b17c
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: TE_M84_Stun
-    second: {fileID: 2100000, guid: 1629b412526c24f46b5dd6a59b172e7c, type: 2}
+      name: No Name
+    second: {fileID: 2100000, guid: 06bd5e8eecd557f47b1234f862b0ae22, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
