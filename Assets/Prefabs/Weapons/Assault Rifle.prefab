@@ -46,7 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Assault Rifle
   handsAnimator: {fileID: 3358119269002382446}
-  reloading: 0
   muzzelFlash:
   - {fileID: 199458, guid: 51b76f616384d4946bed4ecc9a6c2c3e, type: 3}
   - {fileID: 199458, guid: 487eef9aff9d0f543836d5af5ab26430, type: 3}
@@ -67,7 +66,6 @@ MonoBehaviour:
   maxCapacity: 450
   roundsPerSecond: 10
   damage: 33
-  reloadChangeBulletsTime: 1.5
   walkingSpeed: 3
   runningSpeed: 5
   horizontal_crosshair: {fileID: 2800000, guid: e1aa4c90445944348a112c3b7fa4b318, type: 3}
@@ -97,8 +95,6 @@ MonoBehaviour:
   restPlacePosition: {x: -0.07, y: -0.06, z: 0.4}
   aimPlacePosition: {x: 0, y: -0.05, z: 0.29}
   gunAimTime: 0.05
-  meeleAttack: 0
-  aiming: 0
   gunPrecision_notAiming: 300
   gunPrecision_aiming: 100
   cameraZoomRatio_notAiming: 60
@@ -107,8 +103,6 @@ MonoBehaviour:
   secondCameraZoomRatio_aiming: 50
   gunPrecision: 0
   HUD_bullets: {fileID: 0}
-  bulletSpawn: {fileID: 0}
-  been_to_meele_anim: 0
 --- !u!1 &1935574931067946233
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +127,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1935574931067946233}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.017, y: 0.051, z: 0.861}
+  m_LocalPosition: {x: 0, y: 0.082, z: 1.006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7040612516594066230}
@@ -197,7 +191,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: aed6bdaea50d1134780c8f9bd619d694, type: 2}
+      objectReference: {fileID: 9100000, guid: 509b242a91a4ffe48b33c8d75afbc68e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
 --- !u!4 &8681325424505378324 stripped

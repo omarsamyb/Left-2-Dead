@@ -44,9 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64cace7a314d5af4b8645669a8c2498e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: 
+  weaponName: Submachine Gun
   handsAnimator: {fileID: 3956871947730867406}
-  reloading: 0
   muzzelFlash:
   - {fileID: 199458, guid: 51b76f616384d4946bed4ecc9a6c2c3e, type: 3}
   - {fileID: 199458, guid: 487eef9aff9d0f543836d5af5ab26430, type: 3}
@@ -67,7 +66,6 @@ MonoBehaviour:
   maxCapacity: 700
   roundsPerSecond: 15
   damage: 20
-  reloadChangeBulletsTime: 1.5
   walkingSpeed: 3
   runningSpeed: 5
   horizontal_crosshair: {fileID: 2800000, guid: e1aa4c90445944348a112c3b7fa4b318, type: 3}
@@ -97,8 +95,6 @@ MonoBehaviour:
   restPlacePosition: {x: -0.07, y: -0.06, z: 0.4}
   aimPlacePosition: {x: 0, y: -0.05, z: 0.29}
   gunAimTime: 0.05
-  meeleAttack: 0
-  aiming: 0
   gunPrecision_notAiming: 300
   gunPrecision_aiming: 100
   cameraZoomRatio_notAiming: 60
@@ -107,8 +103,6 @@ MonoBehaviour:
   secondCameraZoomRatio_aiming: 50
   gunPrecision: 0
   HUD_bullets: {fileID: 0}
-  bulletSpawn: {fileID: 0}
-  been_to_meele_anim: 0
 --- !u!1 &3537506046954520010
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,7 +127,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3537506046954520010}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.044, y: 0.014, z: 0.638}
+  m_LocalPosition: {x: 0, y: 0.073, z: 0.638}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7494814324074123941}
@@ -201,7 +195,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 8304759e9ca2b2b4397c47088dca7c18, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 7b40e1b8a798ab34cac37301266596b1, type: 2}
+      objectReference: {fileID: 9100000, guid: 91a52a4a815a6064bbfe8812db83483b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8304759e9ca2b2b4397c47088dca7c18, type: 3}
 --- !u!4 &6920219287634906804 stripped

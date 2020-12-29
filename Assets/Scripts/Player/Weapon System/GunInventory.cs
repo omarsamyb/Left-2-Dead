@@ -22,14 +22,13 @@ public class GunInventory : MonoBehaviour {
 	[Tooltip("Sound of weapon changing.")]
 	public AudioClip switchWeaponSFX;
 
-	private Animator currentHAndsAnimator;
+	private Animator currentHandsAnimator;
 	private int currentGunCounter = 0;
 	public List<string> gunsIHave = new List<string>();
 	private Texture[] icons;
 	private float switchWeaponCooldown;
 
 	private List<GameObject> myWeapons = new List<GameObject>();
-
 
 	void Awake(){
 		StartCoroutine(UpdateIconsFromResources());
@@ -153,7 +152,7 @@ public class GunInventory : MonoBehaviour {
 		{
 			AudioManager.instance.Play("SwitchWeaponSFX");
 			Vector3 resetPosition = myWeapons[prevIndex].transform.GetChild(0).localPosition;
-			currentHAndsAnimator.SetBool("changingWeapon", true);
+			currentHandsAnimator.SetTrigger("isSwitching");
 			yield return new WaitForSeconds(0.8f);
 			AudioManager.instance.PlayOneShot("ReadySFX");
 			try
@@ -185,7 +184,7 @@ public class GunInventory : MonoBehaviour {
 	}
 
 	void AssignHandsAnimator(){
-		currentHAndsAnimator = currentGun.GetComponent<GunScript>().handsAnimator;
+		currentHandsAnimator = currentGun.GetComponent<GunScript>().handsAnimator;
 	}
 
 	void OnGUI()
