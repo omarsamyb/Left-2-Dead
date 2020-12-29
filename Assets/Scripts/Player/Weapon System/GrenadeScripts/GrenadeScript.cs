@@ -64,27 +64,24 @@ public class GrenadeScript : MonoBehaviour
         int radius = 5;
         for (int i = 0; i < 5; i++)
         {
-            RaycastHit[] hits = Physics.SphereCastAll(fire.transform.position, radius, fire.transform.forward);
-            foreach (RaycastHit hit in hits)
+            Collider[] hits = Physics.OverlapSphere(transform.position, radius);
+            foreach (Collider cur in hits)
             {
-                GameObject cur = hit.transform.gameObject;
                 //TODO: Damage zombies in range
                 if(cur.tag=="Player")
                     print(cur.tag+" "+cur.name+" got damaged "+i);
             }
             yield return new WaitForSeconds(1);
         }
-        print("DONE!!");
         Destroy(this.gameObject);
     }
     void MakeNoisePipe()
     {
         //TODO: Make noise
         float attractRadius = explosionRadius*2;
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, attractRadius, transform.forward);
-        foreach (RaycastHit hit in hits)
+        Collider[] hits = Physics.OverlapSphere(transform.position, attractRadius);
+        foreach (Collider cur in hits)
         {
-            GameObject cur = hit.transform.gameObject;
             //TODO: Attract zombies in range
             print("Pipe attracting: "+cur.name);
         }
@@ -92,12 +89,11 @@ public class GrenadeScript : MonoBehaviour
     }
     void ExplodePipe()
     {
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward);
+        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
-        foreach (RaycastHit hit in hits)
+        foreach (Collider cur in hits)
         {
-            GameObject cur = hit.transform.gameObject;
             //TODO: Damage zombies in range
             print("Pipe Damaged: "+cur.name);
         }
@@ -105,39 +101,43 @@ public class GrenadeScript : MonoBehaviour
     }
     void ExplodeStun()
     {
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward);
+        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
-        foreach (RaycastHit hit in hits)
+        foreach (Collider cur in hits)
         {
-            GameObject cur = hit.transform.gameObject;
             //TODO: Do whatever on objects in range of explosion
             print("Stunned: "+cur.name);
         }
         Destroy(this.gameObject);
     }
-    void ExplodeBile()
+    IEnumerator ExplodeBile()
     {
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, explosionRadius, transform.forward, 0f);
         GameObject boom = Instantiate(Explosion);
-        boom.transform.position = transform.position;
-        foreach (RaycastHit hit in hits)
+        for(int i=0;i<5;i++)
         {
-            GameObject cur = hit.transform.gameObject;
-            //TODO: Confuse Zombies in range of explosion
-            print("Confused: "+cur.name+" Dist: "+Vector3.Distance(cur.transform.position,boom.transform.position));
+            boom.transform.position = transform.position;
+            Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+            foreach (Collider cur in hits)
+            {
+                //TODO: Confuse Zombies in range of explosion
+                if(cur.tag=="Player")
+                print("Confused: "+cur.tag+" "+i);
+            }
+            yield return new WaitForSeconds(1);
         }
-        // Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
     private void OnTriggerEnter(Collider other) 
     {
+        print(other.gameObject.tag=="Untagged");
         if(thrown && other.gameObject.tag=="Untagged") //TODO: Fix layer
         {
             rb.velocity = new Vector3(0,0,0);
             if(curNadeType == GrenadeType.bile)
-                ExplodeBile();
+                StartCoroutine(ExplodeBile());
             else if (curNadeType == GrenadeType.molotov)
-                ExplodeMolotov();
+                ExplodeMolotov(); 
         }    
     }
 }
