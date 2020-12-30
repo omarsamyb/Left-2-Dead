@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 78344065905097869}
   - component: {fileID: 78344065905097872}
   m_Layer: 0
-  m_Name: Molotov
-  m_TagString: Untagged
+  m_Name: Molotov Cocktail
+  m_TagString: Grenade
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,8 +27,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997332167840958877}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.5, y: 1.938, z: -2.33}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 215158029440100580}
@@ -63,10 +63,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.19093776
-  m_Height: 1.0936816
+  m_Radius: 0.07486092
+  m_Height: 0.49189883
   m_Direction: 1
-  m_Center: {x: -0.003698945, y: 0.432706, z: 0}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!64 &78344065905097869
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -93,9 +93,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496109635cab96341af1322e45de69af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   curNadeType: 0
   Explosion: {fileID: 3313881338653900485, guid: 2ac9211e6d5a35446aa02f416a7cab9b, type: 3}
   Fire: {fileID: 7463707439245607206, guid: c50ae9df25a276c4dab976b17dd3cce5, type: 3}
+  _name: Molotov Cocktail
 --- !u!1 &2855305206488828945
 GameObject:
   m_ObjectHideFlags: 0

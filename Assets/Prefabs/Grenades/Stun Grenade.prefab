@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4181773184672315319}
   m_Layer: 0
   m_Name: Stun Grenade
-  m_TagString: Untagged
+  m_TagString: Grenade
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -79,9 +79,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496109635cab96341af1322e45de69af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   curNadeType: 2
   Explosion: {fileID: 2811754401239087844, guid: fb10de5ef64e7514bb689c10d23d6570, type: 3}
   Fire: {fileID: 0}
+  _name: Stun Grenade
 --- !u!1 &5252094660196211515
 GameObject:
   m_ObjectHideFlags: 0

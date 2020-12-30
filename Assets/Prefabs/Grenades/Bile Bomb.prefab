@@ -101,8 +101,8 @@ GameObject:
   - component: {fileID: 3358227947600013615}
   - component: {fileID: 3358227947600013600}
   m_Layer: 0
-  m_Name: BileBomb
-  m_TagString: Untagged
+  m_Name: Bile Bomb
+  m_TagString: Grenade
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,6 +178,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496109635cab96341af1322e45de69af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 469019212214358608, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
   curNadeType: 3
   Explosion: {fileID: 1807845155049051315, guid: fedeff51c2e19504fbb62cb583d66121, type: 3}
   Fire: {fileID: 0}
+  _name: Bile Bomb

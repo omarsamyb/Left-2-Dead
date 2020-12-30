@@ -1,53 +1,35 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GrenadeScript : MonoBehaviour
 {
     public enum GrenadeType{
 	molotov,pipe,stun,bile
-    } 
+    }
+    public GameObject player;
     public GrenadeType curNadeType;
     public GameObject Explosion;
     public GameObject Fire;
     Rigidbody rb;
-    GameObject player;
     Transform mainCam;
-    float thrust = 20f;
+    public float thrust = 20f;
     float fuseTime = 2;
-    bool thrown;
     float explosionRadius = 5;
+    public string _name;
+    public int maxCapacity;
+
     void Start() {
-        thrown = false;
-        player = GameObject.FindGameObjectWithTag("Player");
         mainCam = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+
+        rb.velocity = mainCam.forward * thrust;
+        rb.AddTorque(new Vector3(10, 0, 10));
+        if (curNadeType == GrenadeType.pipe)
+            Invoke("MakeNoisePipe", fuseTime);
+        else if (curNadeType == GrenadeType.stun)
+            Invoke("ExplodeStun", fuseTime);
     }
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position, 5);
-    }
-    void Update()
-    {
-        if(!thrown && Input.GetAxis("Fire1")!=0)
-        {
-            Vector3 newPos = player.transform.position;
-            newPos.y+=2f;
-            transform.position = newPos;
-            thrown=true;
-            Vector3 rotation = mainCam.transform.forward;
-            // Vector3 rotation = new Vector3(0.0f,0.0f,0.0f);
-            rb.velocity = rotation*thrust;
-            rb.AddTorque(new Vector3(10,0,10));
-            // rb.AddForce(rotation*thrust);
-            //Molotov and Bile explode on impact
-            if(curNadeType == GrenadeType.pipe)
-                Invoke("MakeNoisePipe", fuseTime);
-            else if(curNadeType == GrenadeType.stun)
-                Invoke("ExplodeStun", fuseTime);
-        }
-    }
+
     void ExplodeMolotov()
     {
         GameObject boom = Instantiate(Explosion);
@@ -121,7 +103,6 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider cur in hits)
             {
                 //TODO: Confuse Zombies in range of explosion
-                if(cur.tag=="Player")
                 print("Confused: "+cur.tag+" "+i);
             }
             yield return new WaitForSeconds(1);
@@ -130,8 +111,7 @@ public class GrenadeScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other) 
     {
-        print(other.gameObject.tag=="Untagged");
-        if(thrown && other.gameObject.tag=="Untagged") //TODO: Fix layer
+        if(other.gameObject.tag=="Untagged") //TODO: Fix layer
         {
             rb.velocity = new Vector3(0,0,0);
             if(curNadeType == GrenadeType.bile)

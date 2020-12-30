@@ -8,6 +8,7 @@ TagManager:
   - SecondCamera
   - BulletSpawn
   - Enemy
+  - Grenade
   layers:
   - Default
   - TransparentFX

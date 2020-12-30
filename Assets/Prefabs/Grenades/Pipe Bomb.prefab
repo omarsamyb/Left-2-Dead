@@ -188,8 +188,8 @@ GameObject:
   - component: {fileID: 4239567545083792537}
   - component: {fileID: 4239567545083792539}
   m_Layer: 0
-  m_Name: PipeBomb
-  m_TagString: Untagged
+  m_Name: Pipe Bomb
+  m_TagString: Grenade
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -254,9 +254,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496109635cab96341af1322e45de69af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   curNadeType: 1
   Explosion: {fileID: 260132156575189852, guid: aa6b0a6bb715e51419c620f4b3d0191c, type: 3}
   Fire: {fileID: 0}
+  _name: Pipe Bomb
 --- !u!1 &8011256124191935002
 GameObject:
   m_ObjectHideFlags: 0
