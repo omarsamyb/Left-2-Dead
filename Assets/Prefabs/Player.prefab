@@ -213,13 +213,12 @@ MonoBehaviour:
   spacing: 10
   beginPosition: {x: 40, y: 4}
   size: {x: 10, y: 12}
-  switchWeaponSFX: {fileID: 8300000, guid: 13f8082fda153f047b944cbf97685831, type: 3}
   gunsIHave:
   - Pistol
-  - Hunting Rifle
   - Submachine Gun
   - Tactical Shotgun
-  - Pistol
+  - Assault Rifle
+  - Hunting Rifle
 --- !u!1 &469019212245449976
 GameObject:
   m_ObjectHideFlags: 0
