@@ -246,9 +246,11 @@ public class GunScript : MonoBehaviour
     }
     private void Aiming()
     {
-        handsAnimator.SetBool("isAiming", Input.GetButton("Fire2"));
         if (Input.GetAxis("Fire2") != 0 && !isReloading && !isMelee && !isSwitching)
         {
+            if (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName("isAiming"))
+                handsAnimator.SetBool("isAiming", Input.GetButton("Fire2"));
+
             gunPrecision = gunPrecision_aiming;
             recoilAmount_x = recoilAmount_x_;
             recoilAmount_y = recoilAmount_y_;
