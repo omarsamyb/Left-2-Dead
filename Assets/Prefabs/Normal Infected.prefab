@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.55
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalRotation.x
@@ -75,6 +75,26 @@ PrefabInstance:
     - target: {fileID: 4739249626848226087, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5483223191915566721, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
+      propertyPath: m_Height
+      value: 2.3110504
+      objectReference: {fileID: 0}
+    - target: {fileID: 5483223191915566721, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
+      propertyPath: m_Radius
+      value: 0.27310073
+      objectReference: {fileID: 0}
+    - target: {fileID: 5483223191915566721, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
+      propertyPath: m_Center.y
+      value: 0.7433896
+      objectReference: {fileID: 0}
+    - target: {fileID: 5483223191915566721, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
+      propertyPath: m_Center.x
+      value: 0.008888006
+      objectReference: {fileID: 0}
+    - target: {fileID: 5483223191915566721, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
+      propertyPath: m_Center.z
+      value: -0.019215941
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
