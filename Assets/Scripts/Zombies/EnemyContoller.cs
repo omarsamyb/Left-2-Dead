@@ -57,7 +57,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isAttacking", false);
         animator.SetBool("isStunned", true);
     }
-    void chase(Transform target)
+    public void chase(Transform target)
     {
         navMeshAgent.speed=chaseSpeed;
         currentState = State.chasing;

@@ -48,9 +48,8 @@ public class GrenadeScript : MonoBehaviour
             Collider[] hits = Physics.OverlapSphere(transform.position, radius);
             foreach (Collider cur in hits)
             {
-                //TODO: Damage zombies in range
-                if (cur.tag == "Player")
-                    print(cur.tag + " " + cur.name + " got damaged " + i);
+                if(cur.tag=="Enemy")
+                    cur.GetComponent<NormalInfected>().TakeDamage(25);
             }
             yield return new WaitForSeconds(1);
         }
@@ -63,8 +62,8 @@ public class GrenadeScript : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(transform.position, attractRadius);
         foreach (Collider cur in hits)
         {
-            //TODO: Attract zombies in range
-            print("Pipe attracting: " + cur.name);
+            if(cur.tag=="Enemy")
+                cur.GetComponent<NormalInfected>().chase(transform);
         }
         StartCoroutine(ExplodePipe());
     }
@@ -76,8 +75,8 @@ public class GrenadeScript : MonoBehaviour
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
-            //TODO: Damage zombies in range
-            print("Pipe Damaged: " + cur.name);
+            if(cur.tag=="Enemy")
+                cur.GetComponent<NormalInfected>().TakeDamage(100);
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 4);
@@ -90,8 +89,8 @@ public class GrenadeScript : MonoBehaviour
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
-            //TODO: Do whatever on objects in range of explosion
-            print("Stunned: " + cur.name);
+            if(cur.tag=="Enemy")
+                cur.GetComponent<NormalInfected>().stun();
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 5);
@@ -105,8 +104,8 @@ public class GrenadeScript : MonoBehaviour
             Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
             foreach (Collider cur in hits)
             {
-                //TODO: Confuse Zombies in range of explosion
-                print("Confused: " + cur.tag + " " + i);
+                if(cur.tag=="Enemy")
+                    cur.GetComponent<NormalInfected>().Confuse();
             }
             yield return new WaitForSeconds(1);
         }

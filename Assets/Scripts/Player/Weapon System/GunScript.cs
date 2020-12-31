@@ -359,6 +359,7 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                hitInfo.collider.gameObject.GetComponent<NormalInfected>().TakeDamage((int)damage);
             }
         }
     }
@@ -457,6 +458,7 @@ public class GunScript : MonoBehaviour
             if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
+                hitInfo.collider.gameObject.GetComponent<NormalInfected>().TakeDamage(100);
             }
         }
     }
