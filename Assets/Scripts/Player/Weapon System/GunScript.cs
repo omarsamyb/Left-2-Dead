@@ -49,6 +49,7 @@ public class GunScript : MonoBehaviour
     [Tooltip("Rounds per second if weapon is set to automatic.")]
     public float roundsPerSecond;
     public float damage;
+    private int meleeDamage = 50;
     private int projectileCount = 10;
     private float shotgunSpread = 10f;
     private float waitTillNextFire;
@@ -159,6 +160,8 @@ public class GunScript : MonoBehaviour
     private float rayDetectorMeeleSpace = 0.15f;
     private float offsetStart = 0.05f;
 
+    [HideInInspector] public int shootCount;
+
     void Awake()
     {
         mouseLook = Camera.main.gameObject.GetComponent<MouseLook>();
@@ -220,6 +223,7 @@ public class GunScript : MonoBehaviour
     {
         if (!isMelee && !isReloading && !isSwitching && !player.GetComponent<GunInventory>().isThrowing)
         {
+            shootCount++;
             if (currentStyle == GunStyles.nonautomatic)
             {
                 if (Input.GetButtonDown("Fire1"))
@@ -359,7 +363,7 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                hitInfo.collider.gameObject.GetComponent<NormalInfected>().TakeDamage((int)damage);
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage((int)damage);
             }
         }
     }
@@ -458,7 +462,7 @@ public class GunScript : MonoBehaviour
             if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
-                hitInfo.collider.gameObject.GetComponent<NormalInfected>().TakeDamage(100);
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage);
             }
         }
     }

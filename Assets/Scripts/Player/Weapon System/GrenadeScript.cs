@@ -13,7 +13,6 @@ public class GrenadeScript : MonoBehaviour
     Rigidbody rb;
     Transform mainCam;
     public float thrust = 20f;
-    float fuseTime = 2;
     float explosionRadius = 5;
     public string _name;
     public int maxCapacity;
@@ -35,12 +34,10 @@ public class GrenadeScript : MonoBehaviour
         GameObject fire = Instantiate(Fire);
         boom.transform.position = transform.position;
         fire.transform.position = transform.position;
-        StartCoroutine(applyDamage(fire));
-        Renderer[] rs = GetComponentsInChildren<Renderer>();
-        foreach (Renderer r in rs)
-            r.enabled = false;
+        StartCoroutine(applyDamage());
+        transform.localScale = Vector3.zero;
     }
-    IEnumerator applyDamage(GameObject fire)
+    IEnumerator applyDamage()
     {
         int radius = 5;
         for (int i = 0; i < 5; i++)
@@ -49,7 +46,7 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider cur in hits)
             {
                 if(cur.tag=="Enemy")
-                    cur.GetComponent<NormalInfected>().TakeDamage(25);
+                    cur.GetComponent<EnemyContoller>().TakeDamage(25);
             }
             yield return new WaitForSeconds(1);
         }
@@ -63,7 +60,7 @@ public class GrenadeScript : MonoBehaviour
         foreach (Collider cur in hits)
         {
             if(cur.tag=="Enemy")
-                cur.GetComponent<NormalInfected>().chase(transform);
+                cur.GetComponent<EnemyContoller>().chase(transform);
         }
         StartCoroutine(ExplodePipe());
     }
@@ -76,7 +73,7 @@ public class GrenadeScript : MonoBehaviour
         foreach (Collider cur in hits)
         {
             if(cur.tag=="Enemy")
-                cur.GetComponent<NormalInfected>().TakeDamage(100);
+                cur.GetComponent<EnemyContoller>().TakeDamage(100);
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 4);
@@ -90,7 +87,7 @@ public class GrenadeScript : MonoBehaviour
         foreach (Collider cur in hits)
         {
             if(cur.tag=="Enemy")
-                cur.GetComponent<NormalInfected>().stun();
+                cur.GetComponent<EnemyContoller>().stun();
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 5);
@@ -105,7 +102,7 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider cur in hits)
             {
                 if(cur.tag=="Enemy")
-                    cur.GetComponent<NormalInfected>().Confuse();
+                    cur.GetComponent<EnemyContoller>().Confuse();
             }
             yield return new WaitForSeconds(1);
         }
