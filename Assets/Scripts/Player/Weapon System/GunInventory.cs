@@ -30,7 +30,7 @@ public class GunInventory : MonoBehaviour
     private int currentGrenadeCounter;
     public List<string> grenadesIHave = new List<string>();
     public List<int> grenadesCounter = new List<int>();
-    public bool isThrowing;
+    [HideInInspector] public bool isThrowing;
     private TextMesh HUD_grenades;
 
     void Awake()
