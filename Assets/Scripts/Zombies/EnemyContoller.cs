@@ -274,5 +274,7 @@ public class EnemyContoller : MonoBehaviour
             animator.SetBool("isAttacking", false);
             animator.SetBool("isChasing", false);
             pipeTimer = 0f;
+        
+
     }
 }
