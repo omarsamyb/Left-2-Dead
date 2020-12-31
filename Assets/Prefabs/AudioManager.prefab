@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4162360810028424317
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1867878208038621495}
+  - component: {fileID: 6186267390418846744}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1867878208038621495
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4162360810028424317}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6186267390418846744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4162360810028424317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b2ccadc3f9f5ff459a2bd47d021810c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+  sounds:
+  - name: ShootSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: dac03dcf9770c334f82ab112a1dcff77, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: ReloadSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 43c23b929a24cef4487a7c3bf5429109, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: EmptyClipSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 1ee39f9c6082be54f9575850f4a3baa5, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: SwitchWeaponSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 13f8082fda153f047b944cbf97685831, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: ReadySFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 63917eec5fde1bb449443cb738be7b01, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1

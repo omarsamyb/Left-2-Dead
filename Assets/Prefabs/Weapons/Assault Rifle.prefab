@@ -1,0 +1,213 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &167390
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 456086}
+  - component: {fileID: 7509262568488382645}
+  m_Layer: 0
+  m_Name: Assault Rifle
+  m_TagString: Weapon
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &456086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167390}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 8681325424505378324}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7509262568488382645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64cace7a314d5af4b8645669a8c2498e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponName: Assault Rifle
+  handsAnimator: {fileID: 3358119269002382446}
+  muzzelFlash:
+  - {fileID: 199458, guid: 51b76f616384d4946bed4ecc9a6c2c3e, type: 3}
+  - {fileID: 199458, guid: 487eef9aff9d0f543836d5af5ab26430, type: 3}
+  - {fileID: 199458, guid: 7b6a7e40bd9ccc0489274923930761c7, type: 3}
+  - {fileID: 199458, guid: 29d86feb88bf925428f9d7de6d4b401f, type: 3}
+  - {fileID: 199458, guid: 4aa4c63f0f9d6a84dbaeed6b9caeca80, type: 3}
+  muzzelSpawn: {fileID: 1935574931067946233}
+  shootSFX: {fileID: 8300000, guid: 08a6fad1c9514c04db700e6f82b69bbd, type: 3}
+  reloadSFX: {fileID: 8300000, guid: 4c76d2542dd2e4d4cbf93ccfb7a89f21, type: 3}
+  readySFX: {fileID: 8300000, guid: ee45c5a1bbcbf5a459a0e93041441038, type: 3}
+  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  wallDecalEffect: {fileID: 179232, guid: b2ac1383a96f94a50b7ed458be173bbd, type: 3}
+  bulletSpawnPlace: {fileID: 0}
+  currentStyle: 1
+  bulletsIHave: 20
+  bulletsInTheGun: 50
+  amountOfBulletsPerLoad: 50
+  maxCapacity: 450
+  roundsPerSecond: 10
+  damage: 33
+  walkingSpeed: 3
+  runningSpeed: 5
+  horizontal_crosshair: {fileID: 2800000, guid: e1aa4c90445944348a112c3b7fa4b318, type: 3}
+  vertical_crosshair: {fileID: 2800000, guid: 3f8b669e9880644cbb903f67bbc9f824, type: 3}
+  top_pos_crosshair: {x: -2.7, y: -20.8}
+  bottom_pos_crosshair: {x: -2.7, y: -7.61}
+  left_pos_crosshair: {x: -14, y: -5}
+  right_pos_crosshair: {x: -5.5, y: -5}
+  size_crosshair_vertical: {x: 6, y: 28}
+  size_crosshair_horizontal: {x: 20, y: 10}
+  expandValues_crosshair: {x: 0, y: 0}
+  recoilAmount_z_non: 0.02
+  recoilAmount_x_non: 0.02
+  recoilAmount_y_non: 0.02
+  recoilAmount_z_: 0.01
+  recoilAmount_x_: 0.01
+  recoilAmount_y_: 0.01
+  velocity_z_recoil: 0
+  velocity_x_recoil: 0
+  velocity_y_recoil: 0
+  recoilOverTime_z: 0.1
+  recoilOverTime_x: 0.1
+  recoilOverTime_y: 0.1
+  rotationLagTime: 0
+  forwardRotationAmount: {x: 1, y: 1}
+  currentGunPosition: {x: 0, y: 0, z: 0}
+  restPlacePosition: {x: -0.07, y: -0.06, z: 0.4}
+  aimPlacePosition: {x: 0, y: -0.05, z: 0.29}
+  gunAimTime: 0.05
+  isSwitching: 0
+  isReloading: 0
+  gunPrecision_notAiming: 300
+  gunPrecision_aiming: 100
+  cameraZoomRatio_notAiming: 60
+  cameraZoomRatio_aiming: 40
+  secondCameraZoomRatio_notAiming: 60
+  secondCameraZoomRatio_aiming: 50
+  gunPrecision: 0
+  HUD_bullets: {fileID: 0}
+--- !u!1 &1935574931067946233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7757370540112214850}
+  m_Layer: 0
+  m_Name: MuzzleSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7757370540112214850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935574931067946233}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.082, z: 1.006}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7040612516594066230}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &9219143345828835839
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 456086}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_Name
+      value: Assault Rifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 509b242a91a4ffe48b33c8d75afbc68e, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+--- !u!4 &8681325424505378324 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+  m_PrefabInstance: {fileID: 9219143345828835839}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &3358119269002382446 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+  m_PrefabInstance: {fileID: 9219143345828835839}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7040612516594066230 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7042013806481206583, guid: a222cc1e454fc03408b1181d0c93c7e8, type: 3}
+  m_PrefabInstance: {fileID: 9219143345828835839}
+  m_PrefabAsset: {fileID: 0}
