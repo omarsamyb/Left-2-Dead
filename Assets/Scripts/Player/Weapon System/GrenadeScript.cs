@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class GrenadeScript : MonoBehaviour
 {
-    public enum GrenadeType{
-	molotov,pipe,stun,bile
+    public enum GrenadeType
+    {
+        molotov, pipe, stun, bile
     }
-    public GameObject player;
     public GrenadeType curNadeType;
     public GameObject Explosion;
     public GameObject Fire;
@@ -17,17 +17,16 @@ public class GrenadeScript : MonoBehaviour
     float explosionRadius = 5;
     public string _name;
     public int maxCapacity;
+    private bool hitGround;
 
-    void Start() {
+    void Start()
+    {
         mainCam = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+        AudioManager.instance.SetSource("GrenadesSFX", GetComponent<AudioSource>());
 
         rb.velocity = mainCam.forward * thrust;
         rb.AddTorque(new Vector3(10, 0, 10));
-        if (curNadeType == GrenadeType.pipe)
-            Invoke("MakeNoisePipe", fuseTime);
-        else if (curNadeType == GrenadeType.stun)
-            Invoke("ExplodeStun", fuseTime);
     }
 
     void ExplodeMolotov()
@@ -38,7 +37,7 @@ public class GrenadeScript : MonoBehaviour
         fire.transform.position = transform.position;
         StartCoroutine(applyDamage(fire));
         Renderer[] rs = GetComponentsInChildren<Renderer>();
-        foreach(Renderer r in rs)
+        foreach (Renderer r in rs)
             r.enabled = false;
     }
     IEnumerator applyDamage(GameObject fire)
@@ -50,74 +49,86 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider cur in hits)
             {
                 //TODO: Damage zombies in range
-                if(cur.tag=="Player")
-                    print(cur.tag+" "+cur.name+" got damaged "+i);
+                if (cur.tag == "Player")
+                    print(cur.tag + " " + cur.name + " got damaged " + i);
             }
             yield return new WaitForSeconds(1);
         }
-        Destroy(this.gameObject);
+        Destroy(this.gameObject, 1);
     }
     void MakeNoisePipe()
     {
         //TODO: Make noise
-        float attractRadius = explosionRadius*2;
+        float attractRadius = explosionRadius * 2;
         Collider[] hits = Physics.OverlapSphere(transform.position, attractRadius);
         foreach (Collider cur in hits)
         {
             //TODO: Attract zombies in range
-            print("Pipe attracting: "+cur.name);
+            print("Pipe attracting: " + cur.name);
         }
-        Invoke("ExplodePipe", 5);
+        StartCoroutine(ExplodePipe());
     }
-    void ExplodePipe()
+    IEnumerator ExplodePipe()
     {
+        yield return new WaitForSeconds(4f);
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
             //TODO: Damage zombies in range
-            print("Pipe Damaged: "+cur.name);
+            print("Pipe Damaged: " + cur.name);
         }
-        Destroy(this.gameObject);
+        transform.localScale = Vector3.zero;
+        Destroy(this.gameObject, 4);
     }
-    void ExplodeStun()
+    IEnumerator ExplodeStun()
     {
+        yield return new WaitForSeconds(0.2f);
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
             //TODO: Do whatever on objects in range of explosion
-            print("Stunned: "+cur.name);
+            print("Stunned: " + cur.name);
         }
-        Destroy(this.gameObject);
+        transform.localScale = Vector3.zero;
+        Destroy(this.gameObject, 5);
     }
     IEnumerator ExplodeBile()
     {
         GameObject boom = Instantiate(Explosion);
-        for(int i=0;i<5;i++)
+        for (int i = 0; i < 5; i++)
         {
             boom.transform.position = transform.position;
             Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
             foreach (Collider cur in hits)
             {
                 //TODO: Confuse Zombies in range of explosion
-                print("Confused: "+cur.tag+" "+i);
+                print("Confused: " + cur.tag + " " + i);
             }
             yield return new WaitForSeconds(1);
         }
         Destroy(this.gameObject);
     }
-    private void OnTriggerEnter(Collider other) 
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag=="Untagged") //TODO: Fix layer
+        if (other.gameObject.tag == "Untagged" && !hitGround) //TODO: Fix layer
         {
-            rb.velocity = new Vector3(0,0,0);
-            if(curNadeType == GrenadeType.bile)
+            hitGround = true;
+            AudioManager.instance.PlayOneShot("GrenadesSFX");
+            rb.velocity = new Vector3(0, 0, 0);
+            if (curNadeType == GrenadeType.bile)
                 StartCoroutine(ExplodeBile());
             else if (curNadeType == GrenadeType.molotov)
-                ExplodeMolotov(); 
-        }    
+                ExplodeMolotov();
+            else if (curNadeType == GrenadeType.pipe)
+            {
+                MakeNoisePipe();
+            }
+            else
+                StartCoroutine(ExplodeStun());
+        }
     }
 }

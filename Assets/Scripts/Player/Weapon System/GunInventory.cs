@@ -208,6 +208,8 @@ public class GunInventory : MonoBehaviour
     {
         if (grenadesIHave.Count > currentGrenadeCounter)
         {
+            AudioManager.instance.Play("ThrowSFX");
+            yield return new WaitForSeconds(0.05f);
             isThrowing = true;
             currentHandsAnimator.SetTrigger("isThrowing");
             yield return new WaitForSeconds(0.07f);
