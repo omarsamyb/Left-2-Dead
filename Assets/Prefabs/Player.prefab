@@ -224,7 +224,7 @@ MonoBehaviour:
   - Bile Bomb
   - Pipe Bomb
   - Stun Grenade
-  grenadesCounter: 010000000200000002000000
+  grenadesCounter: 03000000010000000200000002000000
   isThrowing: 0
 --- !u!1 &469019212245449976
 GameObject:
