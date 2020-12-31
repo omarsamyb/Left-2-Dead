@@ -129,7 +129,7 @@ public class GunScript : MonoBehaviour
     private float cameraZoomVelocity;
     private float secondCameraZoomVelocity;
 
-    private bool isMelee;
+    public bool isMelee;
     public bool isSwitching;
     public bool isReloading;
 
@@ -149,8 +149,7 @@ public class GunScript : MonoBehaviour
     [HideInInspector]
     public float gunPrecision;
 
-    [Tooltip("HUD bullets to display bullet count on screen. Will be find under name 'HUD_bullets' in scene.")]
-    [HideInInspector] public TextMesh HUD_bullets;
+    private TextMesh HUD_bullets;
 
     RaycastHit hitInfo;
     [Tooltip("Put 'Player' layer here")]
@@ -219,7 +218,7 @@ public class GunScript : MonoBehaviour
     }
     private void Shooting()
     {
-        if (!isMelee && !isReloading && !isSwitching)
+        if (!isMelee && !isReloading && !isSwitching && !player.GetComponent<GunInventory>().isThrowing)
         {
             if (currentStyle == GunStyles.nonautomatic)
             {
@@ -246,11 +245,9 @@ public class GunScript : MonoBehaviour
     }
     private void Aiming()
     {
+        handsAnimator.SetBool("isAiming", Input.GetButton("Fire2"));
         if (Input.GetAxis("Fire2") != 0 && !isReloading && !isMelee && !isSwitching)
         {
-            if (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName("isAiming"))
-                handsAnimator.SetBool("isAiming", Input.GetButton("Fire2"));
-
             gunPrecision = gunPrecision_aiming;
             recoilAmount_x = recoilAmount_x_;
             recoilAmount_y = recoilAmount_y_;
@@ -362,6 +359,7 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                hitInfo.collider.gameObject.GetComponent<NormalInfected>().TakeDamage((int)damage);
             }
         }
     }
@@ -460,6 +458,7 @@ public class GunScript : MonoBehaviour
             if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
+                hitInfo.collider.gameObject.GetComponent<NormalInfected>().TakeDamage(100);
             }
         }
     }

@@ -27,6 +27,12 @@ public class GunInventory : MonoBehaviour
     private float switchWeaponCooldown;
     private List<GameObject> myWeapons = new List<GameObject>();
 
+    private int currentGrenadeCounter;
+    public List<string> grenadesIHave = new List<string>();
+    public List<int> grenadesCounter = new List<int>();
+    public bool isThrowing;
+    private TextMesh HUD_grenades;
+
     void Awake()
     {
         StartCoroutine(UpdateIconsFromResources());
@@ -43,44 +49,59 @@ public class GunInventory : MonoBehaviour
     // Controls
     private void Controls()
     {
-        if (switchWeaponCooldown > 1.2f && Input.GetKey(KeyCode.LeftShift) == false)
+        if (currentGun)
         {
-            WeaponSwitching();
+            GunScript gunState = currentGun.GetComponent<GunScript>();
+            if (switchWeaponCooldown > 1.2f && Input.GetKey(KeyCode.LeftShift) == false && !gunState.isReloading && !gunState.isMelee && !isThrowing && !gunState.isSwitching)
+            {
+                WeaponSwitching();
+                Grenade();
+            }
         }
     }
     private void WeaponSwitching()
     {
         int prevWeaponCounter = currentGunCounter;
-        if (!myWeapons[prevWeaponCounter].GetComponent<GunScript>().isReloading)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
-            if (Input.GetAxis("Mouse ScrollWheel") > 0)
+            switchWeaponCooldown = 0;
+            currentGunCounter++;
+            if (currentGunCounter > gunsIHave.Count - 1)
             {
-                switchWeaponCooldown = 0;
-                currentGunCounter++;
-                if (currentGunCounter > gunsIHave.Count - 1)
-                {
-                    currentGunCounter = 0;
-                }
-                StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+                currentGunCounter = 0;
             }
-            else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+            StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        {
+            switchWeaponCooldown = 0;
+            currentGunCounter--;
+            if (currentGunCounter < 0)
             {
-                switchWeaponCooldown = 0;
-                currentGunCounter--;
-                if (currentGunCounter < 0)
-                {
-                    currentGunCounter = gunsIHave.Count - 1;
-                }
-                StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+                currentGunCounter = gunsIHave.Count - 1;
             }
-            else if (Input.GetKeyDown(KeyCode.C))
-            {
-                switchWeaponCooldown = 0;
-                currentGunCounter++;
-                if (currentGunCounter > gunsIHave.Count - 1)
-                    currentGunCounter = 0;
-                StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
-            }
+            StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+        }
+        else if (Input.GetKeyDown(KeyCode.C))
+        {
+            switchWeaponCooldown = 0;
+            currentGunCounter++;
+            if (currentGunCounter > gunsIHave.Count - 1)
+                currentGunCounter = 0;
+            StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+        }
+    }
+    private void Grenade()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            StartCoroutine(InitiateThrow());
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            currentGrenadeCounter++;
+            if (currentGrenadeCounter > grenadesIHave.Count - 1)
+                currentGrenadeCounter = 0;
         }
     }
 
@@ -182,9 +203,87 @@ public class GunInventory : MonoBehaviour
         AudioManager.instance.SetClip("ReadySFX", currentGun.GetComponent<GunScript>().readySFX);
     }
 
+    // Grenades
+    private IEnumerator InitiateThrow()
+    {
+        if (grenadesIHave.Count > currentGrenadeCounter)
+        {
+            AudioManager.instance.Play("ThrowSFX");
+            yield return new WaitForSeconds(0.05f);
+            isThrowing = true;
+            currentHandsAnimator.SetTrigger("isThrowing");
+            yield return new WaitForSeconds(0.07f);
+            StartCoroutine(Throw());
+
+            if (grenadesCounter[currentGrenadeCounter] - 1 == 0)
+            {
+                grenadesIHave.RemoveAt(currentGrenadeCounter);
+                grenadesCounter.RemoveAt(currentGrenadeCounter);
+                if (currentGrenadeCounter == grenadesIHave.Count)
+                {
+                    currentGrenadeCounter--;
+                    if (currentGrenadeCounter < 0)
+                        currentGrenadeCounter = 0;
+                }
+            }
+            else
+                grenadesCounter[currentGrenadeCounter]--;
+        }
+    }
+    private IEnumerator Throw()
+    {
+        Vector3 position = currentGun.transform.GetChild(0).Find("L_arm").GetChild(0).GetChild(0).position;
+        GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Grenades/" + grenadesIHave[currentGrenadeCounter].ToString() + ".prefab", typeof(GameObject));
+        Instantiate(resource, position, Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        isThrowing = false;
+    }
+    public bool AddGrenade(string name)
+    {
+        /*
+         * Returns true if grenade capacity is not full
+         * Returns false otherwise.
+         */
+        int index = grenadesIHave.IndexOf(name);
+        if (index != -1)
+        {
+            int maxCapacity = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Grenades/" + name + ".prefab", typeof(GameObject))).GetComponent<GrenadeScript>().maxCapacity;
+            int value = grenadesCounter[index] + 1;
+            if (value > maxCapacity)
+                return false;
+            else
+            {
+                grenadesCounter[index] = value;
+                return true;
+            }
+        }
+        else
+        {
+            grenadesIHave.Add(name);
+            grenadesCounter.Add(1);
+            return true;
+        }
+    }
+
     // GUI
     void OnGUI()
     {
+        if (!HUD_grenades)
+        {
+            try
+            {
+                HUD_grenades = GameObject.Find("HUD_grenades").GetComponent<TextMesh>();
+            }
+            catch (System.Exception ex)
+            {
+                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+            }
+        }
+        if (HUD_grenades && grenadesIHave.Count != 0)
+            HUD_grenades.text = grenadesIHave[currentGrenadeCounter].ToString() + " - " + grenadesCounter[currentGrenadeCounter].ToString();
+        else if (HUD_grenades)
+            HUD_grenades.text = "";
+
         if (currentGun)
         {
             for (int i = 0; i < gunsIHave.Count; i++)

@@ -85,3 +85,19 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
+  - name: ThrowSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 9a2b16dc8c2a7ed4688f792b1336f04e, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: GrenadesSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 0}
+    mixerGroup: {fileID: 0}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
