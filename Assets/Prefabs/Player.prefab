@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 469019212214358613}
   - component: {fileID: 469019212214358614}
   - component: {fileID: 469019212214358615}
+  - component: {fileID: 5803117317562909180}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -219,6 +220,20 @@ MonoBehaviour:
   - Tactical Shotgun
   - Assault Rifle
   - Hunting Rifle
+--- !u!136 &5803117317562909180
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469019212214358608}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.25
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &469019212245449976
 GameObject:
   m_ObjectHideFlags: 0
