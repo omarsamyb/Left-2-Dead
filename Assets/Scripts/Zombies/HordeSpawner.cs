@@ -51,7 +51,7 @@ public class HordeSpawner : MonoBehaviour
 				if (childState == "chasing" || childState == "attack")
 				{
 					isChasing = true;
-					setAllEnemiesToChase();
+					StartCoroutine(SetAllEnemiesToChase());
 					return;
 				}
 			}
@@ -63,7 +63,7 @@ public class HordeSpawner : MonoBehaviour
 		{
 
 
-			Vector3 position = new Vector3(transform.position.x+ Random.Range(-5, 5), transform.position.y,transform.position.z+Random.Range(-5, 5));
+			Vector3 position = new Vector3(transform.position.x+ Random.Range(-1, 2), transform.position.y,transform.position.z+Random.Range(-2, 1));
 			GameObject childObject = Instantiate(enemyObj, position, transform.rotation);
 			childObject.transform.parent = gameObject.transform;
 			yield return new WaitForSeconds(1f / spawnRatePerSec);
@@ -82,7 +82,7 @@ public class HordeSpawner : MonoBehaviour
 	hordeCount = 16;
 	spawnRatePerSec = 4;
 	}
-	public void setAllEnemiesToChase()
+	IEnumerator SetAllEnemiesToChase()
     {
 		for (int i = 0; i < transform.childCount; i++)
 		{
@@ -92,6 +92,7 @@ public class HordeSpawner : MonoBehaviour
 			if (childState == "patrol" || childState == "idle")
 			{
 				childEnemyController.chase(playerTransform);
+				yield return new WaitForSeconds(0.2f);
 			}
 		}
 	}
