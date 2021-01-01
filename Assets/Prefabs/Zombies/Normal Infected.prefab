@@ -17,6 +17,7 @@ MonoBehaviour:
   attackDistance: 1
   chaseDistance: 8
   health: 50
+  childTransform: {fileID: 3029563786236463362, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
 --- !u!1001 &7768179784948113958
 PrefabInstance:
   m_ObjectHideFlags: 0

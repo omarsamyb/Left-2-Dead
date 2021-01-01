@@ -18,6 +18,8 @@ public class EnemyContoller : MonoBehaviour
     private bool isConfused;
     private float chaseSpeed=2.0f;
     private float patrolSpeed=0.3f;
+    public Transform childTransform;
+    private float chaseAngle=130.0f;
     public void Confuse()
     {
        
@@ -46,8 +48,8 @@ public class EnemyContoller : MonoBehaviour
         currentState = State.patrol;
         navMeshAgent = GetComponent<NavMeshAgent>();
         patrolling = new Vector3[2];
-        patrolling[0] = transform.position + new Vector3(2, 0, 0);
-        patrolling[1] = transform.position + new Vector3(-2, 0, 0);
+        patrolling[0] = transform.position +  2*transform.forward;
+        patrolling[1] = transform.position - 2*transform.forward;
     }
     public void stun()
     {
@@ -71,7 +73,6 @@ public class EnemyContoller : MonoBehaviour
     
         currentState = State.attack;
         animator.SetBool("isAttacking", true);
-        animator.SetBool("isChasing", false);
         navMeshAgent.SetDestination(transform.position);
     }
     // void idle()
@@ -87,8 +88,8 @@ public class EnemyContoller : MonoBehaviour
         if (currentState != State.patrol)
         {
             currentState = State.patrol;
-            patrolling[0] = transform.position + new Vector3(2, 0, 0);
-            patrolling[1] = transform.position + new Vector3(-2, 0, 0);
+            patrolling[0] = transform.position +  2*transform.forward;
+            patrolling[1] = transform.position - 2*transform.forward;
             patrollingIdx=0;
         }
         
@@ -105,6 +106,7 @@ public class EnemyContoller : MonoBehaviour
     }
     void Update()
     {
+        childTransform.position=transform.position;
         if(currentState == State.dead)
             return;
         if (currentState == State.stunned)
@@ -130,7 +132,7 @@ public class EnemyContoller : MonoBehaviour
         }
         if(currentState==State.patrol)
         {
-            if (canSee(chaseDistance, 90f, attackTarget))
+            if (canSee(chaseDistance, chaseAngle, attackTarget))
             {
                 chase(attackTarget);
             }
@@ -140,7 +142,7 @@ public class EnemyContoller : MonoBehaviour
             }
         }
         else if(currentState==State.chasing){
-            if (canSee(attackDistance, 90f,attackTarget))
+            if (canSee(attackDistance, 30f,attackTarget))
             {
                 attack();
             }
@@ -151,7 +153,7 @@ public class EnemyContoller : MonoBehaviour
             }
         }
         else if(currentState==State.attack){
-            if (!canSee(attackDistance, 90f, attackTarget))
+            if (!canSee(attackDistance, 30f, attackTarget))
             {
                 chase(attackTarget);
             }
@@ -197,6 +199,8 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isDying", true);
         navMeshAgent.SetDestination(transform.position);
         currentState = State.dead;
+        Destroy(gameObject,7.0f);
+        this.gameObject.GetComponent<CapsuleCollider>().enabled=false;
     }
     public bool canSeePlayer(float rangeDistance, float rangeAngle){
         return canSee(rangeDistance,rangeAngle,playerTransform);
