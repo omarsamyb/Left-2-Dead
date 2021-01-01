@@ -38,6 +38,9 @@ public class GunInventory : MonoBehaviour
         StartCoroutine(UpdateIconsFromResources());
         StartCoroutine(SpawnWeaponUponStart());
         PopulateWeapons();
+    }
+    private void Start()
+    {
         AudioManager.instance.Play("SwitchWeaponSFX");
     }
     void Update()
