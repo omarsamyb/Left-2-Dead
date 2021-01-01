@@ -60,7 +60,7 @@ public class GrenadeScript : MonoBehaviour
         foreach (Collider cur in hits)
         {
             if(cur.tag=="Enemy")
-                cur.GetComponent<EnemyContoller>().chase(transform);
+                cur.GetComponent<EnemyContoller>().pipeGrenade(transform);
         }
         StartCoroutine(ExplodePipe());
     }
