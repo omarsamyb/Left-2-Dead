@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6536328330669710801}
   - component: {fileID: 6536328330669710800}
   - component: {fileID: 6536328330669710767}
+  - component: {fileID: 9144165604175207901}
   m_Layer: 0
   m_Name: Sugar
   m_TagString: Untagged
@@ -1272,3 +1273,16 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &9144165604175207901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6536328330669710766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b805442ba79fb43ac9dd69cd43b963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: 3530395ac297aec468ebcb908fb9818e, type: 2}
