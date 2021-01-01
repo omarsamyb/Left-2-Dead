@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float jumpHeight;
     [HideInInspector] public bool isMoving;
+    private int health = 300;
 
     private void Awake()
     {
@@ -26,7 +27,7 @@ public class PlayerController : MonoBehaviour
         currentSpeed = 0f;
         gravity = -9.81f * 2f;
         groundDistance = 0.4f;
-        jumpHeight = 1.5f;
+        jumpHeight = 1f;
         groundMask = 1 << LayerMask.NameToLayer("World");
         isGrounded = true;
         isMoving = false;
@@ -62,5 +63,16 @@ public class PlayerController : MonoBehaviour
         // Gravity Effect
         velocity.y += gravity * Time.deltaTime;
         motor.Move(velocity * Time.deltaTime);
+    }
+
+    public void TakeDamage(int points)
+    {
+        health -= points;
+        if (health < 0)
+            Die();
+    }
+    private void Die()
+    {
+        Debug.Log("Player Died");
     }
 }
