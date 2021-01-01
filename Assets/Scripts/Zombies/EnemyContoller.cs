@@ -41,6 +41,7 @@ public class EnemyContoller : MonoBehaviour
     }
     void Start()
     {
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         attackTarget = playerTransform;
         currentState = State.patrol;
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -250,11 +251,11 @@ public class EnemyContoller : MonoBehaviour
             currentState = State.chasing;
         }
     }
-    public void pipeGrenade( Vector3 grenadePosition)
+    public void pipeGrenade( Transform grenadePosition)
     {
         // float grenadeRadius, as parameter 
-        if (currentState == State.dead || currentState == State.stunned) return;
 
+        if (currentState == State.dead || currentState == State.stunned) return;
 
         //if (CalculatePathLength(grenadePosition) < grenadeRadius)
         //{
@@ -266,15 +267,16 @@ public class EnemyContoller : MonoBehaviour
         //    pipeTimer = 0f;
         //    // what I am missing here the animator controller to add isPipe 
         //}
-
-            navMeshAgent.SetDestination(grenadePosition);
+            navMeshAgent.SetDestination(grenadePosition.position);
             currentState = State.pipe;
             navMeshAgent.speed= chaseSpeed;
             animator.SetBool("isPiped", true);
             animator.SetBool("isAttacking", false);
             animator.SetBool("isChasing", false);
             pipeTimer = 0f;
-        
-
+    }
+    public string getState()
+    {
+        return currentState.ToString();
     }
 }
