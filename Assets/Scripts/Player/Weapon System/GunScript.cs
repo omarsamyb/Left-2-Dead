@@ -160,7 +160,10 @@ public class GunScript : MonoBehaviour
     private float rayDetectorMeeleSpace = 0.15f;
     private float offsetStart = 0.05f;
 
-    [HideInInspector] public int shootCount;
+    private float weaponNoiseCoolDownRef = 0.5f;
+    private float weaponNoiseCoolDown;
+    private float noiseRange = 10f;
+    Collider[] hits;
 
     void Awake()
     {
@@ -178,6 +181,10 @@ public class GunScript : MonoBehaviour
 
         ignoreLayer = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Weapon"));
     }
+    private void Start()
+    {
+        weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+    }
     void Update()
     {
         Controls();
@@ -185,6 +192,9 @@ public class GunScript : MonoBehaviour
         WeaponPositioning();
         WeaponRotation();
         CrossHairExpansionWhenWalking();
+
+        if(weaponNoiseCoolDown > 0)
+            weaponNoiseCoolDown -= Time.deltaTime;
     }
 
     // Controls
@@ -223,7 +233,6 @@ public class GunScript : MonoBehaviour
     {
         if (!isMelee && !isReloading && !isSwitching && !player.GetComponent<GunInventory>().isThrowing)
         {
-            shootCount++;
             if (currentStyle == GunStyles.nonautomatic)
             {
                 if (Input.GetButtonDown("Fire1"))
@@ -316,6 +325,15 @@ public class GunScript : MonoBehaviour
         {
             if (bulletsInTheGun > 0)
             {
+                if (weaponNoiseCoolDown <= 0)
+                {
+                    weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+                    hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, LayerMask.NameToLayer("Enemy"));
+                    foreach(Collider collider in hits)
+                    {
+                        //collider.gameObject.GetComponent<EnemyContoller>.CHANGE_THIS_TO_CORRECT_FUNCTION;
+                    }
+                }
                 int randomNumberForMuzzelFlash = Random.Range(0, 5);
                 if (currentStyle == GunStyles.shotgun)
                 {
