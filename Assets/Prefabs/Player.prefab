@@ -70,6 +70,8 @@ MonoBehaviour:
   currentSpeed: 0
   groundCheck: {fileID: 469019213781802086}
   isMoving: 0
+  health: 300
+  character: {fileID: 0}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0

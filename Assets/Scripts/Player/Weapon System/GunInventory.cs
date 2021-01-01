@@ -45,8 +45,15 @@ public class GunInventory : MonoBehaviour
     }
     void Update()
     {
-        Controls();
-        switchWeaponCooldown += 1 * Time.deltaTime;
+        if(GetComponent<PlayerController>().health>0)
+        {
+            Controls();
+            switchWeaponCooldown += 1 * Time.deltaTime;
+        }
+        else
+        {
+            currentGun.SetActive(false);
+        }
     }
 
     // Controls
