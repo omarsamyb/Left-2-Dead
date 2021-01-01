@@ -60,7 +60,7 @@ public class GrenadeScript : MonoBehaviour
         Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(attractRadius, 1f, attractRadius), Quaternion.identity, enemyLayer);
         foreach (Collider cur in hits)
         {
-            cur.GetComponent<EnemyContoller>().chase(transform);
+            cur.GetComponent<EnemyContoller>().pipeGrenade(transform);
         }
         StartCoroutine(ExplodePipe());
     }

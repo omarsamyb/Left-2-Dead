@@ -17,6 +17,7 @@ MonoBehaviour:
   attackDistance: 1
   chaseDistance: 8
   health: 50
+  childTransform: {fileID: 3029563786236463362, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
 --- !u!1001 &7768179784948113958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -163,6 +164,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 3f06ce24261249a48bbae8bf8415d730, type: 2}
+    - target: {fileID: 7389507112651452681, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
 --- !u!95 &955558936432446566 stripped
