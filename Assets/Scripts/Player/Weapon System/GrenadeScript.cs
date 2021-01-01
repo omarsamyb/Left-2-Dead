@@ -17,6 +17,7 @@ public class GrenadeScript : MonoBehaviour
     public string _name;
     public int maxCapacity;
     private bool hitGround;
+    private LayerMask enemyLayer;
 
     void Start()
     {
@@ -26,6 +27,8 @@ public class GrenadeScript : MonoBehaviour
 
         rb.velocity = mainCam.forward * thrust;
         rb.AddTorque(new Vector3(10, 0, 10));
+
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
     }
 
     void ExplodeMolotov()
@@ -42,11 +45,10 @@ public class GrenadeScript : MonoBehaviour
         int radius = 5;
         for (int i = 0; i < 5; i++)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, radius);
+            Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(radius, 1f, radius), Quaternion.identity, enemyLayer);
             foreach (Collider cur in hits)
             {
-                if(cur.tag=="Enemy")
-                    cur.GetComponent<EnemyContoller>().TakeDamage(25);
+                cur.GetComponent<EnemyContoller>().TakeDamage(25);
             }
             yield return new WaitForSeconds(1);
         }
@@ -54,26 +56,23 @@ public class GrenadeScript : MonoBehaviour
     }
     void MakeNoisePipe()
     {
-        //TODO: Make noise
         float attractRadius = explosionRadius * 2;
-        Collider[] hits = Physics.OverlapSphere(transform.position, attractRadius);
+        Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(attractRadius, 1f, attractRadius), Quaternion.identity, enemyLayer);
         foreach (Collider cur in hits)
         {
-            if(cur.tag=="Enemy")
-                cur.GetComponent<EnemyContoller>().chase(transform);
+            cur.GetComponent<EnemyContoller>().chase(transform);
         }
         StartCoroutine(ExplodePipe());
     }
     IEnumerator ExplodePipe()
     {
         yield return new WaitForSeconds(4f);
-        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+        Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(explosionRadius, 1f, explosionRadius), Quaternion.identity, enemyLayer);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
-            if(cur.tag=="Enemy")
-                cur.GetComponent<EnemyContoller>().TakeDamage(100);
+            cur.GetComponent<EnemyContoller>().TakeDamage(100);
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 4);
@@ -81,13 +80,12 @@ public class GrenadeScript : MonoBehaviour
     IEnumerator ExplodeStun()
     {
         yield return new WaitForSeconds(0.2f);
-        Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+        Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(explosionRadius, 1f, explosionRadius), Quaternion.identity, enemyLayer);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
-            if(cur.tag=="Enemy")
-                cur.GetComponent<EnemyContoller>().stun();
+            cur.GetComponent<EnemyContoller>().stun();
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 5);
@@ -98,11 +96,10 @@ public class GrenadeScript : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             boom.transform.position = transform.position;
-            Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
+            Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(explosionRadius, 1f, explosionRadius), Quaternion.identity, enemyLayer);
             foreach (Collider cur in hits)
             {
-                if(cur.tag=="Enemy")
-                    cur.GetComponent<EnemyContoller>().Confuse();
+                cur.GetComponent<EnemyContoller>().Confuse();
             }
             yield return new WaitForSeconds(1);
         }
