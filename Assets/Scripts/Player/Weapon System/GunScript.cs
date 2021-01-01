@@ -164,6 +164,7 @@ public class GunScript : MonoBehaviour
     private float weaponNoiseCoolDown;
     private float noiseRange = 10f;
     Collider[] hits;
+    LayerMask enemyLayer;
 
     void Awake()
     {
@@ -184,6 +185,7 @@ public class GunScript : MonoBehaviour
     private void Start()
     {
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
     }
     void Update()
     {
@@ -328,7 +330,7 @@ public class GunScript : MonoBehaviour
                 if (weaponNoiseCoolDown <= 0)
                 {
                     weaponNoiseCoolDown = weaponNoiseCoolDownRef;
-                    hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, LayerMask.NameToLayer("Enemy"));
+                    hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
                     foreach(Collider collider in hits)
                     {
                         //collider.gameObject.GetComponent<EnemyContoller>.CHANGE_THIS_TO_CORRECT_FUNCTION;
