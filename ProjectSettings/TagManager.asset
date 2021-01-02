@@ -9,6 +9,8 @@ TagManager:
   - BulletSpawn
   - Enemy
   - SpecialEnemy
+  - Fire
+  - Horde
   layers:
   - Default
   - TransparentFX
@@ -20,9 +22,9 @@ TagManager:
   - 
   - Player
   - Weapon
-  - 
-  - 
-  - 
+  - World
+  - FireLayer
+  - Enemy
   - 
   - 
   - 

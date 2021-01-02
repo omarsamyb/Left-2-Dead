@@ -49,6 +49,7 @@ public class GunScript : MonoBehaviour
     [Tooltip("Rounds per second if weapon is set to automatic.")]
     public float roundsPerSecond;
     public float damage;
+    private int meleeDamage = 50;
     private int projectileCount = 10;
     private float shotgunSpread = 10f;
     private float waitTillNextFire;
@@ -129,7 +130,7 @@ public class GunScript : MonoBehaviour
     private float cameraZoomVelocity;
     private float secondCameraZoomVelocity;
 
-    private bool isMelee;
+    public bool isMelee;
     public bool isSwitching;
     public bool isReloading;
 
@@ -149,8 +150,7 @@ public class GunScript : MonoBehaviour
     [HideInInspector]
     public float gunPrecision;
 
-    [Tooltip("HUD bullets to display bullet count on screen. Will be find under name 'HUD_bullets' in scene.")]
-    [HideInInspector] public TextMesh HUD_bullets;
+    private TextMesh HUD_bullets;
 
     RaycastHit hitInfo;
     [Tooltip("Put 'Player' layer here")]
@@ -159,6 +159,12 @@ public class GunScript : MonoBehaviour
     Ray ray1, ray2, ray3, ray4, ray5, ray6, ray7, ray8, ray9;
     private float rayDetectorMeeleSpace = 0.15f;
     private float offsetStart = 0.05f;
+
+    private float weaponNoiseCoolDownRef = 0.5f;
+    private float weaponNoiseCoolDown;
+    private float noiseRange = 10f;
+    Collider[] hits;
+    LayerMask enemyLayer;
 
     void Awake()
     {
@@ -176,6 +182,11 @@ public class GunScript : MonoBehaviour
 
         ignoreLayer = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Weapon"));
     }
+    private void Start()
+    {
+        weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+    }
     void Update()
     {
         Controls();
@@ -183,6 +194,9 @@ public class GunScript : MonoBehaviour
         WeaponPositioning();
         WeaponRotation();
         CrossHairExpansionWhenWalking();
+
+        if(weaponNoiseCoolDown > 0)
+            weaponNoiseCoolDown -= Time.deltaTime;
     }
 
     // Controls
@@ -219,7 +233,7 @@ public class GunScript : MonoBehaviour
     }
     private void Shooting()
     {
-        if (!isMelee && !isReloading && !isSwitching)
+        if (!isMelee && !isReloading && !isSwitching && !player.GetComponent<GunInventory>().isThrowing)
         {
             if (currentStyle == GunStyles.nonautomatic)
             {
@@ -246,11 +260,9 @@ public class GunScript : MonoBehaviour
     }
     private void Aiming()
     {
+        handsAnimator.SetBool("isAiming", Input.GetButton("Fire2"));
         if (Input.GetAxis("Fire2") != 0 && !isReloading && !isMelee && !isSwitching)
         {
-            if (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName("isAiming"))
-                handsAnimator.SetBool("isAiming", Input.GetButton("Fire2"));
-
             gunPrecision = gunPrecision_aiming;
             recoilAmount_x = recoilAmount_x_;
             recoilAmount_y = recoilAmount_y_;
@@ -315,6 +327,15 @@ public class GunScript : MonoBehaviour
         {
             if (bulletsInTheGun > 0)
             {
+                if (weaponNoiseCoolDown <= 0)
+                {
+                    weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+                    hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
+                    foreach(Collider collider in hits)
+                    {
+                        //collider.gameObject.GetComponent<EnemyContoller>.CHANGE_THIS_TO_CORRECT_FUNCTION;
+                    }
+                }
                 int randomNumberForMuzzelFlash = Random.Range(0, 5);
                 if (currentStyle == GunStyles.shotgun)
                 {
@@ -362,6 +383,7 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage((int)damage);
             }
         }
     }
@@ -460,6 +482,7 @@ public class GunScript : MonoBehaviour
             if (hitInfo.transform.tag == "Enemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage);
             }
         }
     }

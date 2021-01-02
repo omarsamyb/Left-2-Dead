@@ -155,6 +155,17 @@ public class AudioManager : MonoBehaviour
 		s.source.clip = clip;
 	}
 
+	public void SetSource(string sound, AudioSource source)
+	{
+		Sound s = Array.Find(sounds, item => item.name == sound);
+		if (s == null)
+		{
+			Debug.LogWarning("Sound: " + name + " not found!");
+			return;
+		}
+		s.source = source;
+	}
+
 	public void SetVolumeMaster(float value)
 	{
 		value = Mathf.Clamp(value, -80f, 0f);
