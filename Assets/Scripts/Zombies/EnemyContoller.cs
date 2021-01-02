@@ -283,4 +283,11 @@ public class EnemyContoller : MonoBehaviour
     {
         return currentState.ToString();
     }
+    public void hearFire()
+    {
+        if (currentState == State.idle || currentState == State.patrol)
+        {
+            chase(attackTarget);
+        }
+    }
 }
