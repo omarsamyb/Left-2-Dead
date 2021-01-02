@@ -13,8 +13,8 @@ public class companionController : MonoBehaviour
         public Transform target;
         public GameObject bullet;
         public GameObject player;
-        public EnemyContoller closestEnemy;
-        public EnemyContoller closestEnemy2;
+        private EnemyContoller closestEnemy;
+        private EnemyContoller closestEnemy2;
         public EnemyContoller chosenEnemy;
         private bool aiming = false;
         private Animator animator;
