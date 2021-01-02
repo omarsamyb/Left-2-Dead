@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private float jumpHeight;
     [HideInInspector] public bool isMoving;
-    public int health = 300;
+    [HideInInspector] public int health;
     public GameObject character;
 
     private void Awake()
@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
         groundMask = 1 << LayerMask.NameToLayer("World");
         isGrounded = true;
         isMoving = false;
-        Invoke("Die",2);
+        health = 300;
     }
 
     void Update()
@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int points)
     {
         health -= points;
-        if (health < 0)
+        if (health <= 0)
             Die();
     }
     private void Die()
