@@ -6,7 +6,7 @@ public class EnemyContoller : MonoBehaviour
 {
     NavMeshAgent navMeshAgent;
     public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe };
+    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe,hear };
     private State currentState;
     public Animator animator;
     public float attackDistance = 1.0f,chaseDistance = 5.0f;
@@ -20,6 +20,7 @@ public class EnemyContoller : MonoBehaviour
     private float patrolSpeed=0.3f;
     public Transform childTransform;
     private float chaseAngle=130.0f;
+    private Vector3 hearedLocation;
     public void Confuse()
     {
        
@@ -173,6 +174,17 @@ public class EnemyContoller : MonoBehaviour
             }
 
         }
+        else if (currentState==State.hear)
+        {
+            if (canSee(chaseDistance, chaseAngle, attackTarget))
+            {
+                chase(attackTarget);
+            }
+            else if (Vector3.Distance(hearedLocation, transform.position) < 1f)
+            {
+                patrol();
+            }
+        }
     }
 
     private bool InRange(Transform transform1, Transform transform2, float range)
@@ -285,9 +297,12 @@ public class EnemyContoller : MonoBehaviour
     }
     public void hearFire()
     {
-        if (currentState == State.idle || currentState == State.patrol)
+        if (currentState == State.idle || currentState == State.patrol || currentState==State.hear)
         {
-            chase(attackTarget);
+            hearedLocation = playerTransform.position;
+            currentState = State.hear;
+            navMeshAgent.speed = chaseSpeed;
+            navMeshAgent.SetDestination(hearedLocation);
         }
     }
 }
