@@ -16,9 +16,10 @@ public class companionController : MonoBehaviour
         private EnemyContoller closestEnemy;
         private EnemyContoller closestEnemy2;
         public EnemyContoller chosenEnemy;
-        private bool aiming = false;
         private Animator animator;
         public CompanionData Data;
+        public int choosePlayer;
+        private int choosenAmmo;
         private void Awake()
         {
             instance = this;
@@ -28,19 +29,34 @@ public class companionController : MonoBehaviour
             // get the components on the object we need ( should not be null due to require component so no need to check )
             agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
             animator = GetComponent<Animator>();
+            if(choosePlayer == 1){ // Ellie
+                Data.MaxClips = 3;
+                Data.weapon = "Pistol";
+                choosenAmmo = Data.pistolAmmo;
+                Data.ammo = Data.pistolAmmo;
+            }
+            else if(choosePlayer == 2){ // Zoey
+                Data.MaxClips = 5;
+                Data.weapon = "Hunting Rifle";
+                choosenAmmo = Data.huntingRifleAmmo;
+                Data.ammo = Data.huntingRifleAmmo;
+            }
+            else if(choosePlayer==3){ // Louis
+                Data.MaxClips = 4;
+                Data.weapon = "Assault Rifle";
+                choosenAmmo = Data.assultRifleAmmo;
+                Data.ammo = Data.assultRifleAmmo;
+            }
         }
 
 
         private void Update()
         {
             FindClosestEnemy();
-            if (Input.GetKeyDown(KeyCode.C))
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                aiming = true;
                 StartCoroutine(FaceTarget());
-                animator.SetBool("Aim", true);
-                StartCoroutine(ShootTarget(1.0f));
-                aiming = false;
+                ShootTarget();
             }
 
         }
@@ -56,13 +72,30 @@ public class companionController : MonoBehaviour
             }
             yield return null;
         }
-        public IEnumerator ShootTarget(float waitTime)
+        public void ShootTarget()
         {
             Instantiate(bullet,transform.position,Quaternion.identity);
-            yield return new WaitForSeconds(waitTime);
-            animator.SetBool("Aim", false);
-            chosenEnemy.TakeDamage(10);
-
+            checkClips();
+        }
+        public void checkClips(){
+            if(Data.ammo - 1 == 0)
+            {
+                if(Data.startingClip >= 1) // Can Reload Clip
+                {
+                    chosenEnemy.TakeDamage(10); // ToBe Changed With The Damage Of The Chosen Weapon
+                    Data.startingClip = Data.startingClip - 1;
+                    Data.ammo = choosenAmmo;
+                }
+                else
+                {
+                    Data.ammo = 0; // No Bullets
+                }
+            }
+            else{
+                Data.ammo = Data.ammo - 1;
+                chosenEnemy.TakeDamage(10); // ToBe Changed With The Damage Of The Chosen Weapon
+            }
+            
         }
         public void SetTarget(Transform target)
         {
