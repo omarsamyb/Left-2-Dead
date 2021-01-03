@@ -12,4 +12,6 @@ public class CompanionData : ScriptableObject
     public int pistolAmmo = 13;
     public int huntingRifleAmmo = 20;
     public int assultRifleAmmo = 30;
+    public string ability;
+
 }

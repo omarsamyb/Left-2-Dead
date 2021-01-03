@@ -33,18 +33,21 @@ public class companionController : MonoBehaviour
                 Data.weapon = "Pistol";
                 choosenAmmo = Data.pistolAmmo;
                 Data.ammo = Data.pistolAmmo;
+                Data.ability = "2x Rage Meter";
             }
             else if(chooseCompanion == 2){ // Zoey
                 Data.MaxClips = 5;
                 Data.weapon = "Hunting Rifle";
                 choosenAmmo = Data.huntingRifleAmmo;
                 Data.ammo = Data.huntingRifleAmmo;
+                Data.ability = "+1 HP Per Sec";
             }
             else if(chooseCompanion==3){ // Louis
                 Data.MaxClips = 4;
                 Data.weapon = "Assault Rifle";
                 choosenAmmo = Data.assultRifleAmmo;
                 Data.ammo = Data.assultRifleAmmo;
+                Data.ability = "2x Collectibles";
             }
         }
         private void Update()
@@ -83,7 +86,16 @@ public class companionController : MonoBehaviour
         }
         public virtual void Ability()
         {
-            Debug.Log("Current Ability is " + transform.name);
+            if(chooseCompanion == 1){ // Ellie
+                // Access Rage Meter Of The Player And Multiply It By 2
+            }
+            else if(chooseCompanion == 2){ // Zoey
+                // Increase HP By 1 Per Sec
+            }
+            else if(chooseCompanion==3){ // Louis
+                // Multiply Collectibles Collected By 2
+            }
+            Debug.Log("Current Ability is " + Data.ability);
         }
         public void FindClosestEnemy(){
             float distanceToClosestEnemy = Mathf.Infinity;
