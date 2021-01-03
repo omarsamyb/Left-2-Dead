@@ -80,7 +80,7 @@ public class CompanionGunScript : MonoBehaviour
             {
                 Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
             }
-            else if (hitInfo.transform.tag == "Enemy")
+            else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage);
