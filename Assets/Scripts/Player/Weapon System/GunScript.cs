@@ -228,7 +228,7 @@ public class GunScript : MonoBehaviour
     }
     private void Melee()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isMelee && !isReloading)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading)
             MeleeAttack();
     }
     private void Shooting()
@@ -330,7 +330,7 @@ public class GunScript : MonoBehaviour
                 if (weaponNoiseCoolDown <= 0)
                 {
                     weaponNoiseCoolDown = weaponNoiseCoolDownRef;
-                    hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
+                    hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
                     foreach(Collider collider in hits)
                     {
                         //collider.gameObject.GetComponent<EnemyContoller>.CHANGE_THIS_TO_CORRECT_FUNCTION;

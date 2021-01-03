@@ -43,11 +43,13 @@ public class GrenadeScript : MonoBehaviour
     IEnumerator applyDamage()
     {
         int radius = 5;
+        Vector3 position = transform.position;
         for (int i = 0; i < 5; i++)
         {
-            Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(radius, 1f, radius), Quaternion.identity, enemyLayer);
+            Collider[] hits = Physics.OverlapBox(position, new Vector3(radius, 0.2f, radius), Quaternion.identity, enemyLayer);
             foreach (Collider cur in hits)
             {
+                print("IN");
                 cur.GetComponent<EnemyContoller>().TakeDamage(25);
             }
             yield return new WaitForSeconds(1);
@@ -57,7 +59,7 @@ public class GrenadeScript : MonoBehaviour
     void MakeNoisePipe()
     {
         float attractRadius = explosionRadius * 2;
-        Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(attractRadius, 1f, attractRadius), Quaternion.identity, enemyLayer);
+        Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(attractRadius, 0.2f, attractRadius), Quaternion.identity, enemyLayer);
         foreach (Collider cur in hits)
         {
             cur.GetComponent<EnemyContoller>().pipeGrenade(transform);
@@ -66,8 +68,9 @@ public class GrenadeScript : MonoBehaviour
     }
     IEnumerator ExplodePipe()
     {
+        Vector3 position = transform.position;
         yield return new WaitForSeconds(4f);
-        Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(explosionRadius, 1f, explosionRadius), Quaternion.identity, enemyLayer);
+        Collider[] hits = Physics.OverlapBox(position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
@@ -79,8 +82,9 @@ public class GrenadeScript : MonoBehaviour
     }
     IEnumerator ExplodeStun()
     {
+        Vector3 position = transform.position;
         yield return new WaitForSeconds(0.2f);
-        Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(explosionRadius, 1f, explosionRadius), Quaternion.identity, enemyLayer);
+        Collider[] hits = Physics.OverlapBox(position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
@@ -96,7 +100,7 @@ public class GrenadeScript : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             boom.transform.position = transform.position;
-            Collider[] hits = Physics.OverlapBox(new Vector3(transform.position.x, 1f, transform.position.z), new Vector3(explosionRadius, 1f, explosionRadius), Quaternion.identity, enemyLayer);
+            Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
             foreach (Collider cur in hits)
             {
                 cur.GetComponent<EnemyContoller>().Confuse();
