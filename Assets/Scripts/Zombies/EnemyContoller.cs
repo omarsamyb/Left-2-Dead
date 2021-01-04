@@ -17,9 +17,9 @@ public class EnemyContoller : MonoBehaviour
     public int health;
     private Transform attackTarget; // can be player of zombie (if confused)
     private float chaseSpeed=2.0f;
-    private float patrolSpeed=0.3f;
+    private float patrolSpeed=0.5f;
     public Transform childTransform;
-    private float chaseAngle=360.0f;
+    private float chaseAngle=130.0f;
     float attackCooldownTime = 1;
     bool canAttack = true;
     int damage = 50;
