@@ -2,24 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEditor;
 public class EnemyContoller : MonoBehaviour
 {
-    NavMeshAgent navMeshAgent;
+    [HideInInspector] public NavMeshAgent navMeshAgent;
     public Transform playerTransform;
     public enum State { idle, chasing, attack, patrol, dead, stunned,pipe };
-    private State currentState;
-    public Animator animator;
+    public State defualtState;
+    [HideInInspector] public State currentState;
+    [HideInInspector] public Animator animator;
     public float attackDistance = 1.0f,chaseDistance = 5.0f;
-    private Vector3[] patrolling;
+    public Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
     private Transform attackTarget; // can be player of zombie (if confused)
-    private float stunTimer = 0, confusionTimer = 0;  private float pipeTimer = 0;
-    private bool isConfused;
     private float chaseSpeed=2.0f;
     private float patrolSpeed=0.3f;
     public Transform childTransform;
     private float chaseAngle=130.0f;
+    float attackCooldownTime = 1;
+    bool canAttack = true;
+    int damage = 50;
     public void Confuse()
     {
        
@@ -36,8 +39,7 @@ public class EnemyContoller : MonoBehaviour
         
         if(enemies.Count == 0)
             return;
-        confusionTimer = 0;
-        isConfused = true;
+        StartCoroutine(waitForConfusion());
         int random = Random.Range(0,enemies.Count);
         attackTarget = (Transform)enemies[random];
     }
@@ -45,20 +47,18 @@ public class EnemyContoller : MonoBehaviour
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         attackTarget = playerTransform;
-        currentState = State.patrol;
+        currentState = defualtState;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        patrolling = new Vector3[2];
-        patrolling[0] = transform.position +  2*transform.forward;
-        patrolling[1] = transform.position - 2*transform.forward;
     }
     public void stun()
     {
-        stunTimer = 0;
         currentState = State.stunned;
         navMeshAgent.SetDestination(transform.position);
         animator.SetBool("isChasing",false);
         animator.SetBool("isAttacking", false);
         animator.SetBool("isStunned", true);
+        animator.SetBool("isIdle", false);
+        StartCoroutine(getUnstunned());
     }
     public void chase(Transform target)
     {
@@ -66,30 +66,49 @@ public class EnemyContoller : MonoBehaviour
         currentState = State.chasing;
         animator.SetBool("isChasing", true);
         animator.SetBool("isAttacking", false);
+        animator.SetBool("isIdle", false);
         navMeshAgent.SetDestination(target.position);
     }
-    void attack()
+    public virtual void attack()
     {
-    
-        currentState = State.attack;
-        animator.SetBool("isAttacking", true);
-        navMeshAgent.SetDestination(transform.position);
+        if(attackTarget.tag=="Player")
+        {
+            PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();  
+            if(cont.health>0)
+            {
+                canAttack = false;
+                currentState = State.attack;
+                animator.SetBool("isAttacking", true);
+                navMeshAgent.SetDestination(transform.position);
+                StartCoroutine(applyDamage(cont));
+
+            }
+            else
+            {
+                currentState = State.idle;
+                animator.SetBool("isIdle",true);
+            }
+        }
+        else if(attackTarget.tag=="Enemy")
+        {
+            EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
+            if(cont.health>0)
+            {
+                canAttack = false;
+                currentState = State.attack;
+                animator.SetBool("isAttacking", true);
+                navMeshAgent.SetDestination(transform.position);
+                cont.TakeDamage(damage);
+            }
+        }
+        StartCoroutine(resumeAttack());
     }
-    // void idle()
-    // {
-    //     currentState = State.idle;
-    //     animator.SetBool("isAttacking", false);
-    //     animator.SetBool("isChasing", false);
-    //     navMeshAgent.SetDestination(transform.position);
-    // }
     void patrol()
     {
         navMeshAgent.speed=patrolSpeed;
         if (currentState != State.patrol)
         {
             currentState = State.patrol;
-            patrolling[0] = transform.position +  2*transform.forward;
-            patrolling[1] = transform.position - 2*transform.forward;
             patrollingIdx=0;
         }
         
@@ -104,32 +123,55 @@ public class EnemyContoller : MonoBehaviour
         }
         navMeshAgent.SetDestination(patrolling[patrollingIdx]);
     }
+    void backToDefault()
+    {
+        if(defualtState == State.patrol)
+            patrol();
+        if(defualtState == State.idle)
+            idle();
+    }
+    void idle()
+    {
+        currentState = State.idle;
+        animator.SetBool("isIdle", true);
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isChasing", false);
+        navMeshAgent.SetDestination(transform.position);
+    }
+    IEnumerator waitForConfusion()
+    {
+        yield return new WaitForSeconds(5);
+        backToDefault();
+        attackTarget = playerTransform;
+    }
+    IEnumerator getUnstunned()
+    {
+        yield return new WaitForSeconds(3);
+        animator.SetBool("isStunned", false);
+        backToDefault();
+    }
+    IEnumerator pipeExploded()
+    {
+        yield return new WaitForSeconds(4);
+        animator.SetBool("isReachedPipe",false);
+        animator.SetBool("isPiped", false);
+        backToDefault();
+    }
+    IEnumerator resumeAttack(){
+        yield return new WaitForSeconds(attackCooldownTime);
+        canAttack = true;
+        animator.SetBool("isAttacking", false);
+    }
+    IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
+    {
+        yield return new WaitForSeconds(0.5f);
+        cont.TakeDamage(damage);
+    }
     void Update()
     {
         childTransform.position=transform.position;
         if(currentState == State.dead)
             return;
-        if (currentState == State.stunned)
-        {
-            stunTimer = stunTimer + Time.deltaTime;
-            if (stunTimer > 3.0f)
-            {
-                animator.SetBool("isStunned", false);
-                patrol();
-            }
-            else
-                return;
-        }
-        if(isConfused)
-        {
-            confusionTimer += Time.deltaTime;
-            if(confusionTimer > 5.0f){
-                patrol();
-                attackTarget = playerTransform;
-                isConfused = false;
-                confusionTimer = 0;
-            }
-        }
         if(currentState==State.patrol)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
@@ -157,21 +199,22 @@ public class EnemyContoller : MonoBehaviour
             {
                 chase(attackTarget);
             }
+            else if(canAttack)
+            {
+                attack();
+            }
         }
         else if (currentState == State.pipe)
         {
-            pipeTimer = pipeTimer + Time.deltaTime;
-            if (pipeTimer > 4.0f)
-            {
-                animator.SetBool("isReachedPipe",false);
-                animator.SetBool("isPiped", false);
-                patrol();
-            }
-            else if(navMeshAgent.remainingDistance<1f)
+            if(navMeshAgent.remainingDistance<1f)
             {
                 animator.SetBool("isReachedPipe",true);
             }
-
+        }
+        else if(currentState == State.idle)
+        {
+            if (canSee(chaseDistance, chaseAngle, attackTarget))
+                chase(attackTarget);
         }
     }
 
@@ -189,7 +232,6 @@ public class EnemyContoller : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-
             Die();
         }
 
@@ -201,6 +243,7 @@ public class EnemyContoller : MonoBehaviour
         currentState = State.dead;
         Destroy(gameObject,7.0f);
         this.gameObject.GetComponent<CapsuleCollider>().enabled=false;
+        print("Died"+gameObject.name);
     }
     public bool canSeePlayer(float rangeDistance, float rangeAngle){
         return canSee(rangeDistance,rangeAngle,playerTransform);
@@ -216,8 +259,6 @@ public class EnemyContoller : MonoBehaviour
             return true;
         }
         return false;
-
-
     }
 
     private float CalculatePathLength(Vector3 targetPosition)
@@ -271,13 +312,14 @@ public class EnemyContoller : MonoBehaviour
         //    pipeTimer = 0f;
         //    // what I am missing here the animator controller to add isPipe 
         //}
-            navMeshAgent.SetDestination(grenadePosition.position);
-            currentState = State.pipe;
-            navMeshAgent.speed= chaseSpeed;
-            animator.SetBool("isPiped", true);
-            animator.SetBool("isAttacking", false);
-            animator.SetBool("isChasing", false);
-            pipeTimer = 0f;
+        navMeshAgent.SetDestination(grenadePosition.position);
+        currentState = State.pipe;
+        navMeshAgent.speed= chaseSpeed;
+        animator.SetBool("isPiped", true);
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isChasing", false);
+        animator.SetBool("isIdle", false);
+        StartCoroutine(pipeExploded());
     }
     public string getState()
     {
