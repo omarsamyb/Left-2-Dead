@@ -19,11 +19,12 @@ public class EnemyContoller : MonoBehaviour
     private float chaseSpeed=2.0f;
     private float patrolSpeed=0.3f;
     public Transform childTransform;
-    private float chaseAngle=130.0f;
+    private float chaseAngle=360.0f;
     float attackCooldownTime = 1;
     bool canAttack = true;
     int damage = 50;
-    Coroutine conf;
+    private bool isConfused=false;
+    private float stunTimer=0,confusionTimer=0,pipeTimer=0;
     public void Confuse()
     {
         RaycastHit [] hits=Physics.SphereCastAll(transform.position,chaseDistance,transform.forward,0.0f);
@@ -39,12 +40,12 @@ public class EnemyContoller : MonoBehaviour
         
         if(enemies.Count == 0)
             return;
-        if(conf!=null)
-            StopCoroutine(conf);
-        conf = StartCoroutine(waitForConfusion());
+        confusionTimer = 0;
+        isConfused = true;
         int random = Random.Range(0,enemies.Count);
         attackTarget = (Transform)enemies[random];
     }
+
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -55,17 +56,23 @@ public class EnemyContoller : MonoBehaviour
     }
     public void stun()
     {
+        if(currentState==State.dead)
+            return;
         currentState = State.stunned;
         navMeshAgent.SetDestination(transform.position);
         animator.SetBool("isChasing",false);
         animator.SetBool("isAttacking", false);
-        animator.SetBool("isStunned", true);
         animator.SetBool("isIdle", false);
-        StopCoroutine(waitForConfusion());
-        StartCoroutine(getUnstunned());
+        animator.SetBool("isPiped", false);
+        animator.SetBool("isReachedPipe", false);
+        animator.SetBool("isStunned", true);
+        endConfusion(false);
+        stunTimer = 0;
     }
     public void chase(Transform target)
     {
+        if(currentState==State.dead)
+            return;
         navMeshAgent.speed=chaseSpeed;
         currentState = State.chasing;
         animator.SetBool("isChasing", true);
@@ -75,38 +82,34 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void attack()
     {
+        if(currentState==State.dead)
+            return;
         if(attackTarget.tag=="Player")
         {
             PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();  
-            if(cont.health>0)
-            {
-                canAttack = false;
-                currentState = State.attack;
-                animator.SetBool("isAttacking", true);
-                navMeshAgent.SetDestination(transform.position);
-                StartCoroutine(applyDamage(cont));
-            }
-            else
-            {
-                idle();
-            }
+            canAttack = false;
+            currentState = State.attack;
+            animator.SetBool("isAttacking", true);
+            navMeshAgent.SetDestination(transform.position);
+            StartCoroutine(applyDamage(cont));
         }
         else if(attackTarget.tag=="Enemy")
         {
             EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
-            if(cont.health>0)
-            {
-                canAttack = false;
-                currentState = State.attack;
-                animator.SetBool("isAttacking", true);
-                navMeshAgent.SetDestination(transform.position);
-                cont.TakeDamage(damage);
-            }
+            
+            canAttack = false;
+            currentState = State.attack;
+            animator.SetBool("isAttacking", true);
+            navMeshAgent.SetDestination(transform.position);
+            cont.TakeDamage(damage);
+          
         }
         StartCoroutine(resumeAttack());
     }
     void patrol()
-    {
+    {        
+        if(currentState==State.dead)
+            return;
         navMeshAgent.speed=patrolSpeed;
         if (currentState != State.patrol)
         {
@@ -143,32 +146,26 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         navMeshAgent.SetDestination(transform.position);
     }
-    IEnumerator waitForConfusion()
+    void endConfusion(bool callBacktoDefault)
     {
-        yield return new WaitForSeconds(5);
-        if(health>0)
-        {
+        isConfused=false;
+        attackTarget = playerTransform;
+        if(callBacktoDefault)
             backToDefault();
-            attackTarget = playerTransform;
-        }
-        
-        conf = null;
     }
-    IEnumerator getUnstunned()
+    void endStun(bool callBacktoDefault)
     {
-        yield return new WaitForSeconds(3);
         animator.SetBool("isStunned", false);
-        backToDefault();
-    }
-    IEnumerator pipeExploded()
-    {
-        yield return new WaitForSeconds(4);
-        if(health>0)
-        {
-            animator.SetBool("isReachedPipe",false);
-            animator.SetBool("isPiped", false);
+        if(callBacktoDefault)
             backToDefault();
-        }
+    }
+    void pipeExploded(bool callBacktoDefault)
+    {
+        
+        animator.SetBool("isReachedPipe",false);
+        animator.SetBool("isPiped", false);
+        if(callBacktoDefault)
+            backToDefault();
     }
     IEnumerator resumeAttack(){
         yield return new WaitForSeconds(attackCooldownTime);
@@ -178,13 +175,21 @@ public class EnemyContoller : MonoBehaviour
     IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
-        cont.TakeDamage(damage);
+        if(health>0)
+            cont.TakeDamage(damage);
     }
     void Update()
     {
         childTransform.position=transform.position;
         if(currentState == State.dead)
             return;
+        if (isConfused)
+        {
+            confusionTimer += Time.deltaTime;
+            if (confusionTimer > 5.0f) {
+                endConfusion(true);
+            }
+        }
         if(currentState==State.patrol)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
@@ -197,7 +202,7 @@ public class EnemyContoller : MonoBehaviour
             }
         }
         else if(currentState==State.chasing){
-            if (canSee(attackDistance, 30f,attackTarget) && canAttack)
+            if (canSee(attackDistance, 30f,attackTarget) && canAttack && isAlive(attackTarget))
             {
                 attack();
             }
@@ -222,15 +227,29 @@ public class EnemyContoller : MonoBehaviour
         }
         else if (currentState == State.pipe)
         {
-            if(navMeshAgent.remainingDistance<1f)
+           pipeTimer = pipeTimer + Time.deltaTime;
+            if (pipeTimer > 4.0f)
             {
-                animator.SetBool("isReachedPipe",true);
+                animator.SetBool("isReachedPipe", false);
+                animator.SetBool("isPiped", false);
+                pipeExploded(true);
+            }
+            else if (navMeshAgent.remainingDistance < 1f)
+            {
+                animator.SetBool("isReachedPipe", true);
             }
         }
         else if(currentState == State.idle)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
                 chase(attackTarget);
+        }
+        else if(currentState == State.stunned){
+            stunTimer = stunTimer + Time.deltaTime;
+            if (stunTimer > 3.0f)
+            {
+                endStun(true);
+            }
         }
     }
 
@@ -336,8 +355,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isAttacking", false);
         animator.SetBool("isChasing", false);
         animator.SetBool("isIdle", false);
-        StopCoroutine(waitForConfusion()); //If i am in bile, ignore bile effect
-        StartCoroutine(pipeExploded());
+        endConfusion(false); //If i am in pipe, ignore bile effect
     }
     public string getState()
     {
