@@ -13,12 +13,13 @@ public class CompanionGunScript : MonoBehaviour
     private GunStyles style;
     private int amountOfBulletsPerLoad;
     private int bulletsIHave;
-    private int maxCapacity;
+    private int currentClips;
     private float roundsPerSecond;
     private int damage;
     private float waitTillNextFire;
     private RaycastHit hitInfo;
     private AudioSource fireSource;
+    private TextMesh HUD_companion;
 
     void Start()
     {
@@ -29,12 +30,12 @@ public class CompanionGunScript : MonoBehaviour
         wallDecalEffect = weapon.wallDecalEffect;
         style = weapon.currentStyle;
         amountOfBulletsPerLoad = (int)weapon.amountOfBulletsPerLoad;
-        bulletsIHave = amountOfBulletsPerLoad;
-        maxCapacity = amountOfBulletsPerLoad * maxClips;
         roundsPerSecond = weapon.roundsPerSecond;
         damage = (int)weapon.damage;
         fireSource = GetComponent<AudioSource>();
         fireSource.clip = shootSFX;
+        currentClips = 1;
+        bulletsIHave = amountOfBulletsPerLoad;
     }
 
     void Update()
@@ -65,6 +66,12 @@ public class CompanionGunScript : MonoBehaviour
             fireSource.Play();
             waitTillNextFire = 1;
             bulletsIHave--;
+            if(bulletsIHave == 0)
+            {
+                currentClips--;
+                if (currentClips != 0)
+                    bulletsIHave += amountOfBulletsPerLoad;
+            }
         }
     }
     private void Bullet(Quaternion rotation)
@@ -89,6 +96,24 @@ public class CompanionGunScript : MonoBehaviour
     }
     public void AddClip()
     {
-        bulletsIHave = Mathf.Clamp(bulletsIHave + amountOfBulletsPerLoad, 0, maxCapacity);
+        currentClips = Mathf.Clamp(currentClips++, 0, maxClips);
+    }
+
+    // GUI
+    void OnGUI()
+    {
+        if (!HUD_companion)
+        {
+            try
+            {
+                HUD_companion = GameObject.Find("HUD_companion").GetComponent<TextMesh>();
+            }
+            catch (System.Exception ex)
+            {
+                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+            }
+        }
+        if (HUD_companion)
+            HUD_companion.text = currentClips.ToString() + " - " + bulletsIHave.ToString();
     }
 }
