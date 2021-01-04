@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
     public GameObject character;
+    public EnemyContoller criticalEnemy;
 
     private void Awake()
     {

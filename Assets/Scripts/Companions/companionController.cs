@@ -25,6 +25,7 @@ public class CompanionController : MonoBehaviour
 
     private NavMeshAgent agent;
     private Transform player;
+    private PlayerController playerController;
     private Animator animator;
     private EnemyContoller normalEnemy;
     private EnemyContoller specialEnemy;
@@ -53,6 +54,7 @@ public class CompanionController : MonoBehaviour
         animator = GetComponent<Animator>();
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        playerController = player.GetComponent<PlayerController>();
         range = 40f;
     }
 
@@ -93,7 +95,8 @@ public class CompanionController : MonoBehaviour
             Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
             fireSource.Play();
             waitTillNextFire = 1;
-            bulletsIHave--;
+            if(!GameManager.instance.inRageMode)
+                bulletsIHave--;
             if (bulletsIHave == 0)
             {
                 currentClips--;
@@ -104,36 +107,40 @@ public class CompanionController : MonoBehaviour
     }
     private void Bullet()
     {
-        normalEnemy = null;
-        specialEnemy = null;
-        hits = Physics.OverlapBox(transform.position, new Vector3(range/2, 1, range/2), Quaternion.identity, enemyLayer);
-        foreach (Collider enemy in hits)
+        if (playerController.criticalEnemy == null)
         {
-            if (enemy.gameObject.CompareTag("Enemy") && normalEnemy == null)
-                normalEnemy = enemy.GetComponent<EnemyContoller>();
-            else if (enemy.gameObject.CompareTag("SpecialEnemy"))
+            normalEnemy = null;
+            specialEnemy = null;
+            hits = Physics.OverlapBox(transform.position, new Vector3(range / 2, 1, range / 2), Quaternion.identity, enemyLayer);
+            foreach (Collider enemy in hits)
             {
-                specialEnemy = enemy.GetComponent<EnemyContoller>();
-                break;
+                if (enemy.gameObject.CompareTag("Enemy") && normalEnemy == null)
+                    normalEnemy = enemy.GetComponent<EnemyContoller>();
+                else if (enemy.gameObject.CompareTag("SpecialEnemy"))
+                {
+                    specialEnemy = enemy.GetComponent<EnemyContoller>();
+                    break;
+                }
+            }
+            if (specialEnemy)
+                chosenEnemy = specialEnemy;
+            else
+                chosenEnemy = normalEnemy;
+            // For roations
+            if (chosenEnemy)
+            {
+                Vector3 direction = (chosenEnemy.transform.position - transform.position).normalized;
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                transform.rotation = lookRotation;
+                //chosenEnemy.TakeDamage(GetComponent<CompanionGunScript>().damage);
+                //while ((Quaternion.Angle(transform.rotation, lookRotation) > 0.01f))
+                //{
+                //    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
+                //}
             }
         }
-        if (specialEnemy)
-            chosenEnemy = specialEnemy;
         else
-            chosenEnemy = normalEnemy;
-        // For roations
-        if (chosenEnemy)
-        {
-            Vector3 direction = (chosenEnemy.transform.position - transform.position).normalized;
-            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            agent.updateRotation = false;
-            transform.rotation = lookRotation;
-            //chosenEnemy.TakeDamage(GetComponent<CompanionGunScript>().damage);
-            //while ((Quaternion.Angle(transform.rotation, lookRotation) > 0.01f))
-            //{
-            //    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
-            //}
-        }
+            chosenEnemy = playerController.criticalEnemy;
 
         float infrontOfWallDistance = 0.1f;
         Ray ray = new Ray(muzzelSpawn.transform.position, transform.rotation * Vector3.forward);
@@ -151,7 +158,6 @@ public class CompanionController : MonoBehaviour
                 hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage);
             }
         }
-        agent.updateRotation = true;
     }
     public void AddClip()
     {
