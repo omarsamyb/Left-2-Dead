@@ -333,7 +333,7 @@ public class GunScript : MonoBehaviour
                     hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
                     foreach(Collider collider in hits)
                     {
-                        //collider.gameObject.GetComponent<EnemyContoller>.CHANGE_THIS_TO_CORRECT_FUNCTION;
+                        collider.GetComponent<EnemyContoller>().hearFire();
                     }
                 }
                 int randomNumberForMuzzelFlash = Random.Range(0, 5);

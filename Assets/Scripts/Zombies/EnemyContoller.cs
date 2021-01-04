@@ -7,7 +7,7 @@ public class EnemyContoller : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent navMeshAgent;
     public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe };
+    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe,hear };
     public State defaultState;
     [HideInInspector] public State currentState;
     [HideInInspector] public Animator animator;
@@ -19,12 +19,13 @@ public class EnemyContoller : MonoBehaviour
     private float chaseSpeed=2.0f;
     private float patrolSpeed=0.5f;
     public Transform childTransform;
-    private float chaseAngle=130.0f;
+    private float chaseAngle=0.0f;
     float attackCooldownTime = 1;
     bool canAttack = true;
     int damage = 50;
     private bool isConfused=false;
     private float stunTimer=0,confusionTimer=0,pipeTimer=0;
+    private Vector3 hearedLocation;
     public void Confuse()
     {
         RaycastHit [] hits=Physics.SphereCastAll(transform.position,chaseDistance,transform.forward,0.0f);
@@ -32,17 +33,17 @@ public class EnemyContoller : MonoBehaviour
         ArrayList enemies = new ArrayList(); 
         foreach (RaycastHit hit in hits)
         {
-            if(hit.transform.gameObject.tag=="Enemy" && hit.transform.gameObject!=this.gameObject)
+            if (hit.transform.gameObject.tag == "Enemy" && hit.transform.gameObject != this.gameObject)
             {
                 enemies.Add(hit.transform);
             }
         }
-        
-        if(enemies.Count == 0)
+
+        if (enemies.Count == 0)
             return;
         confusionTimer = 0;
         isConfused = true;
-        int random = Random.Range(0,enemies.Count);
+        int random = Random.Range(0, enemies.Count);
         attackTarget = (Transform)enemies[random];
     }
 
@@ -60,7 +61,7 @@ public class EnemyContoller : MonoBehaviour
             return;
         currentState = State.stunned;
         navMeshAgent.SetDestination(transform.position);
-        animator.SetBool("isChasing",false);
+        animator.SetBool("isChasing", false);
         animator.SetBool("isAttacking", false);
         animator.SetBool("isIdle", false);
         animator.SetBool("isPiped", false);
@@ -71,6 +72,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public void chase(Transform target)
     {
+
         if(currentState==State.dead)
             return;
         navMeshAgent.speed=chaseSpeed;
@@ -116,10 +118,10 @@ public class EnemyContoller : MonoBehaviour
             currentState = State.patrol;
             patrollingIdx=0;
         }
-        
+
         animator.SetBool("isAttacking", false);
         animator.SetBool("isChasing", false);
-       
+
         if (navMeshAgent.remainingDistance <= 0.5f)
         {
             patrollingIdx++;
@@ -180,9 +182,10 @@ public class EnemyContoller : MonoBehaviour
     }
     void Update()
     {
-        childTransform.position=transform.position;
-        if(currentState == State.dead)
+        childTransform.position = transform.position;
+        if (currentState == State.dead)
             return;
+
         if (isConfused)
         {
             confusionTimer += Time.deltaTime;
@@ -190,7 +193,7 @@ public class EnemyContoller : MonoBehaviour
                 endConfusion(true);
             }
         }
-        if(currentState==State.patrol)
+        if (currentState == State.patrol)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
             {
@@ -201,6 +204,7 @@ public class EnemyContoller : MonoBehaviour
                 patrol();
             }
         }
+
         else if(currentState==State.chasing){
             if (canSee(attackDistance, 30f,attackTarget) && canAttack && isAlive(attackTarget))
             {
@@ -215,7 +219,7 @@ public class EnemyContoller : MonoBehaviour
                     backToDefault();
             }
         }
-        else if(currentState==State.attack){
+        else if (currentState == State.attack) {
             if (!canSee(attackDistance, 30f, attackTarget))
             {
                 chase(attackTarget);
@@ -251,6 +255,17 @@ public class EnemyContoller : MonoBehaviour
                 endStun(true);
             }
         }
+        else if (currentState == State.hear)
+        {
+            if (canSee(chaseDistance, chaseAngle, attackTarget))
+            {
+                chase(attackTarget);
+            }
+            else if (Vector3.Distance(hearedLocation, transform.position) < 2f)
+            {
+                backToDefault();
+            }
+        }
     }
 
     private bool InRange(Transform transform1, Transform transform2, float range)
@@ -269,7 +284,6 @@ public class EnemyContoller : MonoBehaviour
         {
             Die();
         }
-
     }
     public void Die()
     {
@@ -360,5 +374,18 @@ public class EnemyContoller : MonoBehaviour
     public string getState()
     {
         return currentState.ToString();
+    }
+    public void hearFire()
+    {
+        if (currentState == State.idle || currentState == State.patrol || currentState==State.hear)
+        {
+            hearedLocation = playerTransform.position;
+            currentState = State.hear;
+            navMeshAgent.speed = chaseSpeed;
+            navMeshAgent.SetDestination(hearedLocation);
+            animator.SetBool("isChasing", true);
+            animator.SetBool("isIdle",false);
+            animator.SetBool("isPatrol",false);
+        }
     }
 }
