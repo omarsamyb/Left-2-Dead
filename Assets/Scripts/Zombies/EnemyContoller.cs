@@ -240,8 +240,15 @@ public class EnemyContoller : MonoBehaviour
         {
             if (pipeTimer > 4.0f)
                 pipeExploded(true);
-            else if (navMeshAgent.remainingDistance < 1f)
-                animator.SetBool("isReachedPipe", true);
+            else
+            {
+                navMeshAgent.SetDestination(pipePosition.position);
+                if (navMeshAgent.remainingDistance < 0.5f)
+                {
+                    animator.SetBool("isReachedPipe", true);
+                    navMeshAgent.ResetPath();
+                }
+            }
         }
         else if(currentState == State.idle)
         {
@@ -258,7 +265,7 @@ public class EnemyContoller : MonoBehaviour
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
                 chase(attackTarget);
-            else if (Vector3.Distance(hearedLocation, transform.position) < 2f)
+            else if (Vector3.Distance(hearedLocation, transform.position) < 0.5f)
                 backToDefault();
         }
     }
@@ -377,9 +384,11 @@ public class EnemyContoller : MonoBehaviour
             animator.SetBool("isIdle",false);
         }
     }
-    // void OnTriggerEnter(Collider other) 
-    // {
-    //     if(other.gameObject.tag=="Player" && other.gameObject.GetComponent<PlayerController>().health>0)
-    //         chase(other.transform);
-    // }
+    void OnCollisionEnter(Collision other)
+    {
+        print(other.gameObject.name);
+        // print(other.gameObject.tag);
+        if(other.gameObject.tag=="Player" && other.gameObject.GetComponent<PlayerController>().health>0)
+            chase(other.transform);
+    }
 }
