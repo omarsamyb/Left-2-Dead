@@ -830,10 +830,9 @@ GameObject:
   - component: {fileID: 6900114107129951132}
   - component: {fileID: 4043973276479150952}
   - component: {fileID: 7625683376737407092}
-  - component: {fileID: -4003029019757396602}
   m_Layer: 0
   m_Name: Zoey
-  m_TagString: Untagged
+  m_TagString: Companion
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1020,23 +1019,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &-4003029019757396602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2917571053234061240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a54490da2cdab1ff2a2896844197d58f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  player: {fileID: 0}
-  chosenEnemy: {fileID: 0}
-  Data: {fileID: 11400000, guid: d5ee4fdaf1b4ccc098dd083b121f59fb, type: 2}
-  chooseCompanion: 0
 --- !u!1 &3237047077799522072
 GameObject:
   m_ObjectHideFlags: 0

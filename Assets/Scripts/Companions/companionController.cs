@@ -1,144 +1,182 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-
-[RequireComponent(typeof (UnityEngine.AI.NavMeshAgent))]
-public class companionController : MonoBehaviour
+[RequireComponent(typeof (NavMeshAgent))]
+public class CompanionController : MonoBehaviour
 {
-        public static companionController instance;
-    // Start is called before the first frame update
-        private NavMeshAgent agent;
-        public Transform target;
-        public GameObject player;
-        private EnemyContoller closestEnemy;
-        private EnemyContoller closestEnemy2;
-        public EnemyContoller chosenEnemy;
-        private Animator animator;
-        public CompanionData Data;
-        public int chooseCompanion;
-        private int choosenAmmo;
-        private void Awake()
-        {
-            instance = this;
-        }
-        private void Start()
-        {
-            // get the components on the object we need ( should not be null due to require component so no need to check )
-            agent = GetComponentInChildren<UnityEngine.AI.NavMeshAgent>();
-            animator = GetComponent<Animator>();
-            if(chooseCompanion == 1){ // Ellie
-                Data.MaxClips = 3;
-                Data.weapon = "Pistol";
-                choosenAmmo = Data.pistolAmmo;
-                Data.ammo = Data.pistolAmmo;
-                Data.ability = "2x Rage Meter";
-            }
-            else if(chooseCompanion == 2){ // Zoey
-                Data.MaxClips = 5;
-                Data.weapon = "Hunting Rifle";
-                choosenAmmo = Data.huntingRifleAmmo;
-                Data.ammo = Data.huntingRifleAmmo;
-                Data.ability = "+1 HP Per Sec";
-            }
-            else if(chooseCompanion==3){ // Louis
-                Data.MaxClips = 4;
-                Data.weapon = "Assault Rifle";
-                choosenAmmo = Data.assultRifleAmmo;
-                Data.ammo = Data.assultRifleAmmo;
-                Data.ability = "2x Collectibles";
-            }
-        }
-        private void Update()
-        {
-            if (target != null)
-                agent.SetDestination(target.position);
-            if(agent.remainingDistance > agent.stoppingDistance){
-                animator.SetBool("isMoving", true);
-            }
-            else{
-                animator.SetBool("isMoving", false);
+    public string weaponName;
+    public int maxClips = 3;
+    public GameObject muzzelSpawn;
 
-            }
-            FindClosestEnemy();
+    private GameObject[] muzzelFlash;
+    private AudioClip shootSFX;
+    private GameObject bloodEffect;
+    private GameObject wallDecalEffect;
+    private GunStyles style;
+    private int amountOfBulletsPerLoad;
+    private int bulletsIHave;
+    private int currentClips;
+    private float roundsPerSecond;
+    private int damage;
+    private float waitTillNextFire;
+    private RaycastHit hitInfo;
+    private AudioSource fireSource;
+    private TextMesh HUD_companion;
+
+    private NavMeshAgent agent;
+    private Transform player;
+    private Animator animator;
+    private EnemyContoller normalEnemy;
+    private EnemyContoller specialEnemy;
+    private EnemyContoller chosenEnemy;
+    Collider[] hits;
+    LayerMask enemyLayer;
+    private float range;
+
+    void Start()
+    {
+        GunScript weapon = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + weaponName + ".prefab", typeof(GameObject))).GetComponent<GunScript>();
+        muzzelFlash = weapon.muzzelFlash;
+        shootSFX = weapon.shootSFX;
+        bloodEffect = weapon.bloodEffect;
+        wallDecalEffect = weapon.wallDecalEffect;
+        style = weapon.currentStyle;
+        amountOfBulletsPerLoad = (int)weapon.amountOfBulletsPerLoad;
+        roundsPerSecond = weapon.roundsPerSecond;
+        damage = (int)weapon.damage;
+        fireSource = GetComponent<AudioSource>();
+        fireSource.clip = shootSFX;
+        currentClips = 1;
+        bulletsIHave = amountOfBulletsPerLoad;
+
+        agent = GetComponentInChildren<NavMeshAgent>();
+        animator = GetComponent<Animator>();
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        range = 40f;
+    }
+
+    void Update()
+    {
+        Shooting();
+        Movement();
+    }
+    private void Movement()
+    {
+        if (player != null)
+            agent.SetDestination(player.position);
+        if (agent.remainingDistance > agent.stoppingDistance)
+            animator.SetBool("isMoving", true);
+        else
+            animator.SetBool("isMoving", false);
+    }
+    private void Shooting()
+    {
+        if (style == GunStyles.nonautomatic)
+        {
             if (Input.GetKeyDown(KeyCode.Q))
+                ShootWeapon();
+        }
+        else if (style == GunStyles.automatic)
+        {
+            if (Input.GetKey(KeyCode.Q))
+                ShootWeapon();
+        }
+        waitTillNextFire -= roundsPerSecond * Time.deltaTime;
+    }
+    private void ShootWeapon()
+    {
+        if (waitTillNextFire <= 0 && bulletsIHave > 0)
+        {
+            int randomNumberForMuzzelFlash = Random.Range(0, 5);
+            Bullet();
+            Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
+            fireSource.Play();
+            waitTillNextFire = 1;
+            bulletsIHave--;
+            if (bulletsIHave == 0)
             {
-                StartCoroutine(FaceTarget());
+                currentClips--;
+                if (currentClips != 0)
+                    bulletsIHave += amountOfBulletsPerLoad;
             }
         }
-        public IEnumerator FaceTarget()
+    }
+    private void Bullet()
+    {
+        normalEnemy = null;
+        specialEnemy = null;
+        hits = Physics.OverlapBox(transform.position, new Vector3(range/2, 1, range/2), Quaternion.identity, enemyLayer);
+        foreach (Collider enemy in hits)
         {
-            //get difference of the rotation of the player and gameObjects position
+            if (enemy.gameObject.CompareTag("Enemy") && normalEnemy == null)
+                normalEnemy = enemy.GetComponent<EnemyContoller>();
+            else if (enemy.gameObject.CompareTag("SpecialEnemy"))
+            {
+                specialEnemy = enemy.GetComponent<EnemyContoller>();
+                break;
+            }
+        }
+        if (specialEnemy)
+            chosenEnemy = specialEnemy;
+        else
+            chosenEnemy = normalEnemy;
+        // For roations
+        if (chosenEnemy)
+        {
             Vector3 direction = (chosenEnemy.transform.position - transform.position).normalized;
-            //set lookRotation to the x and y of the player
             Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            while((Quaternion.Angle(transform.rotation, lookRotation) > 0.01f)){
-                //apply rotation
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
-            }
-            yield return null;
+            agent.updateRotation = false;
+            transform.rotation = lookRotation;
+            //chosenEnemy.TakeDamage(GetComponent<CompanionGunScript>().damage);
+            //while ((Quaternion.Angle(transform.rotation, lookRotation) > 0.01f))
+            //{
+            //    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
+            //}
         }
 
-        public void SetTarget(Transform target)
-        {
-            this.target = target;
-        }
-        public virtual void Ability()
-        {
-            if(chooseCompanion == 1){ // Ellie
-                // Access Rage Meter Of The Player And Multiply It By 2
-            }
-            else if(chooseCompanion == 2){ // Zoey
-                // Increase HP By 1 Per Sec
-            }
-            else if(chooseCompanion==3){ // Louis
-                // Multiply Collectibles Collected By 2
-            }
-            Debug.Log("Current Ability is " + Data.ability);
-        }
-        public void FindClosestEnemy(){
-            float distanceToClosestEnemy = Mathf.Infinity;
-            float distanceToClosestEnemy2 = Mathf.Infinity;
-            closestEnemy = null;
-            closestEnemy2 = null;
-            chosenEnemy = null;
-            // Get all normal enemies and get their closest and get all special enemies and get closest compare the two if equal then special if not then closest
-            EnemyContoller[] allEnemies = GameObject.FindObjectsOfType<EnemyContoller>();
-            foreach (EnemyContoller currentEnemy in allEnemies){
-                if(currentEnemy.tag == "Enemy"){
-                    float distanceToEnemy = (currentEnemy.transform.position - player.transform.position).sqrMagnitude;
-                    if(distanceToEnemy < distanceToClosestEnemy){
-                        distanceToClosestEnemy = distanceToEnemy;
-                        closestEnemy = currentEnemy;
-                    }
-                }
-                // Special
-                else if (currentEnemy.tag == "SpecialEnemy"){
-                    float distanceToEnemy2 = (currentEnemy.transform.position - player.transform.position).sqrMagnitude;
-                    if(distanceToEnemy2 < distanceToClosestEnemy2){
-                        distanceToClosestEnemy2 = distanceToEnemy2;
-                        closestEnemy2 = currentEnemy;
-                    }
-                }
-            }
-            // Compare Special To Normal Enemy
-            // Case Equal
-            float distanceToNormalEnemy = (closestEnemy.transform.position - player.transform.position).sqrMagnitude;
-            float distanceToSpecialEnemy = (closestEnemy2.transform.position - player.transform.position).sqrMagnitude;
+        float infrontOfWallDistance = 0.1f;
+        Ray ray = new Ray(muzzelSpawn.transform.position, transform.rotation * Vector3.forward);
+        Debug.DrawRay(ray.origin, ray.direction * 40f, Color.red);
 
-            if(distanceToNormalEnemy<distanceToSpecialEnemy){ // Normal Enemy
-                chosenEnemy = closestEnemy;
-            }
-            else if (distanceToNormalEnemy>distanceToSpecialEnemy)// Special
+        if (Physics.Raycast(muzzelSpawn.transform.position, transform.rotation * Vector3.forward, out hitInfo))
+        {
+            if (hitInfo.transform.tag == "Untagged")
             {
-                chosenEnemy = closestEnemy2;
+                Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
             }
-            else{//Special
-                chosenEnemy = closestEnemy2;
+            else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
+            {
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage);
             }
-            Debug.DrawLine(player.transform.position,closestEnemy.transform.position);
-            Debug.DrawLine(player.transform.position,closestEnemy2.transform.position);
+        }
+        agent.updateRotation = true;
+    }
+    public void AddClip()
+    {
+        currentClips = Mathf.Clamp(currentClips++, 0, maxClips);
+    }
 
+    // GUI
+    void OnGUI()
+    {
+        if (!HUD_companion)
+        {
+            try
+            {
+                HUD_companion = GameObject.Find("HUD_companion").GetComponent<TextMesh>();
+            }
+            catch (System.Exception ex)
+            {
+                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+            }
+        }
+        if (HUD_companion)
+            HUD_companion.text = currentClips.ToString() + " - " + bulletsIHave.ToString();
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireCube(transform.position, new Vector3(range, 2, range));
     }
 }
