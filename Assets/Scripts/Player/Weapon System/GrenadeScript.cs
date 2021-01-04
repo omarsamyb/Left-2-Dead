@@ -97,12 +97,15 @@ public class GrenadeScript : MonoBehaviour
     {
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
-        Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
-        foreach (Collider cur in hits)
+        for(int i=0;i<5;i++)
         {
-            cur.GetComponent<EnemyContoller>().Confuse();
+            Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
+            foreach (Collider cur in hits)
+            {
+                cur.GetComponent<EnemyContoller>().Confuse();
+            }
+            yield return new WaitForSeconds(1);
         }
-        yield return new WaitForSeconds(1);
         Destroy(this.gameObject);
     }
     private void OnTriggerEnter(Collider other)
