@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 [RequireComponent(typeof (NavMeshAgent))]
 public class CompanionController : MonoBehaviour
@@ -24,6 +25,7 @@ public class CompanionController : MonoBehaviour
     private TextMesh HUD_companion;
 
     private NavMeshAgent agent;
+    private NavMeshObstacle obstacle;
     private Transform player;
     private PlayerController playerController;
     private Animator animator;
@@ -32,6 +34,7 @@ public class CompanionController : MonoBehaviour
     private EnemyContoller chosenEnemy;
     Collider[] hits;
     LayerMask enemyLayer;
+    LayerMask shootingLayer;
     private float range;
 
     void Start()
@@ -50,12 +53,14 @@ public class CompanionController : MonoBehaviour
         currentClips = 1;
         bulletsIHave = amountOfBulletsPerLoad;
 
-        agent = GetComponentInChildren<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
+        obstacle = GetComponent<NavMeshObstacle>();
         animator = GetComponent<Animator>();
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        shootingLayer = enemyLayer | (1 << LayerMask.NameToLayer("World"));
+        player = PlayerController.instance.player.transform;
         playerController = player.GetComponent<PlayerController>();
-        range = 40f;
+        range = 60f;
     }
 
     void Update()
@@ -65,12 +70,27 @@ public class CompanionController : MonoBehaviour
     }
     private void Movement()
     {
-        if (player != null)
-            agent.SetDestination(player.position);
-        if (agent.remainingDistance > agent.stoppingDistance)
+        if (Vector3.Distance(player.position, transform.position) > agent.stoppingDistance + agent.radius * 2)
+        {
             animator.SetBool("isMoving", true);
-        else
-            animator.SetBool("isMoving", false);
+            obstacle.enabled = false;
+            agent.enabled = true;
+            agent.SetDestination(player.position);
+        }
+
+        if (!agent.pathPending && agent.enabled)
+        {
+            if (agent.remainingDistance <= agent.stoppingDistance + agent.radius * 2)
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude <= 1f)
+                {
+                    animator.SetBool("isMoving", false);
+                    agent.ResetPath();
+                    agent.enabled = false;
+                    obstacle.enabled = true;
+                }
+            }
+        }
     }
     private void Shooting()
     {
@@ -91,7 +111,7 @@ public class CompanionController : MonoBehaviour
         if (waitTillNextFire <= 0 && bulletsIHave > 0)
         {
             int randomNumberForMuzzelFlash = Random.Range(0, 5);
-            Bullet();
+            StartCoroutine(Bullet());
             Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
             fireSource.Play();
             waitTillNextFire = 1;
@@ -105,7 +125,7 @@ public class CompanionController : MonoBehaviour
             }
         }
     }
-    private void Bullet()
+    IEnumerator Bullet()
     {
         if (playerController.criticalEnemy == null)
         {
@@ -126,38 +146,39 @@ public class CompanionController : MonoBehaviour
                 chosenEnemy = specialEnemy;
             else
                 chosenEnemy = normalEnemy;
-            // For roations
-            if (chosenEnemy)
-            {
-                Vector3 direction = (chosenEnemy.transform.position - transform.position).normalized;
-                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                transform.rotation = lookRotation;
-                //chosenEnemy.TakeDamage(GetComponent<CompanionGunScript>().damage);
-                //while ((Quaternion.Angle(transform.rotation, lookRotation) > 0.01f))
-                //{
-                //    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
-                //}
-            }
         }
         else
             chosenEnemy = playerController.criticalEnemy;
 
-        float infrontOfWallDistance = 0.1f;
-        Ray ray = new Ray(muzzelSpawn.transform.position, transform.rotation * Vector3.forward);
-        Debug.DrawRay(ray.origin, ray.direction * 40f, Color.red);
-
-        if (Physics.Raycast(muzzelSpawn.transform.position, transform.rotation * Vector3.forward, out hitInfo))
+        Quaternion lookRotation = transform.rotation;
+        if (chosenEnemy)
         {
-            if (hitInfo.transform.tag == "Untagged")
-            {
-                Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
-            }
-            else if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
+            Vector3 direction = (chosenEnemy.transform.position - transform.position);
+            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        }
+
+        float infrontOfWallDistance = 0.1f;
+
+        if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range*2, shootingLayer))
+        {
+            if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage);
             }
+            else
+            {
+                Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
+            }
         }
+
+        Quaternion initialRotation = transform.rotation;
+        for (float t = 0f; t < 1f; t += 5f * Time.deltaTime)
+        {
+            transform.rotation = Quaternion.Slerp(initialRotation, lookRotation, t);
+            yield return null;
+        }
+
     }
     public void AddClip()
     {
@@ -180,9 +201,5 @@ public class CompanionController : MonoBehaviour
         }
         if (HUD_companion)
             HUD_companion.text = currentClips.ToString() + " - " + bulletsIHave.ToString();
-    }
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireCube(transform.position, new Vector3(range, 2, range));
     }
 }
