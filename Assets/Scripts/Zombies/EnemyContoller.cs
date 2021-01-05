@@ -6,7 +6,7 @@ using UnityEditor;
 public class EnemyContoller : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent navMeshAgent;
-    public Transform playerTransform;
+    private Transform playerTransform;
     public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear };
     public State defaultState;
     [HideInInspector] public State currentState;
@@ -20,9 +20,9 @@ public class EnemyContoller : MonoBehaviour
     private float patrolSpeed = 0.5f;
     public Transform childTransform;
     private float chaseAngle = 130.0f;
-    float attackCooldownTime = 1;
+    public float attackCooldownTime = 1;
     bool canAttack = true;
-    int damage = 5;
+    public int damagePerSec = 5;
     private bool isConfused = false;
     private float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
     private Vector3 hearedLocation;
@@ -105,7 +105,7 @@ public class EnemyContoller : MonoBehaviour
             currentState = State.attack;
             animator.SetBool("isAttacking", true);
             navMeshAgent.SetDestination(transform.position);
-            cont.TakeDamage(damage);
+            cont.TakeDamage(damagePerSec);
 
         }
         StartCoroutine(resumeAttack());
@@ -179,13 +179,12 @@ public class EnemyContoller : MonoBehaviour
     {
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
-        animator.SetBool("isAttacking", false);
     }
     IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
         if (health > 0 && currentState == State.attack)
-            cont.TakeDamage(damage);
+            cont.TakeDamage(damagePerSec);
         print(cont.health);
     }
     void Update()
@@ -233,8 +232,9 @@ public class EnemyContoller : MonoBehaviour
         }
         else if (currentState == State.attack)
         {
-            if (!canSee(attackDistance, 30f, attackTarget))
+            if (!canSee(attackDistance, 30f, attackTarget) && Vector3.Distance(transform.position, attackTarget.position) > 1.2f)
             {
+
                 chase(attackTarget);
             }
             else if (canAttack && isAlive(attackTarget))
@@ -393,7 +393,6 @@ public class EnemyContoller : MonoBehaviour
     void OnCollisionEnter(Collision other)
     {
         print(other.gameObject.name);
-        // print(other.gameObject.tag);
         if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerController>().health > 0)
             chase(other.transform);
     }
