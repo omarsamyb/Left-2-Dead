@@ -10,7 +10,7 @@ public class EnemyContoller : MonoBehaviour
     public enum State { idle, chasing, attack, patrol, dead, stunned,pipe,hear };
     public State defaultState;
     [HideInInspector] public State currentState;
-    [HideInInspector] public Animator animator;
+    public Animator animator;
     public float attackDistance = 1.0f,chaseDistance = 5.0f;
     public Vector3[] patrolling;
     private int patrollingIdx = 0;
@@ -85,6 +85,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void attack()
     {
+        animator.SetBool("isChasing", false);
         if(currentState==State.dead)
             return;
         if(attackTarget.tag=="Player")
@@ -182,8 +183,9 @@ public class EnemyContoller : MonoBehaviour
     IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
-        if(health>0)
+        if(health>0 && currentState==State.attack)
             cont.TakeDamage(damage);
+        print(cont.health);
     }
     void Update()
     {
