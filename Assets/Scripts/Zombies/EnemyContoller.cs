@@ -12,7 +12,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public State currentState;
     public Animator animator;
     public float attackDistance = 1.0f, chaseDistance = 5.0f;
-    private float reachDistance = 1.3f;
+    private float reachDistance;
     public Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
@@ -63,6 +63,7 @@ public class EnemyContoller : MonoBehaviour
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator.SetBool("isIdle", defaultState == State.idle);
+        reachDistance = attackDistance + 0.5f;
     }
     public void stun()
     {
@@ -227,7 +228,7 @@ public class EnemyContoller : MonoBehaviour
 
         else if (currentState == State.chasing)
         {
-            if (canSee(attackDistance, attackAngle, attackTarget) && canAttack)
+            if (navMeshAgent.remainingDistance < attackDistance && canAttack)
             {
                 attack();
             }
@@ -259,7 +260,7 @@ public class EnemyContoller : MonoBehaviour
             else
             {
                 navMeshAgent.SetDestination(pipePosition.position);
-                if (navMeshAgent.remainingDistance < 0.5f)
+                if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance + 0.05f)
                 {
                     animator.SetBool("isReachedPipe", true);
                     navMeshAgent.ResetPath();
