@@ -12,6 +12,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public State currentState;
     public Animator animator;
     public float attackDistance = 1.0f, chaseDistance = 5.0f;
+    private float reachDistance = 1.3f;
     public Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
@@ -19,7 +20,7 @@ public class EnemyContoller : MonoBehaviour
     private float chaseSpeed = 2.0f;
     private float patrolSpeed = 0.5f;
     public Transform childTransform;
-    private float chaseAngle = 130.0f;
+    private float chaseAngle = 130.0f, attackAngle = 40.0f;
     public float attackCooldownTime = 1;
     bool canAttack = true;
     public int damagePerSec = 5;
@@ -27,6 +28,13 @@ public class EnemyContoller : MonoBehaviour
     private float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
     private Vector3 hearedLocation;
     Transform pipePosition;
+    private void FaceTarget(Vector3 destination)
+    {
+        Vector3 lookPos = destination - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.4f);
+    }
     public void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
@@ -73,7 +81,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public void chase(Transform target)
     {
-
+        print("Chase " + gameObject.name + " " + attackTarget.gameObject.name);
         if (currentState == State.dead)
             return;
         navMeshAgent.speed = chaseSpeed;
@@ -85,9 +93,11 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void attack()
     {
+        print("Attack " + gameObject.name + " " + attackTarget.gameObject.name);
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
             return;
+        FaceTarget(attackTarget.position);
         if (attackTarget.tag == "Player")
         {
             PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
@@ -217,7 +227,7 @@ public class EnemyContoller : MonoBehaviour
 
         else if (currentState == State.chasing)
         {
-            if (canSee(attackDistance, 30f, attackTarget) && canAttack)
+            if (canSee(attackDistance, attackAngle, attackTarget) && canAttack)
             {
                 attack();
             }
@@ -232,7 +242,7 @@ public class EnemyContoller : MonoBehaviour
         }
         else if (currentState == State.attack)
         {
-            if (!canSee(attackDistance, 30f, attackTarget) && Vector3.Distance(transform.position, attackTarget.position) > 1.2f)
+            if (!canSee(reachDistance, attackAngle, attackTarget))
             {
 
                 chase(attackTarget);
@@ -319,10 +329,11 @@ public class EnemyContoller : MonoBehaviour
         if (!isAlive(target))
             return false;
         Vector3 direction = (target.position - transform.position).normalized;
+        direction *= rangeDistance;
         float angle = Vector3.Angle(transform.forward, direction);
-        Ray ray = new Ray(transform.position, direction);
+        Ray ray = new Ray(transform.position + new Vector3(0, 1.0f, 0), direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
-        if (checkDistance && hit.transform == target && Mathf.Abs(angle) < rangeAngle)
+        if (checkDistance && Mathf.Abs(angle) < rangeAngle && hit.transform.position == target.position)
             return true;
         return false;
     }
