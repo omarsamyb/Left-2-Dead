@@ -2267,6 +2267,10 @@ PrefabInstance:
       propertyPath: targets.Array.data[0]
       value: 
       objectReference: {fileID: 1143627705}
+    - target: {fileID: 2188033250550441431, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 303f6ae10aa546043917d7931cd60f27, type: 3}
     - target: {fileID: 2188033251273538200, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
       propertyPath: img
       value: 
@@ -2283,9 +2287,17 @@ PrefabInstance:
       propertyPath: targets.Array.data[0]
       value: 
       objectReference: {fileID: 1143559143}
+    - target: {fileID: 2188033251273538202, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 303f6ae10aa546043917d7931cd60f27, type: 3}
     - target: {fileID: 2188033251797695672, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2188033251797695672, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2188033251797695676, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2395,6 +2407,10 @@ PrefabInstance:
       propertyPath: targets.Array.data[0]
       value: 
       objectReference: {fileID: 2098954847}
+    - target: {fileID: 2188033251873104402, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 303f6ae10aa546043917d7931cd60f27, type: 3}
     - target: {fileID: 2188033251901091172, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
       propertyPath: img
       value: 
@@ -2415,6 +2431,14 @@ PrefabInstance:
       propertyPath: targets.Array.data[0]
       value: 
       objectReference: {fileID: 1340299695}
+    - target: {fileID: 2188033251901091174, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 303f6ae10aa546043917d7931cd60f27, type: 3}
+    - target: {fileID: 2188033252054153505, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2188033252316758047, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
       propertyPath: img
       value: 
@@ -2431,6 +2455,10 @@ PrefabInstance:
       propertyPath: targets.Array.data[0]
       value: 
       objectReference: {fileID: 1474045594}
+    - target: {fileID: 2188033252316758049, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 303f6ae10aa546043917d7931cd60f27, type: 3}
     - target: {fileID: 2188033252403619572, guid: dcc7888d34fb64b4fa10ca5a59c470f7, type: 3}
       propertyPath: succParticle
       value: 
