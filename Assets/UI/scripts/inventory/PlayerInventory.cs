@@ -33,9 +33,9 @@ public class PlayerInventory : MonoBehaviour
 
     void OnApplicationQuit() // reseting the inventoryafter exiting the game
     {
-        for(int i = 0; i < ingredientInventory.container.Count; i++){ 
-            ingredientInventory.container[i].resetAmount();
-        }
+        // for(int i = 0; i < ingredientInventory.container.Count; i++){ 
+        //     ingredientInventory.container[i].resetAmount();
+        // }
 
         for(int i = 0; i < AmmoInventory.container.Count; i++){ 
             AmmoInventory.container[i].resetAmount();
