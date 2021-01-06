@@ -112,6 +112,7 @@ public class PlayerController : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
+        AudioManager.instance.Play("DashSFX");
 
         dashTime = 0f;
         float currentDashSpeed = currentSpeed;
