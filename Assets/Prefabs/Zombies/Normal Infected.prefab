@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navMeshAgent: {fileID: 0}
-  playerTransform: {fileID: 0}
   defaultState: 0
   currentState: 0
   animator: {fileID: 955558936432446566}
@@ -22,6 +21,8 @@ MonoBehaviour:
   patrolling: []
   health: 50
   childTransform: {fileID: 3029563786236463362}
+  attackCooldownTime: 1
+  damagePerSec: 5
 --- !u!1001 &7768179784948113958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29,10 +30,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4739249626848226082, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
-      propertyPath: m_AngularSpeed
-      value: 1200
-      objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

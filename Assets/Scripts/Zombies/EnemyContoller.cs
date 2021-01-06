@@ -6,35 +6,43 @@ using UnityEditor;
 public class EnemyContoller : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent navMeshAgent;
-    public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned,pipe,hear };
+    private Transform playerTransform;
+    public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear };
     public State defaultState;
     [HideInInspector] public State currentState;
-    [HideInInspector] public Animator animator;
-    public float attackDistance = 1.0f,chaseDistance = 5.0f;
+    public Animator animator;
+    public float attackDistance = 1.0f, chaseDistance = 5.0f;
+    private float reachDistance;
     public Vector3[] patrolling;
     private int patrollingIdx = 0;
     public int health;
     private Transform attackTarget; // can be player of zombie (if confused)
-    private float chaseSpeed=2.0f;
-    private float patrolSpeed=0.5f;
+    private float chaseSpeed = 2.0f;
+    private float patrolSpeed = 0.5f;
     public Transform childTransform;
-    private float chaseAngle=130.0f;
-    float attackCooldownTime = 1;
+    private float chaseAngle = 130.0f, attackAngle = 40.0f;
+    public float attackCooldownTime = 1;
     bool canAttack = true;
-    int damage = 5;
-    private bool isConfused=false;
-    private float stunTimer=0,confusionTimer=0,pipeTimer=10;
+    public int damagePerSec = 5;
+    private bool isConfused = false;
+    private float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
     private Vector3 hearedLocation;
     Transform pipePosition;
+    private void FaceTarget(Vector3 destination)
+    {
+        Vector3 lookPos = destination - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.4f);
+    }
     public void Confuse()
     {
-        RaycastHit [] hits=Physics.SphereCastAll(transform.position,chaseDistance,transform.forward,0.0f);
-       
-        ArrayList enemies = new ArrayList(); 
+        RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
+
+        ArrayList enemies = new ArrayList();
         foreach (RaycastHit hit in hits)
         {
-            if (hit.transform.gameObject.tag == "Enemy" && hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health>0)
+            if (hit.transform.gameObject.tag == "Enemy" && hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health > 0)
             {
                 enemies.Add(hit.transform);
             }
@@ -44,8 +52,11 @@ public class EnemyContoller : MonoBehaviour
             return;
         confusionTimer = 0;
         isConfused = true;
-        int random = Random.Range(0, enemies.Count);
-        attackTarget = (Transform)enemies[random];
+        int min = 0;
+        for(int i = 0; i < enemies.Count; i++)
+            if(Vector3.Distance(((Transform) enemies[i]).position,transform.position)< Vector3.Distance(((Transform) enemies[min]).position,transform.position))
+                min = i;
+        attackTarget = (Transform)enemies[min];
     }
 
     void Start()
@@ -54,11 +65,12 @@ public class EnemyContoller : MonoBehaviour
         attackTarget = playerTransform;
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        animator.SetBool("isIdle",defaultState==State.idle);
+        animator.SetBool("isIdle", defaultState == State.idle);
+        reachDistance = attackDistance + 0.5f;
     }
     public void stun()
     {
-        if(currentState==State.dead)
+        if (currentState == State.dead)
             return;
         currentState = State.stunned;
         navMeshAgent.SetDestination(transform.position);
@@ -73,10 +85,9 @@ public class EnemyContoller : MonoBehaviour
     }
     public void chase(Transform target)
     {
-
-        if(currentState==State.dead)
+        if (currentState == State.dead)
             return;
-        navMeshAgent.speed=chaseSpeed;
+        navMeshAgent.speed = chaseSpeed;
         currentState = State.chasing;
         animator.SetBool("isChasing", true);
         animator.SetBool("isAttacking", false);
@@ -85,39 +96,41 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void attack()
     {
-        if(currentState==State.dead)
+        animator.SetBool("isChasing", false);
+        if (currentState == State.dead)
             return;
-        if(attackTarget.tag=="Player")
+        FaceTarget(attackTarget.position);
+        if (attackTarget.tag == "Player")
         {
-            PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();  
+            PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
             canAttack = false;
             currentState = State.attack;
             animator.SetBool("isAttacking", true);
             navMeshAgent.SetDestination(transform.position);
             StartCoroutine(applyDamage(cont));
         }
-        else if(attackTarget.tag=="Enemy")
+        else if (attackTarget.tag == "Enemy")
         {
             EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
-            
+
             canAttack = false;
             currentState = State.attack;
             animator.SetBool("isAttacking", true);
             navMeshAgent.SetDestination(transform.position);
-            cont.TakeDamage(damage);
-          
+            cont.TakeDamage(damagePerSec);
+
         }
         StartCoroutine(resumeAttack());
     }
     void patrol()
-    {        
-        if(currentState==State.dead)
+    {
+        if (currentState == State.dead)
             return;
-        navMeshAgent.speed=patrolSpeed;
+        navMeshAgent.speed = patrolSpeed;
         if (currentState != State.patrol)
         {
             currentState = State.patrol;
-            patrollingIdx=0;
+            patrollingIdx = 0;
         }
 
         animator.SetBool("isAttacking", false);
@@ -133,11 +146,11 @@ public class EnemyContoller : MonoBehaviour
     }
     void backToDefault()
     {
-        if(currentState!=State.dead)
+        if (currentState != State.dead)
         {
-            if(defaultState == State.patrol)
+            if (defaultState == State.patrol)
                 patrol();
-            if(defaultState == State.idle)
+            if (defaultState == State.idle)
                 idle();
         }
     }
@@ -151,44 +164,44 @@ public class EnemyContoller : MonoBehaviour
     }
     void endConfusion(bool callBacktoDefault)
     {
-        isConfused=false;
+        isConfused = false;
         attackTarget = playerTransform;
-        if(callBacktoDefault)
+        if (callBacktoDefault)
             backToDefault();
     }
     void endStun(bool callBacktoDefault)
     {
         animator.SetBool("isStunned", false);
-        if(pipeTimer<=4)
+        if (pipeTimer <= 4)
         {
             currentState = State.pipe;
             pipeGrenade(pipePosition, false);
         }
-        else if(callBacktoDefault)
+        else if (callBacktoDefault)
             backToDefault();
     }
     void pipeExploded(bool callBacktoDefault)
     {
-        animator.SetBool("isReachedPipe",false);
+        animator.SetBool("isReachedPipe", false);
         animator.SetBool("isPiped", false);
-        if(callBacktoDefault)
+        if (callBacktoDefault)
             backToDefault();
     }
-    IEnumerator resumeAttack(){
+    IEnumerator resumeAttack()
+    {
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
-        animator.SetBool("isAttacking", false);
     }
     IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
-        if(health>0)
-            cont.TakeDamage(damage);
+        if (health > 0 && currentState == State.attack)
+            cont.TakeDamage(damagePerSec);
     }
     void Update()
     {
         childTransform.position = transform.position;
-        if(pipeTimer<4)
+        if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
         if (currentState == State.dead)
             return;
@@ -196,7 +209,8 @@ public class EnemyContoller : MonoBehaviour
         if (isConfused)
         {
             confusionTimer += Time.deltaTime;
-            if (confusionTimer > 1f) {
+            if (confusionTimer > 1.2f)
+            {
                 endConfusion(true);
             }
         }
@@ -212,26 +226,29 @@ public class EnemyContoller : MonoBehaviour
             }
         }
 
-        else if(currentState==State.chasing){
-            if (canSee(attackDistance, 30f,attackTarget) && canAttack)
+        else if (currentState == State.chasing)
+        {
+            if (navMeshAgent.remainingDistance < attackDistance && canAttack)
             {
                 attack();
             }
             else
             {
                 // keep chasing
-                if(isAlive(attackTarget))
+                if (isAlive(attackTarget))
                     navMeshAgent.SetDestination(attackTarget.position);
                 else
                     backToDefault();
             }
         }
-        else if (currentState == State.attack) {
-            if (!canSee(attackDistance, 30f, attackTarget))
+        else if (currentState == State.attack)
+        {
+            if (!canSee(reachDistance, attackAngle, attackTarget))
             {
+
                 chase(attackTarget);
             }
-            else if(canAttack && isAlive(attackTarget))
+            else if (canAttack && isAlive(attackTarget))
             {
                 attack();
             }
@@ -243,19 +260,19 @@ public class EnemyContoller : MonoBehaviour
             else
             {
                 navMeshAgent.SetDestination(pipePosition.position);
-                if (navMeshAgent.remainingDistance < 0.5f)
+                if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance + 0.05f)
                 {
                     animator.SetBool("isReachedPipe", true);
                     navMeshAgent.ResetPath();
                 }
             }
         }
-        else if(currentState == State.idle)
+        else if (currentState == State.idle)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
                 chase(attackTarget);
         }
-        else if(currentState == State.stunned)
+        else if (currentState == State.stunned)
         {
             stunTimer = stunTimer + Time.deltaTime;
             if (stunTimer > 3.0f)
@@ -288,35 +305,36 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isDying", true);
         navMeshAgent.SetDestination(transform.position);
         currentState = State.dead;
-        Destroy(gameObject,7.0f);
-        this.gameObject.GetComponent<CapsuleCollider>().enabled=false;
+        Destroy(gameObject, 7.0f);
+        this.gameObject.GetComponent<CapsuleCollider>().enabled = false;
         navMeshAgent.ResetPath();
     }
     bool isAlive(Transform target)
     {
-        if(target.gameObject.tag=="Player")
+        if (target.gameObject.tag == "Player")
         {
             PlayerController cont = target.gameObject.GetComponent<PlayerController>();
-            if(cont.health<=0)
+            if (cont.health <= 0)
                 return false;
         }
-        else if(target.gameObject.tag=="Enemy")
+        else if (target.gameObject.tag == "Enemy")
         {
             EnemyContoller cont = target.gameObject.GetComponent<EnemyContoller>();
-            if(cont.health<=0)
+            if (cont.health <= 0)
                 return false;
         }
         return true;
     }
-    public bool canSee(float rangeDistance, float rangeAngle,Transform target)
+    public bool canSee(float rangeDistance, float rangeAngle, Transform target)
     {
-        if(!isAlive(target))
+        if (!isAlive(target))
             return false;
         Vector3 direction = (target.position - transform.position).normalized;
+        direction *= rangeDistance;
         float angle = Vector3.Angle(transform.forward, direction);
-        Ray ray = new Ray(transform.position, direction);
+        Ray ray = new Ray(transform.position + new Vector3(0, 1.0f, 0), direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
-        if (checkDistance && hit.transform==target && Mathf.Abs(angle) < rangeAngle)
+        if (checkDistance && Mathf.Abs(angle) < rangeAngle && hit.transform.position == target.position)
             return true;
         return false;
     }
@@ -325,8 +343,8 @@ public class EnemyContoller : MonoBehaviour
     {
         NavMeshPath path = new NavMeshPath();
 
-        if(navMeshAgent.enabled)
-        navMeshAgent.CalculatePath(targetPosition, path);
+        if (navMeshAgent.enabled)
+            navMeshAgent.CalculatePath(targetPosition, path);
 
 
         float pathLength = 0f;
@@ -336,32 +354,32 @@ public class EnemyContoller : MonoBehaviour
         else
         {
             pathLength = Vector3.Distance(transform.position, path.corners[0]);
-            pathLength += Vector3.Distance(path.corners[path.corners.Length-1], targetPosition);
+            pathLength += Vector3.Distance(path.corners[path.corners.Length - 1], targetPosition);
         }
-        for (int i = 0; i < path.corners.Length-1; i++)
+        for (int i = 0; i < path.corners.Length - 1; i++)
         {
-            pathLength+= Vector3.Distance(path.corners[i], path.corners[i+1]);
+            pathLength += Vector3.Distance(path.corners[i], path.corners[i + 1]);
         }
 
         return pathLength;
     }
     public void canHearPlayer(float radius)
     {
-        if (currentState == State.chasing || currentState == State.attack|| currentState == State.dead|| currentState == State.stunned) return;
+        if (currentState == State.chasing || currentState == State.attack || currentState == State.dead || currentState == State.stunned) return;
         if (CalculatePathLength(playerTransform.position) < radius)
         {
             currentState = State.chasing;
         }
     }
-    public void pipeGrenade(Transform grenadePosition,bool resetTimer=true)
+    public void pipeGrenade(Transform grenadePosition, bool resetTimer = true)
     {
-        if(resetTimer)
+        if (resetTimer)
             pipeTimer = 0;
         pipePosition = grenadePosition;
         if (currentState == State.dead || currentState == State.stunned) return;
         navMeshAgent.SetDestination(grenadePosition.position);
         currentState = State.pipe;
-        navMeshAgent.speed= chaseSpeed;
+        navMeshAgent.speed = chaseSpeed;
         animator.SetBool("isPiped", true);
         animator.SetBool("isAttacking", false);
         animator.SetBool("isChasing", false);
@@ -374,21 +392,19 @@ public class EnemyContoller : MonoBehaviour
     }
     public void hearFire()
     {
-        if (currentState == State.idle || currentState == State.patrol || currentState==State.hear)
+        if (currentState == State.idle || currentState == State.patrol || currentState == State.hear)
         {
             hearedLocation = playerTransform.position;
             currentState = State.hear;
             navMeshAgent.speed = chaseSpeed;
             navMeshAgent.SetDestination(hearedLocation);
             animator.SetBool("isChasing", true);
-            animator.SetBool("isIdle",false);
+            animator.SetBool("isIdle", false);
         }
     }
     void OnCollisionEnter(Collision other)
     {
-        print(other.gameObject.name);
-        // print(other.gameObject.tag);
-        if(other.gameObject.tag=="Player" && other.gameObject.GetComponent<PlayerController>().health>0)
+        if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerController>().health > 0)
             chase(other.transform);
     }
 }
