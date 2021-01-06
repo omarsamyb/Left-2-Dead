@@ -8,8 +8,10 @@ TagManager:
   - SecondCamera
   - BulletSpawn
   - Enemy
+  - SpecialEnemy
   - Fire
   - Horde
+  - Companion
   layers:
   - Default
   - TransparentFX

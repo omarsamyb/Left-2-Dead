@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public enum GunStyles
@@ -230,7 +230,7 @@ public class GunScript : MonoBehaviour
     }
     private void Melee()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isMelee && !isReloading && !gunInventory.isThrowing && !playerController.isDashing)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading && !gunInventory.isThrowing && !playerController.isDashing)
             MeleeAttack();
     }
     private void Shooting()
