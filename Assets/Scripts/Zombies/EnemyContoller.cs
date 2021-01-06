@@ -85,7 +85,6 @@ public class EnemyContoller : MonoBehaviour
     }
     public void chase(Transform target)
     {
-        print("Chase " + gameObject.name + " " + attackTarget.gameObject.name);
         if (currentState == State.dead)
             return;
         navMeshAgent.speed = chaseSpeed;
@@ -97,7 +96,6 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void attack()
     {
-        print("Attack " + gameObject.name + " " + attackTarget.gameObject.name);
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
             return;
@@ -199,7 +197,6 @@ public class EnemyContoller : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         if (health > 0 && currentState == State.attack)
             cont.TakeDamage(damagePerSec);
-        print(cont.health);
     }
     void Update()
     {
@@ -407,7 +404,6 @@ public class EnemyContoller : MonoBehaviour
     }
     void OnCollisionEnter(Collision other)
     {
-        print(other.gameObject.name);
         if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerController>().health > 0)
             chase(other.transform);
     }
