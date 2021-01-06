@@ -52,8 +52,11 @@ public class EnemyContoller : MonoBehaviour
             return;
         confusionTimer = 0;
         isConfused = true;
-        int random = Random.Range(0, enemies.Count);
-        attackTarget = (Transform)enemies[random];
+        int min = 0;
+        for(int i = 0; i < enemies.Count; i++)
+            if(Vector3.Distance(((Transform) enemies[i]).position,transform.position)< Vector3.Distance(((Transform) enemies[min]).position,transform.position))
+                min = i;
+        attackTarget = (Transform)enemies[min];
     }
 
     void Start()
@@ -209,7 +212,7 @@ public class EnemyContoller : MonoBehaviour
         if (isConfused)
         {
             confusionTimer += Time.deltaTime;
-            if (confusionTimer > 1f)
+            if (confusionTimer > 1.2f)
             {
                 endConfusion(true);
             }
