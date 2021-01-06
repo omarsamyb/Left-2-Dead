@@ -28,6 +28,7 @@ public class BomberController : MonoBehaviour
     private float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
     private Vector3 hearedLocation;
     Transform pipePosition;
+    public GameObject bomb;
 
     //                   0        1           2            3            4           5         6                7
     string[] arr = { "isIdle","isPatrol" ,"isChasing","isAttacking","isStunned","isPiped","isReachedPipe","isDying" };
@@ -37,7 +38,7 @@ public class BomberController : MonoBehaviour
         Vector3 lookPos = destination - transform.position;
         lookPos.y = 0;
         Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.4f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 1f);
     }
     public void Confuse()
     {
@@ -190,6 +191,7 @@ public class BomberController : MonoBehaviour
     }
     void Update()
     {
+        
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
@@ -404,8 +406,11 @@ public class BomberController : MonoBehaviour
     }
     IEnumerator SetIdleAfterAttack()
     {
-        yield return new WaitForSeconds(2);
-        if(currentState==State.attack)
+        yield return new WaitForSeconds(1.5f);
+        FaceTarget(attackTarget.position);
+       GameObject childGrenade= Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
+        childGrenade.transform.parent = gameObject.transform;
+        if (currentState==State.attack)
         SetAnimationFlags(0);
     }
     void SetAnimationFlags(int g)

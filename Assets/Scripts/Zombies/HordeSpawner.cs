@@ -11,6 +11,7 @@ public class HordeSpawner : MonoBehaviour
 	private Transform playerTransform;
 	private bool isChasing;
 	private bool isBomber;
+	[HideInInspector] public bool bomberSpawnFlag;
 
     void Start()
     {
@@ -32,13 +33,14 @@ public class HordeSpawner : MonoBehaviour
 			isSpawning = true;
 		}
 		// true represent the pile bomb is attached to the player
-		if (isBomber && true && !fire)
+		if (isBomber && bomberSpawnFlag && !fire)
 		{
 			fire = true;
 			SetBomberHorde();
+			bomberSpawnFlag = false;
 		}
-		
-		if(isSpawning)
+
+		if (isSpawning)
         {
 			isSpawning = false;
 			StartCoroutine(SpawnEnemy());
@@ -47,12 +49,15 @@ public class HordeSpawner : MonoBehaviour
 			for (int i = 0; i < transform.childCount; i++)
 			{
 				GameObject childObject = transform.GetChild(i).gameObject;
-				string childState = childObject.GetComponent<EnemyContoller>().getState();
-				if (childState == "chasing" || childState == "attack")
+				if (childObject.tag == "Enemy")
 				{
-					isChasing = true;
-					StartCoroutine(SetAllEnemiesToChase());
-					return;
+					string childState = childObject.GetComponent<EnemyContoller>().getState();
+					if (childState == "chasing" || childState == "attack")
+					{
+						isChasing = true;
+						StartCoroutine(SetAllEnemiesToChase());
+						return;
+					}
 				}
 			}
 		}
@@ -61,7 +66,6 @@ public class HordeSpawner : MonoBehaviour
 	{
 		for (int i = 0; i <hordeCount ; i++)
 		{
-
 
 			Vector3 position = new Vector3(transform.position.x+ Random.Range(-1, 2), transform.position.y,transform.position.z+Random.Range(-2, 1));
 			GameObject childObject = Instantiate(enemyObj, position, transform.rotation);
@@ -86,13 +90,17 @@ public class HordeSpawner : MonoBehaviour
     {
 		for (int i = 0; i < transform.childCount; i++)
 		{
+
 			GameObject childObject = transform.GetChild(i).gameObject;
-			EnemyContoller childEnemyController = childObject.GetComponent<EnemyContoller>();
-			string childState = childEnemyController.getState();
-			if (childState == "patrol" || childState == "idle")
+			if (childObject.tag == "Enemy")
 			{
-				childEnemyController.chase(playerTransform);
-				yield return new WaitForSeconds(0.2f);
+				EnemyContoller childEnemyController = childObject.GetComponent<EnemyContoller>();
+				string childState = childEnemyController.getState();
+				if (childState == "patrol" || childState == "idle")
+				{
+					childEnemyController.chase(playerTransform);
+					yield return new WaitForSeconds(0.2f);
+				}
 			}
 		}
 	}
