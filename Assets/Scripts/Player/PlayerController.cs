@@ -26,9 +26,9 @@ public class PlayerController : MonoBehaviour
     private float dashSmoothTime;
     private float dashSpeedRef;
     private float dashTime;
-    private bool isDashing;
-
-    //Vector3 direction;
+    [HideInInspector] public bool isDashing;
+    private GunInventory weaponInventory;
+    [HideInInspector] public bool isPinned;
 
     private void Awake()
     {
@@ -47,8 +47,9 @@ public class PlayerController : MonoBehaviour
         dashSpeed = 25f;
         dashResetSpeed = 3f;
         dashLength = 0.08f;
-        dashResetLength = 0.3f;
+        dashResetLength = 0.6f;
         dashSmoothTime = 0.02f;
+        weaponInventory = GetComponent<GunInventory>();
     }
 
     void Update()
@@ -64,9 +65,9 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = -2f;
         }
-        x = Input.GetAxis("Horizontal");
-        z = Input.GetAxis("Vertical");
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        x = Input.GetAxisRaw("Horizontal");
+        z = Input.GetAxisRaw("Vertical");
+        if (Input.GetButtonDown("Jump") && isGrounded && !isDashing && !isPinned)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -74,11 +75,11 @@ public class PlayerController : MonoBehaviour
         moveDirection = (transform.right * x + transform.forward * z).normalized;
         if (moveDirection.magnitude > 0.1f)
         {
-            if (Input.GetKeyDown(KeyCode.LeftControl) && isGrounded && !isDashing)
+            if (Input.GetButtonDown("Dash") && isGrounded && !isDashing && !isPinned && weaponInventory.currentGun && !weaponInventory.currentGun.GetComponent<GunScript>().isSwitching && !weaponInventory.currentGun.GetComponent<GunScript>().isReloading && !weaponInventory.currentGun.GetComponent<GunScript>().isMelee)
             {
                 StartCoroutine(Dash(moveDirection));
             }
-            if (!isDashing)
+            if (!isDashing && !isPinned)
             {
                 motor.Move(moveDirection * currentSpeed * Time.deltaTime);
                 isMoving = true;
@@ -92,7 +93,26 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator Dash(Vector3 direction)
     {
+        print(direction);
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", direction.x);
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", 0f);
+        }
+        else
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0f);
+        }
+
         isDashing = true;
+        weaponInventory.currentHandsAnimator.SetTrigger("isDashing");
+
+        while (!weaponInventory.currentHandsAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Dashing"))
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
         dashTime = 0f;
         float currentDashSpeed = currentSpeed;
         while (dashTime < dashLength)
@@ -103,14 +123,13 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         dashTime = 0f;
-        while(dashTime < dashResetLength)
+        while (dashTime < dashResetLength)
         {
             currentDashSpeed = Mathf.SmoothDamp(currentDashSpeed, dashResetSpeed, ref dashSpeedRef, dashSmoothTime);
             motor.Move(direction * currentDashSpeed * Time.deltaTime);
             dashTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-
         isDashing = false;
     }
     public void TakeDamage(int points)
