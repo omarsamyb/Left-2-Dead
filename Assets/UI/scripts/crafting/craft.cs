@@ -11,15 +11,18 @@ public class craft : MonoBehaviour
     public InventoryObject CraftableInventory;
     // bile  molotov  pipe  stun  healthpack
     //  0       1      2     3        4
-    // Start is called before the first frame update
     
+    public ParticleSystem succParticle;
+    public ParticleSystem failParticle;
+
+    public GameObject bileTarget;
+    public GameObject molotovTarget;
+    public GameObject pipeTarget;
+    public GameObject stunTarget;
+    public GameObject healthTarget;
+
     void Start(){
-        var x = ingredientInventory.container[0].amount;
-        print(x);
-        ingredientInventory.container[0].addAmount(-1);
-        
-        x =ingredientInventory.container[0].amount; 
-        print(x);
+
     }
 
     public void makeBile(){
@@ -27,22 +30,22 @@ public class craft : MonoBehaviour
             ingredientInventory.container[1].addAmount(-1);
             ingredientInventory.container[2].addAmount(-1);
             ingredientInventory.container[3].addAmount(-1);
-            succ();
+            StartCoroutine(succORfail(succParticle, bileTarget));
             CraftableInventory.container[0].addAmount(1);
         }
         else{
-            fail();
+            StartCoroutine(succORfail(failParticle, bileTarget));
         }
     }
     public void makeMolotov(){
         if(ingredientInventory.container[0].amount >= 2 && ingredientInventory.container[4].amount >= 2){
             ingredientInventory.container[0].addAmount(-2);
             ingredientInventory.container[5].addAmount(-2);
-            succ();
+            StartCoroutine(succORfail(succParticle, molotovTarget));
             CraftableInventory.container[1].addAmount(1);
         }
         else{
-            fail();
+            StartCoroutine(succORfail(failParticle, molotovTarget));
         }
     }
     public void makePipe(){
@@ -50,40 +53,54 @@ public class craft : MonoBehaviour
             ingredientInventory.container[0].addAmount(-1);
             ingredientInventory.container[2].addAmount(-1);
             ingredientInventory.container[3].addAmount(-1);
-            succ();
+            StartCoroutine(succORfail(succParticle, pipeTarget));
             CraftableInventory.container[2].addAmount(1);
         }
         else{
-            fail();
+            StartCoroutine(succORfail(failParticle, pipeTarget));
         }
     }
     public void makeStun(){
         if(ingredientInventory.container[3].amount >= 2 && ingredientInventory.container[5].amount >= 1){
             ingredientInventory.container[3].addAmount(-2);
             ingredientInventory.container[5].addAmount(-1);
-            succ();
+            StartCoroutine(succORfail(succParticle, stunTarget));
             CraftableInventory.container[3].addAmount(1);
         }
         else{
-            fail();
+            StartCoroutine(succORfail(failParticle, stunTarget));
         }
     }
     public void makeHealth(){
         if(ingredientInventory.container[0].amount >= 2 && ingredientInventory.container[4].amount >= 2){
             ingredientInventory.container[0].addAmount(-2);
             ingredientInventory.container[4].addAmount(-2);
-            succ();
+            StartCoroutine(succORfail(succParticle, healthTarget));
             CraftableInventory.container[4].addAmount(1);
         }
         else{
-            fail();
+            StartCoroutine(succORfail(failParticle, healthTarget));
         }
     }
 
-    void succ(){
-        print("succ");
+    IEnumerator succORfail(ParticleSystem p, GameObject target)
+    {
+        p.transform.position = target.transform.position;
+        if(!p.isPlaying)
+        {
+            p.Play();
+        }
+        yield return new WaitForSecondsRealtime(1);
+        if(p.isPlaying)
+        {
+            p.Stop();
+        }
     }
-    void fail(){
-        print("fail");
-    }
+
+    // void succ(){
+    //     print("succ");
+    // }
+    // void fail(){
+    //     print("fail");
+    // }
 }
