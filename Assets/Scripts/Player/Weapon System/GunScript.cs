@@ -228,7 +228,7 @@ public class GunScript : MonoBehaviour
     }
     private void Melee()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && !isMelee && !isReloading)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading)
             MeleeAttack();
     }
     private void Shooting()

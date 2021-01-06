@@ -3,6 +3,8 @@
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
+    [HideInInspector] public GameObject player;
     private CharacterController motor;
     private float x;
     private float z;
@@ -18,13 +20,16 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
     public GameObject character;
+    public EnemyContoller criticalEnemy;
 
     private void Awake()
     {
-        motor = GetComponent<CharacterController>();
+        instance = this;
+        player = gameObject;
     }
     void Start()
     {
+        motor = GetComponent<CharacterController>();
         currentSpeed = 0f;
         gravity = -9.81f * 2f;
         groundDistance = 0.4f;
