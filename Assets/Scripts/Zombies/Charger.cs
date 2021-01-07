@@ -30,18 +30,14 @@ public class Charger : EnemyContoller
         {
             confusionTimer += Time.deltaTime;
             if (confusionTimer > 1.2f)
-            {
                 endConfusion(true);
-            }
         }
         if (currentState == State.patrol)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
                 chase(attackTarget);
             else
-            {
                 patrol();
-            }
         }
 
         else if (currentState == State.chasing)
@@ -60,9 +56,7 @@ public class Charger : EnemyContoller
         else if (currentState == State.attack)
         {
             if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && isAlive(attackTarget))
-            {
-                attack();
-            }    
+                attack();  
             else if(runningAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             {
                 runningAttack = false;
@@ -75,6 +69,11 @@ public class Charger : EnemyContoller
                 pipeExploded(true);
             else
             {
+                if(runningAttack)
+                {
+                    runningAttack = false;
+                    StartCoroutine(resumeAttack());
+                }
                 navMeshAgent.SetDestination(pipePosition.position);
                 if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance + 0.05f)
                 {
@@ -90,6 +89,11 @@ public class Charger : EnemyContoller
         }
         else if (currentState == State.stunned)
         {
+            if(runningAttack)
+            {
+                runningAttack = false;
+                StartCoroutine(resumeAttack());
+            }
             stunTimer = stunTimer + Time.deltaTime;
             if (stunTimer > 3.0f)
                 endStun(true);
@@ -118,9 +122,10 @@ public class Charger : EnemyContoller
     IEnumerator charge()
     {
         yield return new WaitForSeconds(3.2f);
-        if(health<=0)
+        if(currentState!=State.attack)
         {
             animator.SetBool("isAttacking", false);
+            StartCoroutine(resumeAttack());
             yield break;
         }
         navMeshAgent.speed = 5;
@@ -165,12 +170,20 @@ public class Charger : EnemyContoller
     {
         animator.SetBool("isAttacking", false);
         yield return new WaitForSeconds(2.33f);
+        if(currentState!=State.attack)
+        {
+            StartCoroutine(resumeAttack());
+            yield break;
+        }
         doDamageOnTarget(playerCont, enemyCont, 5);
         for(int i=0;i<7;i++)
         {
             yield return new WaitForSeconds(0.35f);
-            if(health<=0)
+            if(currentState!=State.attack)
+            {
+                StartCoroutine(resumeAttack());
                 yield break;
+            }
             doDamageOnTarget(playerCont, enemyCont, 10);
         }
         chase(attackTarget);
