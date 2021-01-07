@@ -71,34 +71,37 @@ public class GunInventory : MonoBehaviour
     }
     private void WeaponSwitching()
     {
-        int prevWeaponCounter = currentGunCounter;
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (currentGun.activeSelf)
         {
-            switchWeaponCooldown = 0;
-            currentGunCounter++;
-            if (currentGunCounter > gunsIHave.Count - 1)
+            int prevWeaponCounter = currentGunCounter;
+            if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
-                currentGunCounter = 0;
+                switchWeaponCooldown = 0;
+                currentGunCounter++;
+                if (currentGunCounter > gunsIHave.Count - 1)
+                {
+                    currentGunCounter = 0;
+                }
+                StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
             }
-            StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0)
-        {
-            switchWeaponCooldown = 0;
-            currentGunCounter--;
-            if (currentGunCounter < 0)
+            else if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
-                currentGunCounter = gunsIHave.Count - 1;
+                switchWeaponCooldown = 0;
+                currentGunCounter--;
+                if (currentGunCounter < 0)
+                {
+                    currentGunCounter = gunsIHave.Count - 1;
+                }
+                StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
             }
-            StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
-        }
-        else if (Input.GetKeyDown(KeyCode.C))
-        {
-            switchWeaponCooldown = 0;
-            currentGunCounter++;
-            if (currentGunCounter > gunsIHave.Count - 1)
-                currentGunCounter = 0;
-            StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+            else if (Input.GetKeyDown(KeyCode.C))
+            {
+                switchWeaponCooldown = 0;
+                currentGunCounter++;
+                if (currentGunCounter > gunsIHave.Count - 1)
+                    currentGunCounter = 0;
+                StartCoroutine(ActivateWeapon(prevWeaponCounter, currentGunCounter));
+            }
         }
     }
     private void Grenade()

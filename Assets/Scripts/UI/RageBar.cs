@@ -8,11 +8,19 @@ public class RageBar : MonoBehaviour
     private float updateTime;
     private bool coroutineRunning;
     private bool skipUpdate;
+    public GameObject overlay;
 
     private void Start()
     {
         PlayerController.instance.player.GetComponent<Rage>().OnRageChange += HandleRageChange;
         updateTimeSeconds = 0.5f;
+    }
+    private void Update()
+    {
+        if (GameManager.instance.inRageMode && !overlay.activeSelf)
+            overlay.SetActive(true);
+        if (!GameManager.instance.inRageMode && overlay.activeSelf)
+            overlay.SetActive(false);
     }
     private void HandleRageChange(float percentage)
     {

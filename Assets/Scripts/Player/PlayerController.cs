@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private GunInventory weaponInventory;
     [HideInInspector] public bool isPinned;
     public EnemyContoller criticalEnemy;
+    private Animation characterAnimation;
 
     private void Awake()
     {
@@ -55,6 +56,7 @@ public class PlayerController : MonoBehaviour
         dashResetLength = 0.6f;
         dashSmoothTime = 0.02f;
         weaponInventory = GetComponent<GunInventory>();
+        characterAnimation = character.GetComponent<Animation>();
     }
 
     void Update()
@@ -147,6 +149,7 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         character.SetActive(true);
+        characterAnimation.Play("Die");
         Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
         character.transform.parent = null;
     }
