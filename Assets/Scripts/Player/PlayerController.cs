@@ -31,7 +31,11 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isDashing;
     private GunInventory weaponInventory;
     [HideInInspector] public bool isPinned;
+    [HideInInspector] public bool isPartiallyPinned;
     public EnemyContoller criticalEnemy;
+    private Animation characterAnimation;
+    private TextMesh HUD_health;
+    private Rage rage;
 
     private void Awake()
     {
@@ -55,6 +59,8 @@ public class PlayerController : MonoBehaviour
         dashResetLength = 0.6f;
         dashSmoothTime = 0.02f;
         weaponInventory = GetComponent<GunInventory>();
+        characterAnimation = character.GetComponent<Animation>();
+        rage = GetComponent<Rage>();
     }
 
     void Update()
@@ -144,14 +150,39 @@ public class PlayerController : MonoBehaviour
     }
     public void TakeDamage(int points)
     {
-        health -= points;
-        if (health <= 0)
-            Die();
+        if (rage.canBeDamaged)
+        {
+            health -= points;
+            if (health <= 0)
+                Die();
+        }
     }
     private void Die()
     {
         character.SetActive(true);
+        if(isPinned || isPartiallyPinned)
+            characterAnimation.Play("Die_Pinned");
+        else
+            characterAnimation.Play("Die");
         Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
         character.transform.parent = null;
+    }
+
+    // GUI
+    void OnGUI()
+    {
+        if (!HUD_health)
+        {
+            try
+            {
+                HUD_health = GameObject.Find("HUD_health").GetComponent<TextMesh>();
+            }
+            catch (System.Exception ex)
+            {
+                print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
+            }
+        }
+        if (HUD_health)
+            HUD_health.text = health.ToString();
     }
 }

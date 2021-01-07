@@ -109,3 +109,19 @@ MonoBehaviour:
     loop: 0
     volume: 0.5
     pitch: 1
+  - name: RageModeSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 6a5b58cc097d8224da6753836de5a381, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 0.5
+    pitch: 1
+  - name: RageModeMusic
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: d47d3aa1200774e40a1d74b1981e80b5, type: 3}
+    mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 0.8
+    pitch: 1
