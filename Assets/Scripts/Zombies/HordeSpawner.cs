@@ -66,8 +66,11 @@ public class HordeSpawner : MonoBehaviour
 	{
 		for (int i = 0; i <hordeCount ; i++)
 		{
-
-			Vector3 position = new Vector3(transform.position.x+ Random.Range(-1, 2), transform.position.y,transform.position.z+Random.Range(-2, 1));
+			Vector3 position;
+			if(!isBomber)
+				position = new Vector3(transform.position.x+ Random.Range(-1, 2), transform.position.y,transform.position.z+Random.Range(-2, 1));
+			else
+				position = new Vector3(playerTransform.position.x + Random.Range(-1, 2), transform.position.y, playerTransform.position.z + Random.Range(-2, 1));
 			GameObject childObject = Instantiate(enemyObj, position, transform.rotation);
 			childObject.transform.parent = gameObject.transform;
 			yield return new WaitForSeconds(1f / spawnRatePerSec);
