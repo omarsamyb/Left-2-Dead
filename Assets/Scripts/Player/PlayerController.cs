@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System.Collections;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -20,6 +21,16 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
     public GameObject character;
+    private float dashSpeed;
+    private float dashResetSpeed;
+    private float dashLength;
+    private float dashResetLength;
+    private float dashSmoothTime;
+    private float dashSpeedRef;
+    private float dashTime;
+    [HideInInspector] public bool isDashing;
+    private GunInventory weaponInventory;
+    [HideInInspector] public bool isPinned;
     public EnemyContoller criticalEnemy;
 
     private void Awake()
@@ -38,11 +49,17 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
+        dashSpeed = 25f;
+        dashResetSpeed = 3f;
+        dashLength = 0.08f;
+        dashResetLength = 0.6f;
+        dashSmoothTime = 0.02f;
+        weaponInventory = GetComponent<GunInventory>();
     }
 
     void Update()
     {
-        if(health>0)
+        if (health > 0)
             PlayerMovement();
     }
 
@@ -53,18 +70,25 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = -2f;
         }
-        x = Input.GetAxis("Horizontal");
-        z = Input.GetAxis("Vertical");
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        x = Input.GetAxisRaw("Horizontal");
+        z = Input.GetAxisRaw("Vertical");
+        if (Input.GetButtonDown("Jump") && isGrounded && !isDashing && !isPinned)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        moveDirection = transform.right * x + transform.forward * z;
+        moveDirection = (transform.right * x + transform.forward * z).normalized;
         if (moveDirection.magnitude > 0.1f)
         {
-            motor.Move(moveDirection * currentSpeed * Time.deltaTime);
-            isMoving = true;
+            if (Input.GetButtonDown("Dash") && isGrounded && !isDashing && !isPinned && weaponInventory.currentGun && !weaponInventory.currentGun.GetComponent<GunScript>().isSwitching && !weaponInventory.currentGun.GetComponent<GunScript>().isReloading && !weaponInventory.currentGun.GetComponent<GunScript>().isMelee)
+            {
+                StartCoroutine(Dash(moveDirection));
+            }
+            if (!isDashing && !isPinned)
+            {
+                motor.Move(moveDirection * currentSpeed * Time.deltaTime);
+                isMoving = true;
+            }
         }
         else
             isMoving = false;
@@ -72,7 +96,48 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         motor.Move(velocity * Time.deltaTime);
     }
+    IEnumerator Dash(Vector3 direction)
+    {
+        print(direction);
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", direction.x);
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", 0f);
+        }
+        else
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0f);
+        }
 
+        isDashing = true;
+        weaponInventory.currentHandsAnimator.SetTrigger("isDashing");
+
+        while (!weaponInventory.currentHandsAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Dashing"))
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        AudioManager.instance.Play("DashSFX");
+
+        dashTime = 0f;
+        float currentDashSpeed = currentSpeed;
+        while (dashTime < dashLength)
+        {
+            currentDashSpeed = Mathf.SmoothDamp(currentDashSpeed, dashSpeed, ref dashSpeedRef, dashSmoothTime);
+            motor.Move(direction * currentDashSpeed * Time.deltaTime);
+            dashTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        dashTime = 0f;
+        while (dashTime < dashResetLength)
+        {
+            currentDashSpeed = Mathf.SmoothDamp(currentDashSpeed, dashResetSpeed, ref dashSpeedRef, dashSmoothTime);
+            motor.Move(direction * currentDashSpeed * Time.deltaTime);
+            dashTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        isDashing = false;
+    }
     public void TakeDamage(int points)
     {
         health -= points;

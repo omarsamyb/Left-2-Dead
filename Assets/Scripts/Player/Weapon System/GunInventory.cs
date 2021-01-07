@@ -20,7 +20,7 @@ public class GunInventory : MonoBehaviour
     [Tooltip("Size of icon in percetanges of screen.")]
     public Vector2 size;
 
-    private Animator currentHandsAnimator;
+    [HideInInspector] public Animator currentHandsAnimator;
     private int currentGunCounter = 0;
     public List<string> gunsIHave = new List<string>();
     private Texture[] icons;

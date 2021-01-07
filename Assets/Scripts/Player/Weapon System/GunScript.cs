@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public enum GunStyles
@@ -13,6 +13,7 @@ public class GunScript : MonoBehaviour
     private Transform mainCamera;
     private Camera secondCamera;
     private PlayerController playerController;
+    private GunInventory gunInventory;
     public string weaponName;
     public Animator handsAnimator;
     private string reloadingAnimationName = "Reloading";
@@ -130,9 +131,9 @@ public class GunScript : MonoBehaviour
     private float cameraZoomVelocity;
     private float secondCameraZoomVelocity;
 
-    public bool isMelee;
-    public bool isSwitching;
-    public bool isReloading;
+    [HideInInspector] public bool isMelee;
+    [HideInInspector] public bool isSwitching;
+    [HideInInspector] public bool isReloading;
 
     [Header("Gun Precision")]
     [Tooltip("Gun rate precision when player is not aiming. This is calculated with recoil.")]
@@ -174,6 +175,7 @@ public class GunScript : MonoBehaviour
         secondCamera = mainCamera.GetChild(0).GetComponent<Camera>();
         cameraComponent = mainCamera.GetComponent<Camera>();
         playerController = player.GetComponent<PlayerController>();
+        gunInventory = player.GetComponent<GunInventory>();
 
         bulletSpawnPlace = GameObject.FindGameObjectWithTag("BulletSpawn").transform;
 
@@ -228,12 +230,12 @@ public class GunScript : MonoBehaviour
     }
     private void Melee()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading && !gunInventory.isThrowing && !playerController.isDashing)
             MeleeAttack();
     }
     private void Shooting()
     {
-        if (!isMelee && !isReloading && !isSwitching && !player.GetComponent<GunInventory>().isThrowing)
+        if (!isMelee && !isReloading && !isSwitching && !gunInventory.isThrowing && !playerController.isDashing)
         {
             if (currentStyle == GunStyles.nonautomatic)
             {
@@ -255,7 +257,7 @@ public class GunScript : MonoBehaviour
     }
     private void Reloading()
     {
-        if (Input.GetKeyDown(KeyCode.R) && playerController.currentSpeed < runningSpeed && !isReloading && !isMelee)
+        if (Input.GetKeyDown(KeyCode.R) && playerController.currentSpeed < runningSpeed && !isReloading && !isMelee && !gunInventory.isThrowing && !playerController.isDashing)
             StartCoroutine(Reload());
     }
     private void Aiming()
@@ -287,7 +289,7 @@ public class GunScript : MonoBehaviour
     private void AnimationStats()
     {
         isMelee = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(meleeAnimationName);
-        isSwitching = (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName) | handsAnimator.IsInTransition(0));
+        isSwitching = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName) | (handsAnimator.IsInTransition(0) & (handsAnimator.GetNextAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetNextAnimatorStateInfo(0).IsName(takeoutAnimationName)));
     }
 
     // Positioning & Rotations

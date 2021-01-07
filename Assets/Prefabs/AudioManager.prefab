@@ -101,3 +101,11 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
+  - name: DashSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: a983f6e4337fff9488a34c328149ffec, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 0.5
+    pitch: 1
