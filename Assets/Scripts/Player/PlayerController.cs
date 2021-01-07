@@ -98,16 +98,20 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator Dash(Vector3 direction)
     {
-        print(direction);
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+        if(Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f)
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0.0f);
+        }
+        else if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
         {
             weaponInventory.currentHandsAnimator.SetFloat("dashX", direction.x);
-            weaponInventory.currentHandsAnimator.SetFloat("dashZ", 0f);
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", 0.0f);
         }
         else
         {
             weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
-            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0f);
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0.0f);
         }
 
         isDashing = true;

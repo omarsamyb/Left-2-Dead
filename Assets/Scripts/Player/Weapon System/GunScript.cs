@@ -348,14 +348,12 @@ public class GunScript : MonoBehaviour
                         camRotation.y = 0f;
                         rotation += camRotation;
                         rotation = new Vector3(rotation.x + Random.Range(-shotgunSpread, shotgunSpread), rotation.y + Random.Range(-shotgunSpread, shotgunSpread), 0f);
-                        //Instantiate(bullet, bulletSpawnPlace.position, Quaternion.Euler(rotation));
                         Bullet(Quaternion.Euler(rotation));
                     }
                 }
                 else
                 {
                     Bullet(bulletSpawnPlace.rotation);
-                    //Instantiate(bullet, bulletSpawnPlace.position, bulletSpawnPlace.rotation);
                 }
                 Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
                 AudioManager.instance.Play("ShootSFX");
