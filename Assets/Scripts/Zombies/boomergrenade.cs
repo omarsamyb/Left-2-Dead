@@ -8,25 +8,25 @@ public class boomergrenade : MonoBehaviour
     private Transform playerTransform;
     Vector3 startPoint;
     Vector3 endPoint;
-    Vector3 midPoint;
-    private Vector3[] positions = new Vector3[50];
     public float timer = 0;
     private Vector3 direction;
     private bool isSpawned = false;
+    public float thrust = 20f;
+    Rigidbody rb;
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         startPoint = new Vector3(transform.position.x,transform.position.y,transform.position.z);
         endPoint = new Vector3(playerTransform.position.x, transform.position.y , playerTransform.position.z);
         direction = (endPoint - startPoint).normalized;
-        Destroy(gameObject, 10.0f);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        Vector3 forward = new Vector3(0f, 0f, Mathf.Abs(direction.z));
-        transform.Translate(forward * 10 *Time.deltaTime);
+        rb = GetComponent<Rigidbody>();
+        //AudioManager.instance.SetSource("GrenadesSFX", GetComponent<AudioSource>());
+
+        rb.velocity = new Vector3(direction.x, 0f, direction.z)* thrust;
+        rb.AddTorque(new Vector3(10, 0, 10));
+        Destroy(gameObject, 10.0f);
 
     }
     private void OnTriggerEnter(Collider other)
