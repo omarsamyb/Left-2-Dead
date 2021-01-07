@@ -14,6 +14,7 @@ public class Rage : MonoBehaviour
     public GameObject character;
     private Animation characterAnimation;
     private GunInventory gunInventory;
+    [HideInInspector] public bool canBeDamaged;
 
     public event Action<float> OnRageChange = delegate { };
 
@@ -24,6 +25,7 @@ public class Rage : MonoBehaviour
         ragePoints = 0;
         characterAnimation = character.GetComponent<Animation>();
         gunInventory = GetComponent<GunInventory>();
+        canBeDamaged = true;
     }
 
     void Update()
@@ -67,6 +69,7 @@ public class Rage : MonoBehaviour
 
     IEnumerator ActivateRageMode()
     {
+        canBeDamaged = false;
         AudioManager.instance.Play("RageModeMusic");
         GameManager.instance.inRageMode = true;
         gunInventory.currentGun.SetActive(false);
@@ -83,6 +86,7 @@ public class Rage : MonoBehaviour
         character.transform.SetParent(origParent);
         gunInventory.currentGun.SetActive(true);
         Camera.main.transform.position += Camera.main.transform.forward + Camera.main.transform.up * 0.5f;
+        canBeDamaged = true;
     }
 
     void OnGUI()
