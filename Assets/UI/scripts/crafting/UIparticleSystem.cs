@@ -21,7 +21,6 @@ public class UIparticleSystem : MonoBehaviour
 
 
     void Start(){
-        Time.timeScale = 0;
         startPos = this.transform.position;
         particleSystem = gameObject.GetComponent<ParticleSystem>();
         targetIndex = 0;
