@@ -112,6 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timer: 0
   thrust: 20
+  thunder: {fileID: 106988, guid: 15dec7b07032b2f4aa6f855bfbe120f7, type: 3}
 --- !u!54 &8443184771490365041
 Rigidbody:
   m_ObjectHideFlags: 0

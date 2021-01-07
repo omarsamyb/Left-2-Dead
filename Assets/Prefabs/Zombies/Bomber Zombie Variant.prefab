@@ -39,7 +39,7 @@ MonoBehaviour:
   childTransform: {fileID: 4043953859124643615}
   attackCooldownTime: 10
   damagePerSec: 5
-  bomb: {fileID: 2661798228806996651, guid: bdfb28a8e5b18b04eb13d4a3fd005e59, type: 3}
+  bomb: {fileID: 6572764975774863566, guid: 20c320519fa60bd4eb2568f3bc908cd3, type: 3}
 --- !u!1001 &4581774794911686900
 PrefabInstance:
   m_ObjectHideFlags: 0
