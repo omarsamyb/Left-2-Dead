@@ -395,8 +395,7 @@ public class GunScript : MonoBehaviour
             if (currentStyle == GunStyles.shotgun)
             {
                 handsAnimator.SetBool("isReloading", true);
-                yield return new WaitForEndOfFrame();
-                handsAnimator.SetBool("isReloadingShells", true);
+                handsAnimator.SetTrigger("isReloadingShells");
                 while (bulletsInTheGun < amountOfBulletsPerLoad && bulletsIHave > 0)
                 {
                     AudioManager.instance.Play("ReloadSFX");
@@ -406,7 +405,6 @@ public class GunScript : MonoBehaviour
                     if (Input.GetButton("Fire1"))
                         break;
                 }
-                handsAnimator.SetBool("isReloadingShells", false);
                 handsAnimator.SetBool("isReloading", false);
             }
             else
