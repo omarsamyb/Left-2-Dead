@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Rage : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Rage : MonoBehaviour
     private int ragePoints;
     private bool canActivate;
     private TextMesh HUD_rage;
+
+    public event Action<float> OnRageChange = delegate { };
 
     void Start()
     {
@@ -21,8 +24,11 @@ public class Rage : MonoBehaviour
     {
         if (rageReset >= 0)
             rageReset -= Time.deltaTime;
-        if (rageReset <= 0 && !canActivate)
+        if (rageReset <= 0 && !canActivate && ragePoints != 0)
+        {
             ragePoints = 0;
+            OnRageChange(0f);
+        }
 
         if (GameManager.instance.inRageMode)
         {
@@ -31,6 +37,7 @@ public class Rage : MonoBehaviour
             {
                 GameManager.instance.inRageMode = false;
                 ragePoints = 0;
+                OnRageChange(0f);
                 canActivate = false;
                 rageDuration = rageDurationRef;
             }
@@ -49,6 +56,7 @@ public class Rage : MonoBehaviour
             ragePoints = Mathf.Clamp(ragePoints + 10, 0, 100);
         if (ragePoints == 100)
             canActivate = true;
+        OnRageChange((float)ragePoints / 100f);
     }
 
     void OnGUI()
