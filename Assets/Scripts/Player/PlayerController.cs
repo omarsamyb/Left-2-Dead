@@ -33,10 +33,11 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isPinned;
     [HideInInspector] public bool isPartiallyPinned;
     public EnemyContoller criticalEnemy;
+    public HealthBar healthBar;
     private Animation characterAnimation;
     private TextMesh HUD_health;
     private Rage rage;
-
+    
     private void Awake()
     {
         instance = this;
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
+        healthBar.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
         dashLength = 0.08f;
@@ -153,6 +155,7 @@ public class PlayerController : MonoBehaviour
         if (rage.canBeDamaged)
         {
             health -= points;
+            healthBar.SetHealth(health);
             if (health <= 0)
                 Die();
         }

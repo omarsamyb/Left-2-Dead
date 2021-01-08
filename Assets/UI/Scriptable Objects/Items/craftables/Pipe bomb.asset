@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ab9928e03080f479e2c55f047debd9, type: 3}
+  m_Name: Pipe bomb
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4470013033428527490, guid: 540c5cdda33aad946a2ded7538f04f78, type: 3}
+  type: 1

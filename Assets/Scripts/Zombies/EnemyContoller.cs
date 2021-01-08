@@ -28,6 +28,8 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
     [HideInInspector] public Vector3 hearedLocation;
     [HideInInspector] public Transform pipePosition;
+    public HealthBar healthBar;
+    public GameObject healthBarUI;
     public void FaceTarget(Vector3 destination)
     {
         Vector3 lookPos = destination - transform.position;
@@ -67,6 +69,7 @@ public class EnemyContoller : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator.SetBool("isIdle", defaultState == State.idle);
         reachDistance = attackDistance + 0.5f;
+        healthBar.SetMaxHealth(health);
     }
     public void stun()
     {
@@ -297,6 +300,7 @@ public class EnemyContoller : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        healthBar.SetHealth(health);
         if (health <= 0)
             Die();
     }
@@ -305,6 +309,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isDying", true);
         navMeshAgent.SetDestination(transform.position);
         currentState = State.dead;
+        Destroy(healthBarUI);
         Destroy(gameObject, 7.0f);
         this.gameObject.GetComponent<CapsuleCollider>().enabled = false;
         navMeshAgent.ResetPath();
