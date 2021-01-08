@@ -142,6 +142,8 @@ public class CompanionController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.Q))
                 ShootWeapon();
+            else
+                animator.SetBool("isShooting", false);
         }
         waitTillNextFire -= roundsPerSecond * Time.deltaTime;
     }
@@ -149,6 +151,13 @@ public class CompanionController : MonoBehaviour
     {
         if (waitTillNextFire <= 0 && bulletsIHave > 0)
         {
+            if (!agent.enabled)
+            {
+                if(style == GunStyles.automatic)
+                    animator.SetBool("isShooting", true);
+                else
+                    animator.SetTrigger("isShooting");
+            }
             int randomNumberForMuzzelFlash = Random.Range(0, 5);
             StartCoroutine(Bullet());
             Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
