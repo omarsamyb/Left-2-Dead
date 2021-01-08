@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public enum GunStyles
@@ -13,6 +13,8 @@ public class GunScript : MonoBehaviour
     private Transform mainCamera;
     private Camera secondCamera;
     private PlayerController playerController;
+    private GunInventory gunInventory;
+    private Rage rage;
     public string weaponName;
     public Animator handsAnimator;
     private string reloadingAnimationName = "Reloading";
@@ -48,6 +50,7 @@ public class GunScript : MonoBehaviour
     public float maxCapacity = 100;
     [Tooltip("Rounds per second if weapon is set to automatic.")]
     public float roundsPerSecond;
+    public float damageRef;
     public float damage;
     private int meleeDamage = 50;
     private int projectileCount = 10;
@@ -130,9 +133,9 @@ public class GunScript : MonoBehaviour
     private float cameraZoomVelocity;
     private float secondCameraZoomVelocity;
 
-    public bool isMelee;
-    public bool isSwitching;
-    public bool isReloading;
+    [HideInInspector] public bool isMelee;
+    [HideInInspector] public bool isSwitching;
+    [HideInInspector] public bool isReloading;
 
     [Header("Gun Precision")]
     [Tooltip("Gun rate precision when player is not aiming. This is calculated with recoil.")]
@@ -174,6 +177,9 @@ public class GunScript : MonoBehaviour
         secondCamera = mainCamera.GetChild(0).GetComponent<Camera>();
         cameraComponent = mainCamera.GetComponent<Camera>();
         playerController = player.GetComponent<PlayerController>();
+        gunInventory = player.GetComponent<GunInventory>();
+        rage = player.GetComponent<Rage>();
+        damageRef = damage;
 
         bulletSpawnPlace = GameObject.FindGameObjectWithTag("BulletSpawn").transform;
 
@@ -195,8 +201,12 @@ public class GunScript : MonoBehaviour
         WeaponRotation();
         CrossHairExpansionWhenWalking();
 
-        if(weaponNoiseCoolDown > 0)
+        if (weaponNoiseCoolDown > 0)
             weaponNoiseCoolDown -= Time.deltaTime;
+        if (GameManager.instance.inRageMode)
+            damage = damageRef * 2;
+        else
+            damage = damageRef;
     }
 
     // Controls
@@ -228,12 +238,12 @@ public class GunScript : MonoBehaviour
     }
     private void Melee()
     {
-        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading)
+        if (Input.GetKeyDown(KeyCode.LeftAlt) && !isMelee && !isReloading && !gunInventory.isThrowing && !playerController.isDashing)
             MeleeAttack();
     }
     private void Shooting()
     {
-        if (!isMelee && !isReloading && !isSwitching && !player.GetComponent<GunInventory>().isThrowing)
+        if (!isMelee && !isReloading && !isSwitching && !gunInventory.isThrowing && !playerController.isDashing)
         {
             if (currentStyle == GunStyles.nonautomatic)
             {
@@ -255,7 +265,7 @@ public class GunScript : MonoBehaviour
     }
     private void Reloading()
     {
-        if (Input.GetKeyDown(KeyCode.R) && playerController.currentSpeed < runningSpeed && !isReloading && !isMelee)
+        if (Input.GetKeyDown(KeyCode.R) && playerController.currentSpeed < runningSpeed && !isReloading && !isMelee && !gunInventory.isThrowing && !playerController.isDashing)
             StartCoroutine(Reload());
     }
     private void Aiming()
@@ -287,7 +297,7 @@ public class GunScript : MonoBehaviour
     private void AnimationStats()
     {
         isMelee = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(meleeAnimationName);
-        isSwitching = (handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName) | handsAnimator.IsInTransition(0));
+        isSwitching = handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetCurrentAnimatorStateInfo(0).IsName(takeoutAnimationName) | (handsAnimator.IsInTransition(0) & (handsAnimator.GetNextAnimatorStateInfo(0).IsName(takedownAnimationName) | handsAnimator.GetNextAnimatorStateInfo(0).IsName(takeoutAnimationName)));
     }
 
     // Positioning & Rotations
@@ -331,7 +341,7 @@ public class GunScript : MonoBehaviour
                 {
                     weaponNoiseCoolDown = weaponNoiseCoolDownRef;
                     hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
-                    foreach(Collider collider in hits)
+                    foreach (Collider collider in hits)
                     {
                         collider.GetComponent<EnemyContoller>().hearFire();
                     }
@@ -346,14 +356,12 @@ public class GunScript : MonoBehaviour
                         camRotation.y = 0f;
                         rotation += camRotation;
                         rotation = new Vector3(rotation.x + Random.Range(-shotgunSpread, shotgunSpread), rotation.y + Random.Range(-shotgunSpread, shotgunSpread), 0f);
-                        //Instantiate(bullet, bulletSpawnPlace.position, Quaternion.Euler(rotation));
                         Bullet(Quaternion.Euler(rotation));
                     }
                 }
                 else
                 {
                     Bullet(bulletSpawnPlace.rotation);
-                    //Instantiate(bullet, bulletSpawnPlace.position, bulletSpawnPlace.rotation);
                 }
                 Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
                 AudioManager.instance.Play("ShootSFX");
@@ -376,14 +384,17 @@ public class GunScript : MonoBehaviour
 
         if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer))
         {
-            if (hitInfo.transform.tag == "Untagged")
+            if (hitInfo.transform.CompareTag("Untagged"))
             {
                 Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
             }
-            else if (hitInfo.transform.tag == "Enemy")
+            else if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
+                EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage((int)damage);
+                enemy.TakeDamage((int)damage);
+                if (enemy.health <= 0)
+                    rage.UpdateRage(hitInfo.transform.tag);
             }
         }
     }
@@ -395,8 +406,7 @@ public class GunScript : MonoBehaviour
             if (currentStyle == GunStyles.shotgun)
             {
                 handsAnimator.SetBool("isReloading", true);
-                yield return new WaitForEndOfFrame();
-                handsAnimator.SetBool("isReloadingShells", true);
+                handsAnimator.SetTrigger("isReloadingShells");
                 while (bulletsInTheGun < amountOfBulletsPerLoad && bulletsIHave > 0)
                 {
                     AudioManager.instance.Play("ReloadSFX");
@@ -406,7 +416,6 @@ public class GunScript : MonoBehaviour
                     if (Input.GetButton("Fire1"))
                         break;
                 }
-                handsAnimator.SetBool("isReloadingShells", false);
                 handsAnimator.SetBool("isReloading", false);
             }
             else

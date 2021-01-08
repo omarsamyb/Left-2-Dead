@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System.Collections;
+using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -20,8 +21,23 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
     public GameObject character;
+    private float dashSpeed;
+    private float dashResetSpeed;
+    private float dashLength;
+    private float dashResetLength;
+    private float dashSmoothTime;
+    private float dashSpeedRef;
+    private float dashTime;
+    [HideInInspector] public bool isDashing;
+    private GunInventory weaponInventory;
+    [HideInInspector] public bool isPinned;
+    [HideInInspector] public bool isPartiallyPinned;
     public EnemyContoller criticalEnemy;
-
+    public HealthBar healthBar;
+    private Animation characterAnimation;
+    private TextMesh HUD_health;
+    private Rage rage;
+    
     private void Awake()
     {
         instance = this;
@@ -38,11 +54,20 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
+        healthBar.SetMaxHealth(health);
+        dashSpeed = 25f;
+        dashResetSpeed = 3f;
+        dashLength = 0.08f;
+        dashResetLength = 0.6f;
+        dashSmoothTime = 0.02f;
+        weaponInventory = GetComponent<GunInventory>();
+        characterAnimation = character.GetComponent<Animation>();
+        rage = GetComponent<Rage>();
     }
 
     void Update()
     {
-        if(health>0)
+        if (health > 0)
             PlayerMovement();
     }
 
@@ -53,18 +78,25 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y = -2f;
         }
-        x = Input.GetAxis("Horizontal");
-        z = Input.GetAxis("Vertical");
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        x = Input.GetAxisRaw("Horizontal");
+        z = Input.GetAxisRaw("Vertical");
+        if (Input.GetButtonDown("Jump") && isGrounded && !isDashing && !isPinned)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        moveDirection = transform.right * x + transform.forward * z;
+        moveDirection = (transform.right * x + transform.forward * z).normalized;
         if (moveDirection.magnitude > 0.1f)
         {
-            motor.Move(moveDirection * currentSpeed * Time.deltaTime);
-            isMoving = true;
+            if (Input.GetButtonDown("Dash") && isGrounded && !isDashing && !isPinned && weaponInventory.currentGun && !weaponInventory.currentGun.GetComponent<GunScript>().isSwitching && !weaponInventory.currentGun.GetComponent<GunScript>().isReloading && !weaponInventory.currentGun.GetComponent<GunScript>().isMelee)
+            {
+                StartCoroutine(Dash(moveDirection));
+            }
+            if (!isDashing && !isPinned)
+            {
+                motor.Move(moveDirection * currentSpeed * Time.deltaTime);
+                isMoving = true;
+            }
         }
         else
             isMoving = false;
@@ -72,17 +104,88 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         motor.Move(velocity * Time.deltaTime);
     }
+    IEnumerator Dash(Vector3 direction)
+    {
+        if(Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f)
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0.0f);
+        }
+        else if (Mathf.Abs(direction.x) > Mathf.Abs(direction.z))
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", direction.x);
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", 0.0f);
+        }
+        else
+        {
+            weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
+            weaponInventory.currentHandsAnimator.SetFloat("dashX", 0.0f);
+        }
 
+        isDashing = true;
+        weaponInventory.currentHandsAnimator.SetTrigger("isDashing");
+
+        while (!weaponInventory.currentHandsAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Dashing"))
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        AudioManager.instance.Play("DashSFX");
+
+        dashTime = 0f;
+        float currentDashSpeed = currentSpeed;
+        while (dashTime < dashLength)
+        {
+            currentDashSpeed = Mathf.SmoothDamp(currentDashSpeed, dashSpeed, ref dashSpeedRef, dashSmoothTime);
+            motor.Move(direction * currentDashSpeed * Time.deltaTime);
+            dashTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        dashTime = 0f;
+        while (dashTime < dashResetLength)
+        {
+            currentDashSpeed = Mathf.SmoothDamp(currentDashSpeed, dashResetSpeed, ref dashSpeedRef, dashSmoothTime);
+            motor.Move(direction * currentDashSpeed * Time.deltaTime);
+            dashTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        isDashing = false;
+    }
     public void TakeDamage(int points)
     {
-        health -= points;
-        if (health <= 0)
-            Die();
+        if (rage.canBeDamaged)
+        {
+            health -= points;
+            healthBar.SetHealth(health);
+            if (health <= 0)
+                Die();
+        }
     }
     private void Die()
     {
         character.SetActive(true);
+        if(isPinned || isPartiallyPinned)
+            characterAnimation.Play("Die_Pinned");
+        else
+            characterAnimation.Play("Die");
         Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
         character.transform.parent = null;
+    }
+
+    // GUI
+    void OnGUI()
+    {
+        if (!HUD_health)
+        {
+            try
+            {
+                HUD_health = GameObject.Find("HUD_health").GetComponent<TextMesh>();
+            }
+            catch (System.Exception ex)
+            {
+                print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
+            }
+        }
+        if (HUD_health)
+            HUD_health.text = health.ToString();
     }
 }
