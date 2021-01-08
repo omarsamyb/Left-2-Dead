@@ -133,3 +133,19 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
+  - name: DamagedSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 0}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: CriticallyDamagedSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 425a7945557109a4d9ffa86f3b5eb493, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 1
+    volume: 1
+    pitch: 1

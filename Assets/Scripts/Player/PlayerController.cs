@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -41,6 +42,14 @@ public class PlayerController : MonoBehaviour
     public GameObject bileEffect;
     private float bileVisionTimeRef = 4f;
     private float bileVisionTime = 4f;
+    public Image damagedEffect;
+    public Image criticallyDamagedEffect;
+    private float damageFirstFadeDuration = 0.5f;
+    private float damageSecondFadeDuration = 1f;
+    private float damageFadeTime;
+    private float criticallyDamagedFadeDuration = 0.4f;
+    private float criticallyDamagedFadeTime;
+    private Coroutine damageFadeRoutine;
 
     private void Awake()
     {
@@ -75,10 +84,10 @@ public class PlayerController : MonoBehaviour
         {
             PlayerMovement();
 
-            if(GameManager.instance.companionId == 2)
+            if (GameManager.instance.companionId == 2)
             {
                 addHealthTime -= Time.deltaTime;
-                if(addHealthTime <= 0)
+                if (addHealthTime <= 0)
                 {
                     addHealthTime = 1f;
                     if (CompanionController.instance.canApplyAbility)
@@ -130,7 +139,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator Dash(Vector3 direction)
     {
-        if(Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f)
+        if (Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f)
         {
             weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
             weaponInventory.currentHandsAnimator.SetFloat("dashX", 0.0f);
@@ -195,17 +204,83 @@ public class PlayerController : MonoBehaviour
             health -= points;
             if (health <= 0)
                 Die();
+
+            if (damageFadeRoutine != null)
+                StopCoroutine(damageFadeRoutine);
+            damageFadeRoutine = StartCoroutine(DamagedEffect());
+
+            if (health < 50 && !AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
+                StartCoroutine(CriticallyDamagedEffect());
         }
     }
-    
+
     // Effects
+    IEnumerator DamagedEffect()
+    {
+        Color color = damagedEffect.color;
+        color.a = 1f;
+        damagedEffect.color = color;
+        damageFadeTime = 0f;
+        while (damageFadeTime < damageFirstFadeDuration)
+        {
+            damageFadeTime += Time.deltaTime;
+            color.a = Mathf.Lerp(1, 0.5f, damageFadeTime / damageFirstFadeDuration);
+            damagedEffect.color = color;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(2f);
+        damageFadeTime = 0f;
+        while (damageFadeTime < damageSecondFadeDuration)
+        {
+            damageFadeTime += Time.deltaTime;
+            color.a = Mathf.Lerp(0.5f, 0f, damageFadeTime / damageFirstFadeDuration);
+            damagedEffect.color = color;
+            yield return null;
+        }
+    }
+    IEnumerator CriticallyDamagedEffect()
+    {
+        AudioManager.instance.Play("CriticallyDamagedSFX");
+        Color color = criticallyDamagedEffect.color;
+        color.a = 1f;
+        criticallyDamagedEffect.color = color;
+
+        while (health < 50)
+        {
+            criticallyDamagedFadeTime = 0f;
+            while (criticallyDamagedFadeTime < criticallyDamagedFadeDuration)
+            {
+                if (health <= 0)
+                    break;
+                criticallyDamagedFadeTime += Time.deltaTime;
+                color.a = Mathf.Lerp(1, 0.2f, criticallyDamagedFadeTime / criticallyDamagedFadeDuration);
+                criticallyDamagedEffect.color = color;
+                yield return null;
+            }
+            if (health <= 0)
+                break;
+            criticallyDamagedFadeTime = 0f;
+            while (criticallyDamagedFadeTime < criticallyDamagedFadeDuration)
+            {
+                if (health <= 0)
+                    break;
+                criticallyDamagedFadeTime += Time.deltaTime;
+                color.a = Mathf.Lerp(0.2f, 1f, criticallyDamagedFadeTime / criticallyDamagedFadeDuration);
+                criticallyDamagedEffect.color = color;
+                yield return null;
+            }
+        }
+        AudioManager.instance.Stop("CriticallyDamagedSFX");
+        color.a = 0f;
+        criticallyDamagedEffect.color = color;
+    }
     public void BileVisionEffect()
     {
         AudioManager.instance.Play("BileEffectSFX");
         bileEffect.SetActive(true);
         bileVisionTime = bileVisionTimeRef;
     }
-
     // GUI
     void OnGUI()
     {
