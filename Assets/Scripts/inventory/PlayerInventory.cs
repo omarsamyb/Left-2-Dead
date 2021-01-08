@@ -6,13 +6,8 @@ public class PlayerInventory : MonoBehaviour
 {
     public InventoryObject ingredientInventory;
     public InventoryObject AmmoInventory;
-    public GameObject inventoryPanel;
 
-    public bool inventoryPanelToggle;
 
-    void Start(){
-        inventoryPanelToggle = false;
-    }
     void OnTriggerEnter(Collider other)
     {
         var obj = other.GetComponent<Item>();
@@ -41,15 +36,4 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    void Update(){
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            inventoryPanelToggle = !inventoryPanelToggle;
-            inventoryPanel.SetActive(inventoryPanelToggle);
-        }
-    }
-
-    public void SetinventoryPanel(bool val){
-        inventoryPanel.SetActive(val);
-    }
 }
