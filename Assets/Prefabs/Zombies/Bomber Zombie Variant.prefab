@@ -54,8 +54,8 @@ MonoBehaviour:
   pipeTimer: 10
   hearedLocation: {x: 0, y: 0, z: 0}
   pipePosition: {fileID: 0}
-  healthBar: {fileID: 0}
-  healthBarUI: {fileID: 0}
+  healthBar: {fileID: 5250118602751662443, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+  healthBarUI: {fileID: 4200144858965876942}
   bomb: {fileID: 6572764975774863566, guid: 20c320519fa60bd4eb2568f3bc908cd3, type: 3}
 --- !u!1001 &3457385329009353592
 PrefabInstance:
@@ -162,6 +162,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a26131835138a444cbc519373922615d, type: 3}
+--- !u!1 &4200144858965876942 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1563576854523659190, guid: a26131835138a444cbc519373922615d, type: 3}
+  m_PrefabInstance: {fileID: 3457385329009353592}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4581774794911686900
 PrefabInstance:
   m_ObjectHideFlags: 0
