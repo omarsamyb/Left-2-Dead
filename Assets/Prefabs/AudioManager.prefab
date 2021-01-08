@@ -133,9 +133,9 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
-  - name: DamagedSFX
+  - name: ToggleFlashlightSFX
     source: {fileID: 0}
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: e115d10e3388d1f44a8a78497d10697b, type: 3}
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
