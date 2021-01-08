@@ -30,6 +30,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public Transform pipePosition;
     public HealthBar healthBar;
     public GameObject healthBarUI;
+    public GameObject bloodEffect;
     public virtual void FaceTarget(Vector3 destination)
     {
         Vector3 lookPos = destination - transform.position;
@@ -205,7 +206,7 @@ public class EnemyContoller : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         if (cont.health > 0 && currentState == State.attack)
-            cont.TakeDamage(damagePerSec);
+            cont.TakeDamage(damagePerSec,attackTarget.position+new Vector3(0,1.5f,0));
     }
     void Update()
     {
@@ -307,6 +308,14 @@ public class EnemyContoller : MonoBehaviour
     {
         health -= damage;
         healthBar.SetHealth(health);
+        if (health <= 0)
+            Die();
+    }
+    public void TakeDamage(int damage, Vector3 pos)
+    {
+        health -= damage;
+        healthBar.SetHealth(health);
+        Instantiate(bloodEffect, pos, Quaternion.identity);
         if (health <= 0)
             Die();
     }

@@ -13,18 +13,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navMeshAgent: {fileID: 0}
+  playerTransform: {fileID: 0}
   defaultState: 0
   currentState: 0
   animator: {fileID: 955558936432446566}
   attackDistance: 1
   chaseDistance: 8
+  reachDistance: 0
   patrolling: []
+  patrollingIdx: 0
   health: 50
+  attackTarget: {fileID: 0}
+  chaseSpeed: 2
+  patrolSpeed: 0.5
   childTransform: {fileID: 3029563786236463362}
+  chaseAngle: 130
+  attackAngle: 40
   attackCooldownTime: 1
+  canAttack: 1
   damagePerSec: 5
+  isConfused: 0
+  stunTimer: 0
+  confusionTimer: 0
+  pipeTimer: 10
+  hearedLocation: {x: 0, y: 0, z: 0}
+  pipePosition: {fileID: 0}
   healthBar: {fileID: 7224312856926515964}
   healthBarUI: {fileID: 5455710860019188112}
+  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
 --- !u!1001 &6774650525205430822
 PrefabInstance:
   m_ObjectHideFlags: 0

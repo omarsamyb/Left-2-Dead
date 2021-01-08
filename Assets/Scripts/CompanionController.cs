@@ -163,8 +163,8 @@ public class CompanionController : MonoBehaviour
         {
             if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
             {
-                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage);
+                // Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage,hitInfo.point);
             }
             else
             {
