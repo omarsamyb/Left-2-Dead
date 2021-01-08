@@ -109,7 +109,7 @@ MonoBehaviour:
   isPinned: 0
   isPartiallyPinned: 0
   criticalEnemy: {fileID: 0}
-  healthBar: {fileID: 7284979399442236972, guid: 3b5a62bd074eb784dab8ab2a293eaa9d, type: 3}
+  healthBar: {fileID: 6133456232393010405, guid: 39934f96bf34a2346b5ff6d3dde9e7cd, type: 3}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0
