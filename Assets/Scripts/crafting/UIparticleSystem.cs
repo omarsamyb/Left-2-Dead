@@ -41,7 +41,6 @@ public class UIparticleSystem : MonoBehaviour
     }
 
     public void playParticle(){
-        print(haveEnough());
         showFlame = haveEnough();
         letPlay = true;
         GetComponent<TrailRenderer>().time = 5;

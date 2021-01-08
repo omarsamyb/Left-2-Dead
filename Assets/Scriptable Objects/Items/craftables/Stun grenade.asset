@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ab9928e03080f479e2c55f047debd9, type: 3}
   m_Name: Stun grenade
   m_EditorClassIdentifier: 
-  prefab: {fileID: 9127179534044590180, guid: 6181fb20950c88e49b7fd0bcbc82eb50, type: 3}
+  prefab: {fileID: 2281943392527042010, guid: 6181fb20950c88e49b7fd0bcbc82eb50, type: 3}
   type: 1

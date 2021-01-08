@@ -9,8 +9,7 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public string content;
     public string behaviour;
     public void OnPointerEnter(PointerEventData eventData){
-        Invoke("show",0.2f);
-        // TooltipSystem.Show(content, header);
+        StartCoroutine(show());
     }
 
     public void OnPointerExit(PointerEventData eventData){
@@ -18,7 +17,8 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         TooltipSystem.Hide();
     }
 
-    public void show(){
+    IEnumerator show(){
+        yield return new WaitForSecondsRealtime(0.2f);
         TooltipSystem.Show(content, header, behaviour);
     }
 }

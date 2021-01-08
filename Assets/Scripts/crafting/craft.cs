@@ -96,11 +96,4 @@ public class craft : MonoBehaviour
             p.Stop();
         }
     }
-
-    // void succ(){
-    //     print("succ");
-    // }
-    // void fail(){
-    //     print("fail");
-    // }
 }

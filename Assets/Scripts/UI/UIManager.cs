@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
             }
         }
     }
-    void Resume()
+    public void Resume()
     {
         GameManager.instance.inMenu = false;
         Cursor.lockState = CursorLockMode.Locked;
