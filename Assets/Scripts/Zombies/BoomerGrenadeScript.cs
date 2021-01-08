@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class boomergrenade : MonoBehaviour
+public class BoomerGrenadeScript : MonoBehaviour
 {
     // Start is called before the first frame update
     private Transform playerTransform;
@@ -27,19 +27,19 @@ public class boomergrenade : MonoBehaviour
         parentTransform = transform.parent.transform;
 
         rb = GetComponent<Rigidbody>();
-        //AudioManager.instance.SetSource("GrenadesSFX", GetComponent<AudioSource>());
 
         rb.velocity = new Vector3(direction.x, 0f, direction.z)* thrust;
         rb.AddTorque(new Vector3(10, 0, 10));
         Destroy(gameObject, 10.0f);
 
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player" && !isSpawned)
         {
-            HordeSpawner x = transform.parent.gameObject.GetComponent<HordeSpawner>();
-            x.bomberSpawnFlag = true;
+            HordeSpawner hordeSpawner = transform.parent.gameObject.GetComponent<HordeSpawner>();
+            hordeSpawner.bomberSpawnFlag = true;
             Destroy(gameObject);
             isSpawned = true;
             GameObject thunderObject1= Instantiate(thunder, parentTransform.position, parentTransform.rotation);
@@ -59,6 +59,7 @@ public class boomergrenade : MonoBehaviour
             Destroy(thunderObject3, 4.0f);
             Destroy(thunderObject4, 4.0f);
 
+            // need to call vision effect
 
         }
     }

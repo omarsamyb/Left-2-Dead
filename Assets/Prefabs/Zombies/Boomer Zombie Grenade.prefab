@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6572764975774863554}
   - component: {fileID: 6572764975774863553}
   - component: {fileID: 6572764975774863552}
-  - component: {fileID: 6572764975774863567}
+  - component: {fileID: 8228917784232670369}
   m_Layer: 0
   m_Name: Boomer Zombie Grenade
   m_TagString: Untagged
@@ -161,7 +161,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6572764975774863567
+--- !u!114 &8228917784232670369
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

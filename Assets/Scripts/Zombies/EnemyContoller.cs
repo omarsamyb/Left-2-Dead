@@ -30,7 +30,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public Transform pipePosition;
     public HealthBar healthBar;
     public GameObject healthBarUI;
-    public void FaceTarget(Vector3 destination)
+    public virtual void FaceTarget(Vector3 destination)
     {
         Vector3 lookPos = destination - transform.position;
         lookPos.y = 0;
@@ -71,7 +71,7 @@ public class EnemyContoller : MonoBehaviour
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
     }
-    public void stun()
+    public virtual void stun()
     {
         if (currentState == State.dead)
             return;
@@ -86,7 +86,7 @@ public class EnemyContoller : MonoBehaviour
         endConfusion(false);
         stunTimer = 0;
     }
-    public void chase(Transform target)
+    public virtual void chase(Transform target)
     {
         if (currentState == State.dead)
             return;
@@ -125,7 +125,7 @@ public class EnemyContoller : MonoBehaviour
         }
         StartCoroutine(resumeAttack());
     }
-    public void patrol()
+    public virtual void patrol()
     {
         if (currentState == State.dead)
             return;
@@ -157,7 +157,7 @@ public class EnemyContoller : MonoBehaviour
                 idle();
         }
     }
-    public void idle()
+    public virtual void idle()
     {
         currentState = State.idle;
         animator.SetBool("isIdle", true);
@@ -172,7 +172,7 @@ public class EnemyContoller : MonoBehaviour
         if (callBacktoDefault)
             backToDefault();
     }
-    public void endStun(bool callBacktoDefault)
+    public virtual void endStun(bool callBacktoDefault)
     {
         animator.SetBool("isStunned", false);
         if (pipeTimer <= 4)
@@ -183,7 +183,7 @@ public class EnemyContoller : MonoBehaviour
         else if (callBacktoDefault)
             backToDefault();
     }
-    public void pipeExploded(bool callBacktoDefault)
+    public virtual void pipeExploded(bool callBacktoDefault)
     {
         animator.SetBool("isReachedPipe", false);
         animator.SetBool("isPiped", false);
@@ -310,7 +310,7 @@ public class EnemyContoller : MonoBehaviour
         if (health <= 0)
             Die();
     }
-    public void Die()
+    public virtual void Die()
     {
         animator.SetBool("isDying", true);
         navMeshAgent.SetDestination(transform.position);
@@ -382,7 +382,7 @@ public class EnemyContoller : MonoBehaviour
             currentState = State.chasing;
         }
     }
-    public void pipeGrenade(Transform grenadePosition, bool resetTimer = true)
+    public virtual void pipeGrenade(Transform grenadePosition, bool resetTimer = true)
     {
         if (resetTimer)
             pipeTimer = 0;
@@ -401,7 +401,7 @@ public class EnemyContoller : MonoBehaviour
     {
         return currentState.ToString();
     }
-    public void hearFire()
+    public virtual void hearFire()
     {
         if (currentState == State.idle || currentState == State.patrol || currentState == State.hear)
         {
