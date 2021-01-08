@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public int health;
     public GameObject character;
     public EnemyContoller criticalEnemy;
-
+    public HealthBar healthBar;
     private void Awake()
     {
         instance = this;
@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
+        healthBar.SetMaxHealth(health);
     }
 
     void Update()
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int points)
     {
         health -= points;
+        healthBar.SetHealth(health);
         if (health <= 0)
             Die();
     }

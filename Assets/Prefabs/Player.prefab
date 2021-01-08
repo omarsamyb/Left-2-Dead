@@ -75,6 +75,7 @@ MonoBehaviour:
   health: 300
   character: {fileID: 979357917699480901}
   criticalEnemy: {fileID: 0}
+  healthBar: {fileID: 7284979399442236972, guid: 3b5a62bd074eb784dab8ab2a293eaa9d, type: 3}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0
