@@ -60,6 +60,7 @@ public class BoomerGrenadeScript : MonoBehaviour
             Destroy(thunderObject4, 4.0f);
 
             // need to call vision effect
+            //PlayerController.instance.EffectVision();
 
         }
     }
