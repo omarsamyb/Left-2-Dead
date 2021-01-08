@@ -15,7 +15,6 @@ public class PlayerInventory : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        print("innn");
         var obj = other.GetComponent<Item>();
         if(obj){ // check if object has the script item
         
