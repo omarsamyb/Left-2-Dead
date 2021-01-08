@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private Animation characterAnimation;
     private TextMesh HUD_health;
     private Rage rage;
+    private float addHealthTime;
 
     private void Awake()
     {
@@ -61,12 +62,26 @@ public class PlayerController : MonoBehaviour
         weaponInventory = GetComponent<GunInventory>();
         characterAnimation = character.GetComponent<Animation>();
         rage = GetComponent<Rage>();
+        addHealthTime = 1;
     }
 
     void Update()
     {
         if (health > 0)
+        {
             PlayerMovement();
+
+            if(GameManager.instance.companionId == 2)
+            {
+                addHealthTime -= Time.deltaTime;
+                if(addHealthTime <= 0)
+                {
+                    addHealthTime = 1f;
+                    if (CompanionController.instance.canApplyAbility)
+                        AddHealth(1);
+                }
+            }
+        }
     }
 
     private void PlayerMovement()
@@ -147,6 +162,10 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         isDashing = false;
+    }
+    public void AddHealth(int points)
+    {
+        health = Mathf.Clamp(health + points, 0, 300);
     }
     public void TakeDamage(int points)
     {

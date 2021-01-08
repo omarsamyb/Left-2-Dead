@@ -15,6 +15,10 @@ public class Rage : MonoBehaviour
     private Animation characterAnimation;
     private GunInventory gunInventory;
     [HideInInspector] public bool canBeDamaged;
+    private int normalKillPointsRef = 10;
+    private int specialKillPointsRef = 50;
+    private int normalKillPoints = 10;
+    private int specialKillPoints = 50;
 
     public event Action<float> OnRageChange = delegate { };
 
@@ -30,6 +34,20 @@ public class Rage : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.companionId == 0)
+        {
+            if (CompanionController.instance.canApplyAbility)
+            {
+                normalKillPoints = normalKillPointsRef * 2;
+                specialKillPoints = specialKillPointsRef * 2;
+            }
+            else
+            {
+                normalKillPoints = normalKillPointsRef;
+                specialKillPoints = specialKillPointsRef;
+            }
+        }
+
         if (rageReset >= 0)
             rageReset -= Time.deltaTime;
         if (rageReset <= 0 && !canActivate && ragePoints != 0)
@@ -59,9 +77,9 @@ public class Rage : MonoBehaviour
     {
         rageReset = rageResetRef;
         if (tag[0] == 'S')
-            ragePoints = Mathf.Clamp(ragePoints + 50, 0, 100);
+            ragePoints = Mathf.Clamp(ragePoints + specialKillPoints, 0, 100);
         else
-            ragePoints = Mathf.Clamp(ragePoints + 10, 0, 100);
+            ragePoints = Mathf.Clamp(ragePoints + normalKillPoints, 0, 100);
         if (ragePoints == 100)
             canActivate = true;
         OnRageChange((float)ragePoints / 100f);

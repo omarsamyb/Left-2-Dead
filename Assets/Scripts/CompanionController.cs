@@ -5,6 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(NavMeshAgent))]
 public class CompanionController : MonoBehaviour
 {
+    public static CompanionController instance;
     public string weaponName;
     public int maxClips = 3;
     public GameObject muzzelSpawn;
@@ -40,7 +41,13 @@ public class CompanionController : MonoBehaviour
     private float walkingSpeed;
     private bool inCoroutine;
     private bool isJumping;
+    [HideInInspector] public int killCounter;
+    [HideInInspector] public bool canApplyAbility;
 
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         GunScript weapon = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + weaponName + ".prefab", typeof(GameObject))).GetComponent<GunScript>();
@@ -75,9 +82,17 @@ public class CompanionController : MonoBehaviour
     {
         Shooting();
         Movement();
+
+        if(killCounter >= 10)
+        {
+            killCounter = 0;
+            AddClip();
+        }
     }
     private void Movement()
     {
+        float distance = Vector3.Distance(player.position, transform.position);
+
         if (agent.isOnOffMeshLink && !isJumping)
         {
             isJumping = true;
@@ -86,12 +101,16 @@ public class CompanionController : MonoBehaviour
         else if (!agent.isOnOffMeshLink && isJumping)
             isJumping = false;
 
-        float distance = Vector3.Distance(player.position, transform.position);
         if (distance > agent.stoppingDistance)
         {
             if (!inCoroutine)
                 StartCoroutine(GoToPlayer());
         }
+
+        if (distance < agent.stoppingDistance + agent.radius * 2)
+            canApplyAbility = true;
+        else
+            canApplyAbility = false;
 
         if (!agent.pathPending && agent.enabled)
         {
@@ -209,10 +228,13 @@ public class CompanionController : MonoBehaviour
 
         if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range * 2, shootingLayer))
         {
-            if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
+            if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage);
+                EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
+                enemy.TakeDamage(damage);
+                if (enemy.health <= 0)
+                    killCounter++;
             }
             else
             {
@@ -230,7 +252,7 @@ public class CompanionController : MonoBehaviour
     }
     public void AddClip()
     {
-        currentClips = Mathf.Clamp(currentClips++, 0, maxClips);
+        currentClips = Mathf.Clamp(++currentClips, 0, maxClips);
     }
 
     // GUI

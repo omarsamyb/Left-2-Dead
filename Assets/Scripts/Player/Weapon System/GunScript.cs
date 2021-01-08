@@ -394,7 +394,11 @@ public class GunScript : MonoBehaviour
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 enemy.TakeDamage((int)damage);
                 if (enemy.health <= 0)
+                {
                     rage.UpdateRage(hitInfo.transform.tag);
+                    CompanionController.instance.killCounter++;
+                    // TODO: if special is killed add bile to inventory
+                }
             }
         }
     }
