@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4677550310344288059
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3093704933627480265, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_Radius
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093704933627480265, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_Height
+      value: 0.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093704933627480265, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 15.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -8.174
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 6.56
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542617, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8274688052430542618, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_Name
+      value: Boomer Zombie Grenade
+      objectReference: {fileID: 0}
+    - target: {fileID: 8457515512005157117, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8457515512005157117, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 8457515512005157117, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.073
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 276838b33c18aa14b82073625f302ffb, type: 3}
