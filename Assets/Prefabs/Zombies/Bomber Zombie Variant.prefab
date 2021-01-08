@@ -56,6 +56,7 @@ MonoBehaviour:
   pipePosition: {fileID: 0}
   healthBar: {fileID: 5250118602751662443, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
   healthBarUI: {fileID: 4200144858965876942}
+  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
   bomb: {fileID: 6572764975774863566, guid: 20c320519fa60bd4eb2568f3bc908cd3, type: 3}
 --- !u!1001 &3457385329009353592
 PrefabInstance:
