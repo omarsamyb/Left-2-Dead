@@ -7,7 +7,7 @@ public class EnemyContoller : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent navMeshAgent;
     [HideInInspector] public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear };
+    public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear,coolDown };
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -187,12 +187,12 @@ public class EnemyContoller : MonoBehaviour
         if (callBacktoDefault)
             backToDefault();
     }
-    public IEnumerator resumeAttack()
+    public virtual IEnumerator resumeAttack()
     {
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
     }
-    public IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
+    public virtual IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
         if (health > 0 && currentState == State.attack)
