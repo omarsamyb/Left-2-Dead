@@ -45,7 +45,7 @@ public class HordeSpawner : MonoBehaviour
 			isSpawning = false;
 			StartCoroutine(SpawnEnemy());
 		}
-		if (!isChasing) {
+		if (!isChasing&&!isBomber) {
 			for (int i = 0; i < transform.childCount; i++)
 			{
 				GameObject childObject = transform.GetChild(i).gameObject;
@@ -72,6 +72,7 @@ public class HordeSpawner : MonoBehaviour
 			else
 				position = new Vector3(playerTransform.position.x + Random.Range(-1, 2), transform.position.y, playerTransform.position.z + Random.Range(-2, 1));
 			GameObject childObject = Instantiate(enemyObj, position, transform.rotation);
+			if(!isBomber)
 			childObject.transform.parent = gameObject.transform;
 			yield return new WaitForSeconds(1f / spawnRatePerSec);
 		}
