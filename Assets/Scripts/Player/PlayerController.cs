@@ -201,6 +201,7 @@ public class PlayerController : MonoBehaviour
     // Effects
     public void BileVisionEffect()
     {
+        AudioManager.instance.Play("BileEffectSFX");
         bileEffect.SetActive(true);
         bileVisionTime = bileVisionTimeRef;
     }
