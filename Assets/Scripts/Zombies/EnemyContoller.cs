@@ -117,7 +117,7 @@ public class EnemyContoller : MonoBehaviour
             currentState = State.attack;
             animator.SetBool("isAttacking", true);
             navMeshAgent.SetDestination(transform.position);
-            cont.TakeDamage(damagePerSec);
+            StartCoroutine(applyDamage(cont));
 
         }
         StartCoroutine(resumeAttack());
@@ -195,7 +195,13 @@ public class EnemyContoller : MonoBehaviour
     public virtual IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
-        if (health > 0 && currentState == State.attack)
+        if (cont.health > 0 && currentState == State.attack)
+            cont.TakeDamage(damagePerSec);
+    }
+    public virtual IEnumerator applyDamage(EnemyContoller cont) //Delayed damage on player for effect
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (cont.health > 0 && currentState == State.attack)
             cont.TakeDamage(damagePerSec);
     }
     void Update()

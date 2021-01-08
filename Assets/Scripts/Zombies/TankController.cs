@@ -11,7 +11,15 @@ public class TankController : EnemyContoller
         float frames=50;
         yield return new WaitForSeconds(frames/30.0f);
         
-        if (health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
+        if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
+            cont.TakeDamage(damagePerSec);
+    }
+    public override IEnumerator applyDamage(EnemyContoller cont)
+    {
+        float frames=50;
+        yield return new WaitForSeconds(frames/30.0f);
+        
+        if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
             cont.TakeDamage(damagePerSec);
     }
     private bool isFacingEachOther(){
@@ -24,7 +32,11 @@ public class TankController : EnemyContoller
         inAttackAnimation=true;
         yield return new WaitForSeconds(animationTime);
         inAttackAnimation=false;
-        StartCoroutine(CoolDown());
+        if(currentState==State.attack)
+            StartCoroutine(CoolDown());
+        else
+            canAttack=true;
+        
         
     }
     public IEnumerator CoolDown()
@@ -35,7 +47,8 @@ public class TankController : EnemyContoller
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
         animator.SetBool("isCoolingDown",false);
-        currentState=State.attack;
+        if(currentState==State.coolDown)
+            currentState=State.attack;
     }
     void Update()
     {
