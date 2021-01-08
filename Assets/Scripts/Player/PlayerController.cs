@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -32,11 +33,14 @@ public class PlayerController : MonoBehaviour
     private GunInventory weaponInventory;
     [HideInInspector] public bool isPinned;
     [HideInInspector] public bool isPartiallyPinned;
-    public EnemyContoller criticalEnemy;
+    [HideInInspector] public EnemyContoller criticalEnemy;
     private Animation characterAnimation;
     private TextMesh HUD_health;
     private Rage rage;
     private float addHealthTime;
+    public GameObject bileEffect;
+    private float bileVisionTimeRef = 4f;
+    private float bileVisionTime = 4f;
 
     private void Awake()
     {
@@ -81,6 +85,13 @@ public class PlayerController : MonoBehaviour
                         AddHealth(1);
                 }
             }
+        }
+
+        if (bileEffect.activeSelf)
+        {
+            bileVisionTime -= Time.deltaTime;
+            if (bileVisionTime <= 0)
+                bileEffect.SetActive(false);
         }
     }
 
@@ -163,6 +174,16 @@ public class PlayerController : MonoBehaviour
         }
         isDashing = false;
     }
+    private void Die()
+    {
+        character.SetActive(true);
+        if (isPinned || isPartiallyPinned)
+            characterAnimation.Play("Die_Pinned");
+        else
+            characterAnimation.Play("Die");
+        Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
+        character.transform.parent = null;
+    }
     public void AddHealth(int points)
     {
         health = Mathf.Clamp(health + points, 0, 300);
@@ -176,15 +197,12 @@ public class PlayerController : MonoBehaviour
                 Die();
         }
     }
-    private void Die()
+    
+    // Effects
+    public void BileVisionEffect()
     {
-        character.SetActive(true);
-        if(isPinned || isPartiallyPinned)
-            characterAnimation.Play("Die_Pinned");
-        else
-            characterAnimation.Play("Die");
-        Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
-        character.transform.parent = null;
+        bileEffect.SetActive(true);
+        bileVisionTime = bileVisionTimeRef;
     }
 
     // GUI

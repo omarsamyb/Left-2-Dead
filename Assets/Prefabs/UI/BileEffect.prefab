@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5071127007385796565
+--- !u!1 &3930804584943042396
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5071127007385796564}
-  - component: {fileID: 5071127007385796567}
+  - component: {fileID: 3930804584943042397}
+  - component: {fileID: 3930804584943042398}
   m_Layer: 5
   m_Name: Video Player
   m_TagString: Untagged
@@ -17,18 +17,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &5071127007385796564
+--- !u!224 &3930804584943042397
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5071127007385796565}
+  m_GameObject: {fileID: 3930804584943042396}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 5071127007397473843}
+  m_Father: {fileID: 3930804584956554938}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -36,13 +36,13 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!328 &5071127007385796567
+--- !u!328 &3930804584943042398
 VideoPlayer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5071127007385796565}
+  m_GameObject: {fileID: 3930804584943042396}
   m_Enabled: 1
   m_VideoClip: {fileID: 32900000, guid: fe3a13e9d9353f84ab4081b684c5cc3e, type: 3}
   m_TargetCameraAlpha: 1
@@ -69,7 +69,7 @@ VideoPlayer:
   m_WaitForFirstFrame: 1
   m_FrameReadyEventEnabled: 0
   m_VideoShaders: []
---- !u!1 &5071127007397473840
+--- !u!1 &3930804584956554937
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -77,9 +77,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5071127007397473843}
-  - component: {fileID: 5071127007397473845}
-  - component: {fileID: 5071127007397473842}
+  - component: {fileID: 3930804584956554938}
+  - component: {fileID: 3930804584956554940}
+  - component: {fileID: 3930804584956554939}
   m_Layer: 5
   m_Name: BileEffect
   m_TagString: Untagged
@@ -87,18 +87,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!224 &5071127007397473843
+--- !u!224 &3930804584956554938
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5071127007397473840}
+  m_GameObject: {fileID: 3930804584956554937}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 5071127007385796564}
+  - {fileID: 3930804584943042397}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -107,21 +107,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5071127007397473845
+--- !u!222 &3930804584956554940
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5071127007397473840}
+  m_GameObject: {fileID: 3930804584956554937}
   m_CullTransparentMesh: 0
---- !u!114 &5071127007397473842
+--- !u!114 &3930804584956554939
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5071127007397473840}
+  m_GameObject: {fileID: 3930804584956554937}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
