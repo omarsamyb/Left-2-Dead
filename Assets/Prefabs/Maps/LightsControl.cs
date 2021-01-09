@@ -27,7 +27,7 @@ public class LightsControl : MonoBehaviour
                 {
                     var child = parent.transform.GetChild(i).gameObject;
                     if (child != null)
-                        child.active = !child.active;
+                        child.SetActive(!child.activeSelf);
                 }
             }
         }
@@ -39,7 +39,7 @@ public class LightsControl : MonoBehaviour
         {
             var child = parent.transform.GetChild(i).gameObject;
             if (child != null)
-                child.active = false;
+                child.SetActive(false);
         }
     }
     public void lightsOn()
@@ -48,7 +48,7 @@ public class LightsControl : MonoBehaviour
         {
             var child = parent.transform.GetChild(i).gameObject;
             if (child != null)
-                child.active = true;
+                child.SetActive(true);
         }
     }
 }

@@ -65,6 +65,7 @@ MonoBehaviour:
   amountOfBulletsPerLoad: 15
   maxCapacity: 9999
   roundsPerSecond: 5
+  damageRef: 0
   damage: 36
   walkingSpeed: 3
   runningSpeed: 5
@@ -95,6 +96,7 @@ MonoBehaviour:
   restPlacePosition: {x: -0.07, y: -0.06, z: 0.4}
   aimPlacePosition: {x: 0, y: -0.05, z: 0.29}
   gunAimTime: 0.05
+  isMelee: 0
   isSwitching: 0
   isReloading: 0
   gunPrecision_notAiming: 300
@@ -104,7 +106,6 @@ MonoBehaviour:
   secondCameraZoomRatio_notAiming: 60
   secondCameraZoomRatio_aiming: 50
   gunPrecision: 0
-  HUD_bullets: {fileID: 0}
 --- !u!1 &2228148639005039297
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,6 +136,47 @@ Transform:
   m_Father: {fileID: 4507981929644531524}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3994214515404629917
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4507981929644531524}
+    m_Modifications:
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0008
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.045
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.2131
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2795998133867361471, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Name
+      value: Flashlight
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
 --- !u!1001 &4445498591827473896
 PrefabInstance:
   m_ObjectHideFlags: 0
