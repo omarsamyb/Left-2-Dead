@@ -6,13 +6,13 @@ using UnityEditor;
 
 public class Hunter : EnemyContoller
 {
-   Vector3 jumpPosition;
-   bool jumpingAttack;
-   Vector3 curGoToDestination;
-   float distanceToUpdateDestination;
-   bool isKilling;
-   Transform body;
-   CapsuleCollider myCollider;
+    Vector3 jumpPosition;
+    bool jumpingAttack;
+    Vector3 curGoToDestination;
+    float distanceToUpdateDestination;
+    bool isKilling;
+    Transform body;
+    CapsuleCollider myCollider;
     void Start()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -25,8 +25,10 @@ public class Hunter : EnemyContoller
         distanceToUpdateDestination = 0.5f;
         body = transform.GetChild(0).GetChild(4);
         myCollider = GetComponent<CapsuleCollider>();
+        audioSource = GetComponent<AudioSource>();
+        healthBar.SetMaxHealth(health);
     }
-   void Update()
+    void Update()
     {
         childTransform.position = transform.position;
         if (pipeTimer < 4)
@@ -36,9 +38,9 @@ public class Hunter : EnemyContoller
         if (isConfused)
         {
             confusionTimer += Time.deltaTime;
-            if (confusionTimer > 1.2f && !isKilling && !jumpingAttack && currentState!=State.pipe && currentState!=State.stunned)
+            if (confusionTimer > 1.2f && !isKilling && !jumpingAttack && currentState != State.pipe && currentState != State.stunned)
                 endConfusion(true);
-            else if(confusionTimer > 1.2f && !isKilling)
+            else if (confusionTimer > 1.2f && !isKilling)
                 endConfusion(false);
         }
         if (currentState == State.patrol)
@@ -51,15 +53,15 @@ public class Hunter : EnemyContoller
 
         else if (currentState == State.chasing)
         {
-            if(!isAlive(attackTarget))
+            if (!isAlive(attackTarget))
                 backToDefault();
             else if (canAttack)
             {
-                if(navMeshAgent.remainingDistance < reachDistance)
+                if (navMeshAgent.remainingDistance < reachDistance)
                     attack();
                 else //Can Attack but im far
                 {
-                    if(Vector3.Distance(curGoToDestination, attackTarget.position)>distanceToUpdateDestination)//Don't update if unecessary
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
                         animator.SetBool("isIdle", false);
@@ -70,9 +72,9 @@ public class Hunter : EnemyContoller
             }
             else //Can't attack
             {
-                if(Vector3.Distance(transform.position, attackTarget.position)>3) //Im still far
+                if (Vector3.Distance(transform.position, attackTarget.position) > 3) //Im still far
                 {
-                    if(Vector3.Distance(curGoToDestination, attackTarget.position)>distanceToUpdateDestination)//Don't update if unecessary
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
                         animator.SetBool("isIdle", false);
@@ -86,20 +88,20 @@ public class Hunter : EnemyContoller
                     animator.SetBool("isIdle", true);
                     animator.SetBool("isChasing", false);
                 }
-                    
+
             }
         }
         else if (currentState == State.attack)
         {
             if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && isAlive(attackTarget))
-                attack();  
-            else if(jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+                attack();
+            else if (jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             {
                 jumpingAttack = false;
                 pinTarget();
             }
-            else if(jumpingAttack)
-                myCollider.center = new Vector3(myCollider.center.x,body.position.y,myCollider.center.z);
+            else if (jumpingAttack)
+                myCollider.center = new Vector3(myCollider.center.x, body.position.y, myCollider.center.z);
         }
         else if (currentState == State.pipe)
         {
@@ -107,13 +109,13 @@ public class Hunter : EnemyContoller
                 pipeExploded(true);
             else
             {
-                if(jumpingAttack)
+                if (jumpingAttack)
                 {
                     jumpingAttack = false;
                     navMeshAgent.speed = chaseSpeed;
                     StartCoroutine(resumeAttack());
                 }
-                else if(isKilling)
+                else if (isKilling)
                 {
                     isKilling = false;
                     colliderToDefault();
@@ -134,13 +136,13 @@ public class Hunter : EnemyContoller
         }
         else if (currentState == State.stunned)
         {
-            if(jumpingAttack)
+            if (jumpingAttack)
             {
                 jumpingAttack = false;
                 navMeshAgent.speed = chaseSpeed;
                 StartCoroutine(resumeAttack());
             }
-            else if(isKilling)
+            else if (isKilling)
             {
                 isKilling = false;
                 colliderToDefault();
@@ -158,8 +160,8 @@ public class Hunter : EnemyContoller
                 backToDefault();
         }
     }
-   public override void attack()
-   {
+    public override void attack()
+    {
         navMeshAgent.ResetPath();
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
@@ -171,31 +173,31 @@ public class Hunter : EnemyContoller
         jumpPosition = attackTarget.position;
         navMeshAgent.avoidancePriority = 0;
         StartCoroutine(jumpToTarget());
-   }
-   IEnumerator jumpToTarget()
-   {
+    }
+    IEnumerator jumpToTarget()
+    {
         yield return new WaitForSeconds(0.73f);
         navMeshAgent.speed = 5;
         navMeshAgent.SetDestination(jumpPosition);
         jumpingAttack = true;
-   }
-   void pinTarget()
+    }
+    void pinTarget()
     {
         navMeshAgent.speed = chaseSpeed;
         navMeshAgent.ResetPath();
-        if(Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
+        if (Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
         {
             animator.SetTrigger("pin");
-            myCollider.center = new Vector3(myCollider.center.x,0.45f,myCollider.center.z);
+            myCollider.center = new Vector3(myCollider.center.x, 0.45f, myCollider.center.z);
             myCollider.height = 1.25f;
             myCollider.direction = 0;
-            if(attackTarget.tag=="Player")
+            if (attackTarget.tag == "Player")
             {
                 PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
                 //call pin at player
                 StartCoroutine(attackAnyTarget(cont, null));
-            }    
-            else if(attackTarget.tag.EndsWith("Enemy"))
+            }
+            else if (attackTarget.tag.EndsWith("Enemy"))
             {
                 EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
                 //call pin at zombie
@@ -212,39 +214,39 @@ public class Hunter : EnemyContoller
     }
     bool doDamageOnTarget(PlayerController playerCont, EnemyContoller enemyCont, int damage)
     {
-        if(playerCont==null)
+        if (playerCont == null)
         {
-            if(enemyCont.health<=0)return false;
+            if (enemyCont.health <= 0) return false;
             enemyCont.TakeDamage(damage);
-            if(enemyCont.health<=0) return false;
+            if (enemyCont.health <= 0) return false;
         }
         else
         {
-            if(playerCont.health<=0)return false;
+            if (playerCont.health <= 0) return false;
             playerCont.TakeDamage(damage);
-            if(playerCont.health<=0)return false;
+            if (playerCont.health <= 0) return false;
         }
         return true;
     }
     IEnumerator attackAnyTarget(PlayerController playerCont, EnemyContoller enemyCont)
     {
         isKilling = true;
-        while(true)
+        while (true)
         {
-            if(currentState!=State.attack || !doDamageOnTarget(playerCont, enemyCont, 10))
+            if (currentState != State.attack || !doDamageOnTarget(playerCont, enemyCont, 10))
             {
                 StartCoroutine(resumeAttack());
                 isKilling = false;
                 animator.SetBool("isAttacking", false);
                 colliderToDefault();
-                if(isConfused && confusionTimer>1.2)
+                if (isConfused && confusionTimer > 1.2)
                 {
-                    if(currentState!=State.stunned && currentState!=State.pipe)
+                    if (currentState != State.stunned && currentState != State.pipe)
                         endConfusion(true);
                     else
                         endConfusion(false);
                 }
-                    
+
                 yield break;
             }
             yield return new WaitForSeconds(1f);
@@ -253,7 +255,7 @@ public class Hunter : EnemyContoller
     void colliderToDefault()
     {
         navMeshAgent.avoidancePriority = 50;
-        myCollider.center = new Vector3(myCollider.center.x,1.072f,myCollider.center.z);
+        myCollider.center = new Vector3(myCollider.center.x, 1.072f, myCollider.center.z);
         myCollider.height = 2.160231f;
         myCollider.direction = 1;
     }
