@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEditor;
+public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown };
 public class EnemyContoller : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent navMeshAgent;
     [HideInInspector] public Transform playerTransform;
-    public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear,coolDown };
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -31,6 +31,8 @@ public class EnemyContoller : MonoBehaviour
     public HealthBar healthBar;
     public GameObject healthBarUI;
     public GameObject bloodEffect;
+    public AudioClip hurtSFX;
+    private AudioSource audioSource;
     public virtual void FaceTarget(Vector3 destination)
     {
         Vector3 lookPos = destination - transform.position;
@@ -56,8 +58,8 @@ public class EnemyContoller : MonoBehaviour
         confusionTimer = 0;
         isConfused = true;
         int min = 0;
-        for(int i = 0; i < enemies.Count; i++)
-            if(Vector3.Distance(((Transform) enemies[i]).position,transform.position)< Vector3.Distance(((Transform) enemies[min]).position,transform.position))
+        for (int i = 0; i < enemies.Count; i++)
+            if (Vector3.Distance(((Transform)enemies[i]).position, transform.position) < Vector3.Distance(((Transform)enemies[min]).position, transform.position))
                 min = i;
         attackTarget = (Transform)enemies[min];
     }
@@ -71,6 +73,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", defaultState == State.idle);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
+        audioSource = GetComponent<AudioSource>();
     }
     public virtual void stun()
     {
@@ -206,7 +209,7 @@ public class EnemyContoller : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         if (cont.health > 0 && currentState == State.attack)
-            cont.TakeDamage(damagePerSec,attackTarget.position+new Vector3(0,1.5f,0));
+            cont.TakeDamage(damagePerSec, attackTarget.position + new Vector3(0, 1.5f, 0));
     }
     void Update()
     {
@@ -215,7 +218,6 @@ public class EnemyContoller : MonoBehaviour
             pipeTimer = pipeTimer + Time.deltaTime;
         if (currentState == State.dead)
             return;
-
         if (isConfused)
         {
             confusionTimer += Time.deltaTime;
@@ -316,6 +318,7 @@ public class EnemyContoller : MonoBehaviour
         health -= damage;
         healthBar.SetHealth(health);
         Instantiate(bloodEffect, pos, Quaternion.identity);
+        audioSource.PlayOneShot(hurtSFX);
         if (health <= 0)
             Die();
     }
@@ -424,7 +427,7 @@ public class EnemyContoller : MonoBehaviour
     }
     void OnCollisionEnter(Collision other)
     {
-        if(!(currentState==State.idle) && !(currentState==State.chasing)) //If state is not idle and its not chasing do nothing
+        if (!(currentState == State.idle) && !(currentState == State.chasing)) //If state is not idle and its not chasing do nothing
             return;
         if (other.gameObject.tag == "Player" && other.gameObject.GetComponent<PlayerController>().health > 0)
             chase(other.transform);
