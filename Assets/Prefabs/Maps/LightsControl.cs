@@ -20,18 +20,29 @@ public class LightsControl : MonoBehaviour
         if (on)
         {
             fps++;
-            if (fps > 10)
+            
+            
+            if (fps > 5)
             {
                 fps = 0;
-                for (int i = 0; i < parent.transform.childCount; i++)
-                {
-                    var child = parent.transform.GetChild(i).gameObject;
-                    if (child != null)
-                        child.SetActive(!child.activeSelf);
-                }
+                light();
             }
         }
         
+    }
+    private void light()
+    {
+        int a = new System.Random().Next(0, 10);
+        if (a < 3)
+        {
+            Debug.Log(a);
+            for (int i = 0; i < parent.transform.childCount; i++)
+            {
+                var child = parent.transform.GetChild(i).gameObject;
+                if (child != null)
+                    child.SetActive(!child.activeSelf);
+            }
+        }
     }
     public void lightsOff()
     {
