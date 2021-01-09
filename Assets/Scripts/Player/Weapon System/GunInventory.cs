@@ -27,7 +27,7 @@ public class GunInventory : MonoBehaviour
     private float switchWeaponCooldown;
     private List<GameObject> myWeapons = new List<GameObject>();
 
-    private int currentGrenadeCounter;
+    [HideInInspector] public int currentGrenadeCounter;
     public List<string> grenadesIHave = new List<string>();
     public List<int> grenadesCounter = new List<int>();
     [HideInInspector] public bool isThrowing;

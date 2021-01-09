@@ -15,8 +15,8 @@ public class CompanionController : MonoBehaviour
     private GameObject wallDecalEffect;
     private GunStyles style;
     private int amountOfBulletsPerLoad;
-    private int bulletsIHave;
-    private int currentClips;
+    [HideInInspector] public int bulletsIHave;
+    [HideInInspector] public int currentClips;
     private float roundsPerSecond;
     private int damage;
     private float waitTillNextFire;
