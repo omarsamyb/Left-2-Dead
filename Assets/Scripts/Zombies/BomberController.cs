@@ -9,7 +9,7 @@ public class BomberController : EnemyContoller
     public GameObject bomb;
 
     //                   0        1           2            3            4           5         6                7
-    string[] arr = { "isIdle","isPatrol" ,"isChasing","isAttacking","isStunned","isPiped","isReachedPipe","isDying" };
+    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying" };
 
     public override void FaceTarget(Vector3 destination)
     {
@@ -29,6 +29,7 @@ public class BomberController : EnemyContoller
         animator.SetBool("isPatrol", defaultState == State.patrol);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
+        audioSource = GetComponent<AudioSource>();
     }
     public override void stun()
     {
@@ -76,8 +77,8 @@ public class BomberController : EnemyContoller
         StartCoroutine(SetIdleAfterAttack());
         StartCoroutine(resumeAttack());
     }
-    public override void  patrol()
-        {
+    public override void patrol()
+    {
         if (currentState == State.dead)
             return;
         navMeshAgent.speed = patrolSpeed;
@@ -113,7 +114,7 @@ public class BomberController : EnemyContoller
         else if (callBacktoDefault)
             backToDefault();
     }
-   public override void pipeExploded(bool callBacktoDefault)
+    public override void pipeExploded(bool callBacktoDefault)
     {
         if (callBacktoDefault)
             backToDefault();
@@ -121,7 +122,7 @@ public class BomberController : EnemyContoller
 
     void Update()
     {
-        
+
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
@@ -155,7 +156,7 @@ public class BomberController : EnemyContoller
                 attack();
             }
             // calculate distance between zombie and player 
-            else if((Vector3.Distance(transform.position, attackTarget.position) < attackDistance))
+            else if ((Vector3.Distance(transform.position, attackTarget.position) < attackDistance))
             {
                 navMeshAgent.ResetPath();
                 SetAnimationFlags(0);
@@ -254,10 +255,10 @@ public class BomberController : EnemyContoller
     {
         yield return new WaitForSeconds(1.5f);
         FaceTarget(attackTarget.position);
-       GameObject childGrenade= Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
+        GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
         childGrenade.transform.parent = gameObject.transform;
-        if (currentState==State.attack)
-        SetAnimationFlags(0);
+        if (currentState == State.attack)
+            SetAnimationFlags(0);
     }
     void SetAnimationFlags(int g)
     {

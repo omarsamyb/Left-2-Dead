@@ -41,6 +41,7 @@ MonoBehaviour:
   healthBar: {fileID: 7838052625338203249}
   healthBarUI: {fileID: 4841691818872721181}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  hurtSFX: {fileID: 8300000, guid: f76353e99f5fc476ba4c14afdf7b8bda, type: 3}
 --- !u!1001 &6234061415707380907
 PrefabInstance:
   m_ObjectHideFlags: 0
