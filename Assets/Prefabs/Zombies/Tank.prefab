@@ -178,7 +178,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226087, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_TagString
-      value: Enemy
+      value: SpecialEnemy
       objectReference: {fileID: 0}
     - target: {fileID: 5483223191915566721, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_Height
