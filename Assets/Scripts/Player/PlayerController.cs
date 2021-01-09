@@ -50,7 +50,8 @@ public class PlayerController : MonoBehaviour
     private float criticallyDamagedFadeDuration = 0.4f;
     private float criticallyDamagedFadeTime;
     private Coroutine damageFadeRoutine;
-
+    public HealthBar healthBar;
+    
     private void Awake()
     {
         instance = this;
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
+        healthBar.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
         dashLength = 0.08f;
@@ -202,6 +204,7 @@ public class PlayerController : MonoBehaviour
         if (rage.canBeDamaged)
         {
             health -= points;
+            healthBar.SetHealth(health);
             if (health <= 0)
                 Die();
 

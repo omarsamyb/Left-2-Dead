@@ -113,6 +113,7 @@ MonoBehaviour:
   bileEffect: {fileID: 9196068696474229571}
   damagedEffect: {fileID: 3741883428917982882}
   criticallyDamagedEffect: {fileID: 3661411871043538828}
+  healthBar: {fileID: 6133456232393010405, guid: 39934f96bf34a2346b5ff6d3dde9e7cd, type: 3}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0

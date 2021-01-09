@@ -18,6 +18,7 @@ public class Charger : EnemyContoller
         attackDistance = 1;
         reachDistance = attackDistance + 6;
         runningAttack = false;
+        healthBar.SetMaxHealth(health);
     }
     void Update()
     {
