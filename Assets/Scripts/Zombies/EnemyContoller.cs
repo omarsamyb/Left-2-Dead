@@ -32,7 +32,7 @@ public class EnemyContoller : MonoBehaviour
     public GameObject healthBarUI;
     public GameObject bloodEffect;
     public AudioClip hurtSFX;
-    private AudioSource audioSource;
+    protected AudioSource audioSource;
     public virtual void FaceTarget(Vector3 destination)
     {
         Vector3 lookPos = destination - transform.position;
