@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -31,8 +33,25 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isDashing;
     private GunInventory weaponInventory;
     [HideInInspector] public bool isPinned;
-    public EnemyContoller criticalEnemy;
-
+    [HideInInspector] public bool isPartiallyPinned;
+    [HideInInspector] public EnemyContoller criticalEnemy;
+    private Animation characterAnimation;
+    private TextMesh HUD_health;
+    private Rage rage;
+    private float addHealthTime;
+    public GameObject bileEffect;
+    private float bileVisionTimeRef = 4f;
+    private float bileVisionTime = 4f;
+    public Image damagedEffect;
+    public Image criticallyDamagedEffect;
+    private float damageFirstFadeDuration = 0.5f;
+    private float damageSecondFadeDuration = 1f;
+    private float damageFadeTime;
+    private float criticallyDamagedFadeDuration = 0.4f;
+    private float criticallyDamagedFadeTime;
+    private Coroutine damageFadeRoutine;
+    public HealthBar healthBar;
+    
     private void Awake()
     {
         instance = this;
@@ -49,18 +68,42 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
+        healthBar.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
         dashLength = 0.08f;
         dashResetLength = 0.6f;
         dashSmoothTime = 0.02f;
         weaponInventory = GetComponent<GunInventory>();
+        characterAnimation = character.GetComponent<Animation>();
+        rage = GetComponent<Rage>();
+        addHealthTime = 1;
     }
 
     void Update()
     {
         if (health > 0)
+        {
             PlayerMovement();
+
+            if (GameManager.instance.companionId == 2)
+            {
+                addHealthTime -= Time.deltaTime;
+                if (addHealthTime <= 0)
+                {
+                    addHealthTime = 1f;
+                    if (CompanionController.instance.canApplyAbility)
+                        AddHealth(1);
+                }
+            }
+        }
+
+        if (bileEffect.activeSelf)
+        {
+            bileVisionTime -= Time.deltaTime;
+            if (bileVisionTime <= 0)
+                bileEffect.SetActive(false);
+        }
     }
 
     private void PlayerMovement()
@@ -98,7 +141,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator Dash(Vector3 direction)
     {
-        if(Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f)
+        if (Mathf.Abs(Mathf.Abs(direction.x) - Mathf.Abs(direction.z)) < 0.1f)
         {
             weaponInventory.currentHandsAnimator.SetFloat("dashZ", direction.z);
             weaponInventory.currentHandsAnimator.SetFloat("dashX", 0.0f);
@@ -142,16 +185,120 @@ public class PlayerController : MonoBehaviour
         }
         isDashing = false;
     }
-    public void TakeDamage(int points)
-    {
-        health -= points;
-        if (health <= 0)
-            Die();
-    }
     private void Die()
     {
         character.SetActive(true);
+        if (isPinned || isPartiallyPinned)
+            characterAnimation.Play("Die_Pinned");
+        else
+            characterAnimation.Play("Die");
         Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
         character.transform.parent = null;
+    }
+    public void AddHealth(int points)
+    {
+        health = Mathf.Clamp(health + points, 0, 300);
+    }
+    public void TakeDamage(int points)
+    {
+        if (rage.canBeDamaged)
+        {
+            health -= points;
+            healthBar.SetHealth(health);
+            if (health <= 0)
+                Die();
+
+            if (damageFadeRoutine != null)
+                StopCoroutine(damageFadeRoutine);
+            damageFadeRoutine = StartCoroutine(DamagedEffect());
+
+            if (health < 50 && !AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
+                StartCoroutine(CriticallyDamagedEffect());
+        }
+    }
+
+    // Effects
+    IEnumerator DamagedEffect()
+    {
+        Color color = damagedEffect.color;
+        color.a = 1f;
+        damagedEffect.color = color;
+        damageFadeTime = 0f;
+        while (damageFadeTime < damageFirstFadeDuration)
+        {
+            damageFadeTime += Time.deltaTime;
+            color.a = Mathf.Lerp(1, 0.5f, damageFadeTime / damageFirstFadeDuration);
+            damagedEffect.color = color;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(2f);
+        damageFadeTime = 0f;
+        while (damageFadeTime < damageSecondFadeDuration)
+        {
+            damageFadeTime += Time.deltaTime;
+            color.a = Mathf.Lerp(0.5f, 0f, damageFadeTime / damageFirstFadeDuration);
+            damagedEffect.color = color;
+            yield return null;
+        }
+    }
+    IEnumerator CriticallyDamagedEffect()
+    {
+        AudioManager.instance.Play("CriticallyDamagedSFX");
+        Color color = criticallyDamagedEffect.color;
+        color.a = 1f;
+        criticallyDamagedEffect.color = color;
+
+        while (health < 50)
+        {
+            criticallyDamagedFadeTime = 0f;
+            while (criticallyDamagedFadeTime < criticallyDamagedFadeDuration)
+            {
+                if (health <= 0)
+                    break;
+                criticallyDamagedFadeTime += Time.deltaTime;
+                color.a = Mathf.Lerp(1, 0.2f, criticallyDamagedFadeTime / criticallyDamagedFadeDuration);
+                criticallyDamagedEffect.color = color;
+                yield return null;
+            }
+            if (health <= 0)
+                break;
+            criticallyDamagedFadeTime = 0f;
+            while (criticallyDamagedFadeTime < criticallyDamagedFadeDuration)
+            {
+                if (health <= 0)
+                    break;
+                criticallyDamagedFadeTime += Time.deltaTime;
+                color.a = Mathf.Lerp(0.2f, 1f, criticallyDamagedFadeTime / criticallyDamagedFadeDuration);
+                criticallyDamagedEffect.color = color;
+                yield return null;
+            }
+        }
+        AudioManager.instance.Stop("CriticallyDamagedSFX");
+        color.a = 0f;
+        criticallyDamagedEffect.color = color;
+    }
+    public void BileVisionEffect()
+    {
+        AudioManager.instance.Play("BileEffectSFX");
+        bileEffect.SetActive(true);
+        bileVisionTime = bileVisionTimeRef;
+    }
+    // GUI
+    void OnGUI()
+    {
+        if (!HUD_health)
+        {
+            try
+            {
+                HUD_health = GameObject.Find("HUD_health").GetComponent<TextMesh>();
+            }
+            catch (System.Exception ex)
+            {
+                print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
+            }
+        }
+        if (HUD_health)
+            HUD_health.text = health.ToString();
     }
 }

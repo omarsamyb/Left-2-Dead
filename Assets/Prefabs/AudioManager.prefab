@@ -109,3 +109,43 @@ MonoBehaviour:
     loop: 0
     volume: 0.5
     pitch: 1
+  - name: RageModeSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 6a5b58cc097d8224da6753836de5a381, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 0.5
+    pitch: 1
+  - name: RageModeMusic
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: d47d3aa1200774e40a1d74b1981e80b5, type: 3}
+    mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 0.8
+    pitch: 1
+  - name: BileEffectSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 64508cd3cc72e61469bfcb078ad0cf8a, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: ToggleFlashlightSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: e115d10e3388d1f44a8a78497d10697b, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: CriticallyDamagedSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 425a7945557109a4d9ffa86f3b5eb493, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 1
+    volume: 1
+    pitch: 1

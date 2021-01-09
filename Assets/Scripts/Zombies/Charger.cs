@@ -18,6 +18,8 @@ public class Charger : EnemyContoller
         attackDistance = 1;
         reachDistance = attackDistance + 6;
         runningAttack = false;
+        healthBar.SetMaxHealth(health);
+        audioSource = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -56,8 +58,8 @@ public class Charger : EnemyContoller
         else if (currentState == State.attack)
         {
             if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && isAlive(attackTarget))
-                attack();  
-            else if(runningAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+                attack();
+            else if (runningAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
             {
                 runningAttack = false;
                 pinTarget();
@@ -69,7 +71,7 @@ public class Charger : EnemyContoller
                 pipeExploded(true);
             else
             {
-                if(runningAttack)
+                if (runningAttack)
                 {
                     runningAttack = false;
                     StartCoroutine(resumeAttack());
@@ -89,7 +91,7 @@ public class Charger : EnemyContoller
         }
         else if (currentState == State.stunned)
         {
-            if(runningAttack)
+            if (runningAttack)
             {
                 runningAttack = false;
                 StartCoroutine(resumeAttack());
@@ -122,7 +124,7 @@ public class Charger : EnemyContoller
     IEnumerator charge()
     {
         yield return new WaitForSeconds(3.2f);
-        if(currentState!=State.attack)
+        if (currentState != State.attack)
         {
             animator.SetBool("isAttacking", false);
             StartCoroutine(resumeAttack());
@@ -132,20 +134,20 @@ public class Charger : EnemyContoller
         navMeshAgent.SetDestination(chargePosition);
         runningAttack = true;
     }
-    
+
     void pinTarget()
     {
         navMeshAgent.ResetPath();
-        if(Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
+        if (Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
         {
             animator.SetTrigger("pin");
-            if(attackTarget.tag=="Player")
+            if (attackTarget.tag == "Player")
             {
                 PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
                 //call pin at player
                 StartCoroutine(attackAnyTarget(cont, null));
-            }    
-            else if(attackTarget.tag.EndsWith("Enemy"))
+            }
+            else if (attackTarget.tag.EndsWith("Enemy"))
             {
                 EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
                 //call pin at zombie
@@ -161,7 +163,7 @@ public class Charger : EnemyContoller
     }
     void doDamageOnTarget(PlayerController playerCont, EnemyContoller enemyCont, int damage)
     {
-        if(playerCont==null)
+        if (playerCont == null)
             enemyCont.TakeDamage(damage);
         else
             playerCont.TakeDamage(damage);
@@ -170,16 +172,16 @@ public class Charger : EnemyContoller
     {
         animator.SetBool("isAttacking", false);
         yield return new WaitForSeconds(2.33f);
-        if(currentState!=State.attack)
+        if (currentState != State.attack)
         {
             StartCoroutine(resumeAttack());
             yield break;
         }
         doDamageOnTarget(playerCont, enemyCont, 5);
-        for(int i=0;i<7;i++)
+        for (int i = 0; i < 7; i++)
         {
             yield return new WaitForSeconds(0.35f);
-            if(currentState!=State.attack)
+            if (currentState != State.attack)
             {
                 StartCoroutine(resumeAttack());
                 yield break;
