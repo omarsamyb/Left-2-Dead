@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using PathCreation;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -51,6 +52,8 @@ public class PlayerController : MonoBehaviour
     private float criticallyDamagedFadeTime;
     private Coroutine damageFadeRoutine;
     public HealthBar healthBar;
+    private MouseLook mouseLook;
+    [HideInInspector] public bool isGettingPinned;
     
     private void Awake()
     {
@@ -60,6 +63,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         motor = GetComponent<CharacterController>();
+        mouseLook = Camera.main.gameObject.GetComponent<MouseLook>();
         currentSpeed = 0f;
         gravity = -9.81f * 2f;
         groundDistance = 0.4f;
@@ -84,7 +88,8 @@ public class PlayerController : MonoBehaviour
     {
         if (health > 0)
         {
-            PlayerMovement();
+            if(!isPinned && !isPartiallyPinned)
+                PlayerMovement();
 
             if (GameManager.instance.companionId == 2)
             {
@@ -106,6 +111,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Controls
     private void PlayerMovement()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -185,6 +191,8 @@ public class PlayerController : MonoBehaviour
         }
         isDashing = false;
     }
+    
+    // Health
     private void Die()
     {
         character.SetActive(true);
@@ -215,6 +223,79 @@ public class PlayerController : MonoBehaviour
             if (health < 50 && !AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
                 StartCoroutine(CriticallyDamagedEffect());
         }
+    }
+   
+    // Pinning
+    public void GetPinned()
+    {
+        isPinned = true;
+        isMoving = false;
+        StartCoroutine(GetPinnedHelper());
+    }
+    IEnumerator GetPinnedHelper()
+    {
+        weaponInventory.currentGun.SetActive(false);
+        character.SetActive(true);
+        characterAnimation.Play("Pinned");
+        Camera.main.transform.position -= Camera.main.transform.forward * 2f + Camera.main.transform.up;
+        Transform origParent = character.transform.parent;
+        character.transform.parent = null;
+        while (isPinned)
+            yield return null;
+        characterAnimation.Stop("Pinned");
+        character.SetActive(false);
+        character.transform.SetParent(origParent);
+        weaponInventory.currentGun.SetActive(true);
+        Camera.main.transform.position += Camera.main.transform.forward * 2f + Camera.main.transform.up;
+    }
+    public void GetPartiallyPinned(Vector3 topPoint, Vector3 endPoint, float speed, Vector3 poi)
+    {
+        isPartiallyPinned = true;
+        isGettingPinned = true;
+        isMoving = false;
+        Vector3[] points = { transform.position, topPoint, endPoint };
+        BezierPath bezierPath = new BezierPath(points);
+        GameObject placeholder = new GameObject("PinningPathPlaceHolder");
+        StartCoroutine(GetPartiallyPinnedHelper(new VertexPath(bezierPath, placeholder.transform), speed, poi));
+    }
+    IEnumerator GetPartiallyPinnedHelper(VertexPath path, float speed, Vector3 poi)
+    {
+        weaponInventory.currentGun.SetActive(false);
+        character.transform.SetParent(Camera.main.transform);
+        character.transform.Translate(0f, 0f, -0.12f);
+        character.transform.Rotate(-3f, 0f, 0f);
+        character.SetActive(true);
+        characterAnimation.Play("Falling");
+        motor.enabled = false;
+        yield return null;
+        Time.timeScale = 0.4f;
+
+        float distanceTravelled = 0f;
+        while(distanceTravelled < path.length)
+        {
+            distanceTravelled += speed * Time.deltaTime;
+            Camera.main.transform.rotation = Quaternion.LookRotation(poi - transform.position);
+            transform.position = path.GetPointAtDistance(distanceTravelled, EndOfPathInstruction.Stop);
+            yield return new WaitForEndOfFrame();
+        }
+        mouseLook.AdjustEulers(Camera.main.transform.rotation);
+        yield return null;
+        characterAnimation.Stop("Falling");
+        character.SetActive(false);
+        character.transform.SetParent(transform);
+        character.transform.localPosition = Vector3.zero;
+        character.transform.localRotation = Quaternion.identity;
+        weaponInventory.currentGun.SetActive(true);
+        isGettingPinned = false;
+        Time.timeScale = 1f;
+        while (isPartiallyPinned)
+            yield return null;
+        Vector3 resetY = transform.position;
+        resetY.y += 2;
+        transform.position = resetY;
+
+        isPartiallyPinned = false;
+        motor.enabled = true;
     }
 
     // Effects
@@ -284,6 +365,7 @@ public class PlayerController : MonoBehaviour
         bileEffect.SetActive(true);
         bileVisionTime = bileVisionTimeRef;
     }
+    
     // GUI
     void OnGUI()
     {
