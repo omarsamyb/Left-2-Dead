@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour
     }
     public void TakeDamage(int points)
     {
-        if (rage.canBeDamaged)
+        if (rage.canBeDamaged && health > 0)
         {
             health -= points;
             healthBar.SetHealth(health);
