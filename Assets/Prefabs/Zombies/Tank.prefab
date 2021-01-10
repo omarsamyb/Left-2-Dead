@@ -21,27 +21,50 @@ MonoBehaviour:
   chaseDistance: 8
   reachDistance: 0
   patrolling: []
-  patrollingIdx: 0
   health: 1000
   attackTarget: {fileID: 0}
   chaseSpeed: 2
   patrolSpeed: 0.5
   childTransform: {fileID: 321512220583812084}
-  chaseAngle: 130
-  attackAngle: 40
   attackCooldownTime: 1
   canAttack: 1
   damagePerSec: 30
-  isConfused: 0
-  stunTimer: 0
-  confusionTimer: 0
-  pipeTimer: 10
-  hearedLocation: {x: 0, y: 0, z: 0}
-  pipePosition: {fileID: 0}
   healthBar: {fileID: 1495132095172787135}
   healthBarUI: {fileID: 4271867533247908051}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
   hurtSFX: {fileID: 8300000, guid: 0e84038961d6c4b72af49c11e1553b9e, type: 3}
+  isPinned: 0
+  hitPoint: {fileID: 929884376440497770}
+--- !u!1 &634398760552467371
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 929884376440497770}
+  m_Layer: 0
+  m_Name: HitPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &929884376440497770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 634398760552467371}
+  m_LocalRotation: {x: 2.9272117e-16, y: 0.000000007471197, z: -0.00000020683147, w: 1}
+  m_LocalPosition: {x: -0.024710253, y: 0.2650702, z: 0.01664325}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 292412937672334589}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &287250523326069791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -117,6 +140,11 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: da37530ff965dff4ba2cece4b99d4a42, type: 3}
   m_PrefabInstance: {fileID: 287250523326069791}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &292412937672334589 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 572617754110402786, guid: da37530ff965dff4ba2cece4b99d4a42, type: 3}
+  m_PrefabInstance: {fileID: 287250523326069791}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &287250524281675455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -138,7 +166,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.55
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalRotation.x

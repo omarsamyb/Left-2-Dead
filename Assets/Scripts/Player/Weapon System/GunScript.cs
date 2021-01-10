@@ -395,8 +395,7 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
                 EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
-                // Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                enemy.TakeDamage((int)damage,hitInfo.point);
+                enemy.TakeDamage((int)damage, hitInfo.point);
                 if (enemy.health <= 0)
                 {
                     rage.UpdateRage(hitInfo.transform.tag);
@@ -499,9 +498,8 @@ public class GunScript : MonoBehaviour
               || Physics.Raycast(ray4, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray5, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray6, out hitInfo, 2f, ~ignoreLayer)
               || Physics.Raycast(ray7, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray8, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray9, out hitInfo, 2f, ~ignoreLayer))
         {
-            if (hitInfo.transform.tag == "Enemy")
+            if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
-                // Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
                 hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage, hitInfo.point);
             }
         }
