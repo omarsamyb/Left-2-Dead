@@ -12,7 +12,6 @@ public class CompanionController : MonoBehaviour
 
     private GameObject[] muzzelFlash;
     private AudioClip shootSFX;
-    private GameObject bloodEffect;
     private GameObject wallDecalEffect;
     private GunStyles style;
     private int amountOfBulletsPerLoad;
@@ -53,7 +52,6 @@ public class CompanionController : MonoBehaviour
         GunScript weapon = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + weaponName + ".prefab", typeof(GameObject))).GetComponent<GunScript>();
         muzzelFlash = weapon.muzzelFlash;
         shootSFX = weapon.shootSFX;
-        bloodEffect = weapon.bloodEffect;
         wallDecalEffect = weapon.wallDecalEffect;
         style = weapon.currentStyle;
         amountOfBulletsPerLoad = (int)weapon.amountOfBulletsPerLoad;
@@ -80,13 +78,16 @@ public class CompanionController : MonoBehaviour
 
     void Update()
     {
-        Shooting();
-        Movement();
-
-        if(killCounter >= 10)
+        if (PlayerController.instance.health > 0)
         {
-            killCounter = 0;
-            AddClip();
+            Shooting();
+            Movement();
+
+            if (killCounter >= 10)
+            {
+                killCounter = 0;
+                AddClip();
+            }
         }
     }
     private void Movement()
@@ -194,6 +195,7 @@ public class CompanionController : MonoBehaviour
     }
     IEnumerator Bullet()
     {
+        bool isCriticalEnemy = false;
         if (playerController.criticalEnemy == null)
         {
             normalEnemy = null;
@@ -215,13 +217,17 @@ public class CompanionController : MonoBehaviour
                 chosenEnemy = normalEnemy;
         }
         else
+        {
             chosenEnemy = playerController.criticalEnemy;
+            isCriticalEnemy = true;
+        }
 
         Quaternion lookRotation = transform.rotation;
+        Vector3 direction = Vector3.zero;
         if (chosenEnemy)
         {
-            Vector3 direction = (chosenEnemy.transform.position - transform.position);
-            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            direction = (chosenEnemy.hitPoint.position - transform.position);
+            lookRotation = Quaternion.LookRotation(direction);
         }
 
         float infrontOfWallDistance = 0.1f;
@@ -233,7 +239,14 @@ public class CompanionController : MonoBehaviour
                 EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
                 enemy.TakeDamage(damage, hitInfo.point);
                 if (enemy.health <= 0)
+                {
                     killCounter++;
+                    if(isCriticalEnemy && hitInfo.transform.CompareTag("SpecialEnemy"))
+                    {
+                        PlayerController.instance.criticalEnemy = null;
+                        PlayerController.instance.isPinned = false;
+                    }
+                }
             }
             else
             {
@@ -242,6 +255,8 @@ public class CompanionController : MonoBehaviour
         }
 
         Quaternion initialRotation = transform.rotation;
+        if(chosenEnemy)
+            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         for (float t = 0f; t < 1f; t += 5f * Time.deltaTime)
         {
             transform.rotation = Quaternion.Slerp(initialRotation, lookRotation, t);

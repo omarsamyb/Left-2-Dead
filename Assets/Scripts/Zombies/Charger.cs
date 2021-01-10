@@ -163,7 +163,7 @@ public class Charger : EnemyContoller
             if (attackTarget.tag == "Player")
             {
                 PlayerController cont = PlayerController.instance;
-                //call pin at player
+                PlayerController.instance.GetPartiallyPinned(transform.position, transform.position - transform.forward - transform.up * 1.2f, 2f, transform.position - transform.up);
                 StartCoroutine(attackAnyTarget(cont, null));
             }
             else if (attackTarget.tag.EndsWith("Enemy"))
@@ -195,7 +195,7 @@ public class Charger : EnemyContoller
         }
         else
         {
-            // playerCont.getUnpinned();
+            PlayerController.instance.isPartiallyPinned = false;
         }
     }
     IEnumerator attackAnyTarget(PlayerController playerCont, EnemyContoller enemyCont)
