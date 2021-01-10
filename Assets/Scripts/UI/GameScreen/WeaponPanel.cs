@@ -12,7 +12,7 @@ public class WeaponPanel : MonoBehaviour
     public Image shotgunImage;
     public Image submachineGunImage;
     public GameObject ammoCount;
-
+    public GameObject ReloadIcon;
     string curWeapon = "";
 
     void Start(){
@@ -25,19 +25,14 @@ public class WeaponPanel : MonoBehaviour
     }
 
     void setWeaponImage(){
-        string weapon = "";
-        try
-        {
-            weapon = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().weaponName;
+        if(PlayerController.instance.player.GetComponent<GunInventory>().currentGun != null){
+            string weapon = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().weaponName;
+            if(curWeapon != weapon){
+                activateImage(weapon);
+                curWeapon = weapon;
+            }
         }
-        catch (System.Exception ex)
-        {
-            return;
-        }
-        if(curWeapon != weapon){
-            activateImage(weapon);
-            curWeapon = weapon;
-        }
+        
     }
 
     void activateImage(string weapon){
@@ -65,20 +60,17 @@ public class WeaponPanel : MonoBehaviour
     }
 
     void setAmmoCount(){
-        float bulletsInTheGun = 0;
-        float bulletsIHave = 0;
-        try
-        {
-            bulletsInTheGun = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsInTheGun;
-            bulletsIHave = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsIHave;
+        if(PlayerController.instance.player.GetComponent<GunInventory>().currentGun != null){
+            float bulletsInTheGun = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsInTheGun;
+            float bulletsIHave = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsIHave;
+            float amountOfBulletsPerLoad = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().amountOfBulletsPerLoad;
+            ammoCount.GetComponent<TextMeshProUGUI>().SetText(bulletsInTheGun + " / " + bulletsIHave);
+            if (amountOfBulletsPerLoad - bulletsInTheGun > 0){
+                ReloadIcon.SetActive(true);
+            }
+            else{
+                ReloadIcon.SetActive(false);
+            }
         }
-        catch (System.Exception ex)
-        {
-            return;
-        }
-        ammoCount.GetComponent<TextMeshProUGUI>().SetText(bulletsInTheGun + " / " + bulletsIHave);
-        // textmeshPro.SetText("The first number is {0} and the 2nd is {1:2} and the 3rd is {3:0}.", 4, 6.345f, 3.5f);
-        // The text displayed will be:
-        // The first number is 4 and the 2nd is 6.35 and the 3rd is 4.
     }
 }

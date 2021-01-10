@@ -169,6 +169,10 @@ public class GunScript : MonoBehaviour
     Collider[] hits;
     LayerMask enemyLayer;
 
+    public InventoryObject ingredientInventory;
+    // alcohol  bile  canister  gunpowder  rag  sugar
+    //    0      1       2         3        4     5
+
     void Awake()
     {
         mouseLook = Camera.main.gameObject.GetComponent<MouseLook>();
@@ -397,7 +401,10 @@ public class GunScript : MonoBehaviour
                 {
                     rage.UpdateRage(hitInfo.transform.tag);
                     CompanionController.instance.killCounter++;
-                    // TODO: if special is killed add bile to inventory
+                    if(hitInfo.transform.tag[0] == 'S')
+                    {
+                        ingredientInventory.container[1].addAmount(1);
+                    }
                 }
             }
         }

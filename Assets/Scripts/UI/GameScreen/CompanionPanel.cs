@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CompanionPanel : MonoBehaviour
 {   
@@ -10,28 +11,43 @@ public class CompanionPanel : MonoBehaviour
 
     public GameObject bulletCount;
     public GameObject clipCount;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
+    bool companionSet = false;
+
     void Update()
     {
         setAmmoCount();
+        setCompanion();
     }
 
     void setAmmoCount(){
-        string bullets = "";
-        // try
-        // {
-        //     bullets = CompanionController.bulletsIHave;
-        //     print(bullets);
-        // }
-        // catch (System.Exception ex)
-        // {
-        //     return;
-        // }
+        int bulletsIHave = CompanionController.instance.bulletsIHave;
+        int currentClips = CompanionController.instance.currentClips;
+        bulletCount.GetComponent<TextMeshProUGUI>().SetText("X " + bulletsIHave);
+        clipCount.GetComponent<TextMeshProUGUI>().SetText("X " + currentClips);
+    }
+    void setCompanion(){
+        if(!companionSet){
+            int companionId = GameManager.instance.companionId;
+
+            if(companionId == 0){
+                ellieImage.SetActive(true);
+                zoeyImage.SetActive(false);
+                louisImage.SetActive(false);
+                companionSet = true;
+            }
+            else if(companionId == 1){
+                ellieImage.SetActive(false);
+                zoeyImage.SetActive(true);
+                louisImage.SetActive(false);
+                companionSet = true;
+            }
+            else if(companionId == 2){
+                ellieImage.SetActive(false);
+                zoeyImage.SetActive(false);
+                louisImage.SetActive(true);
+                companionSet = true;
+            }
+        }
     }
 }
