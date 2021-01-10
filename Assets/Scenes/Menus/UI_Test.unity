@@ -5214,7 +5214,7 @@ RectTransform:
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -16.635277}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9004,7 +9004,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1213230829
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14566,7 +14566,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1917323386
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17492,10 +17492,18 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4026676387158544463, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
+      propertyPath: speed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4026676387527385642, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 00dcefa05d707ce4a918330ec4792e22, type: 2}
+    - target: {fileID: 4026676387826923799, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
+      propertyPath: speed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4026676388171705514, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
       propertyPath: m_LocalPosition.x
       value: 293.5569
@@ -17548,10 +17556,26 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 00dcefa05d707ce4a918330ec4792e22, type: 2}
+    - target: {fileID: 4026676388653401609, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
+      propertyPath: speed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4026676388691927094, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 00dcefa05d707ce4a918330ec4792e22, type: 2}
+    - target: {fileID: 4026676388763818199, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
+      propertyPath: speed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4026676388799103914, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
+      propertyPath: speed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4026676388853873632, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
+      propertyPath: speed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4026676389103091729, guid: 6f13d6b80c6ab794d984593528b6fb69, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
