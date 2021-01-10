@@ -69,7 +69,7 @@ public class Rage : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F) && canActivate && !GameManager.instance.inRageMode)
+        if (Input.GetKeyDown(KeyCode.F) && canActivate && !GameManager.instance.inRageMode && PlayerController.instance.CanDoIt())
             StartCoroutine(ActivateRageMode());
     }
 

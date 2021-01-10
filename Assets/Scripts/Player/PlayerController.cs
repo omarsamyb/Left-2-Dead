@@ -121,7 +121,7 @@ public class PlayerController : MonoBehaviour
         }
         x = Input.GetAxisRaw("Horizontal");
         z = Input.GetAxisRaw("Vertical");
-        if (Input.GetButtonDown("Jump") && isGrounded && !isDashing && !isPinned)
+        if (Input.GetButtonDown("Jump") && isGrounded && !isDashing)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
         moveDirection = (transform.right * x + transform.forward * z).normalized;
         if (moveDirection.magnitude > 0.1f)
         {
-            if (Input.GetButtonDown("Dash") && isGrounded && !isDashing && !isPinned && weaponInventory.currentGun && !weaponInventory.currentGun.GetComponent<GunScript>().isSwitching && !weaponInventory.currentGun.GetComponent<GunScript>().isReloading && !weaponInventory.currentGun.GetComponent<GunScript>().isMelee)
+            if (Input.GetButtonDown("Dash") && CanDoIt())
             {
                 StartCoroutine(Dash(moveDirection));
             }
@@ -191,7 +191,11 @@ public class PlayerController : MonoBehaviour
         }
         isDashing = false;
     }
-    
+    public bool CanDoIt()
+    {
+        return isGrounded && !isDashing && !isPinned && !isPartiallyPinned && weaponInventory.currentGun && !weaponInventory.currentGun.GetComponent<GunScript>().isSwitching && !weaponInventory.currentGun.GetComponent<GunScript>().isReloading && !weaponInventory.currentGun.GetComponent<GunScript>().isMelee;
+    }
+
     // Health
     private void Die()
     {
