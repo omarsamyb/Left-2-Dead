@@ -21,23 +21,14 @@ MonoBehaviour:
   chaseDistance: 5
   reachDistance: 8
   patrolling: []
-  patrollingIdx: 0
   health: 250
   attackTarget: {fileID: 0}
   chaseSpeed: 2
   patrolSpeed: 0.5
   childTransform: {fileID: 596227288178084924}
-  chaseAngle: 130
-  attackAngle: 40
   attackCooldownTime: 5
   canAttack: 1
   damagePerSec: 10
-  isConfused: 0
-  stunTimer: 0
-  confusionTimer: 0
-  pipeTimer: 10
-  hearedLocation: {x: 0, y: 0, z: 0}
-  pipePosition: {fileID: 0}
   healthBar: {fileID: 879308971966391985}
   healthBarUI: {fileID: 2577343777569363421}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
@@ -51,7 +42,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4739249626848226082, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_StoppingDistance
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.x

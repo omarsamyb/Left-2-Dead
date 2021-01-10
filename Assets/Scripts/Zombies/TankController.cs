@@ -41,7 +41,7 @@ public class TankController : EnemyContoller
     }
     public IEnumerator CoolDown()
     {
-        FaceTarget(attackTarget.position);
+        transform.LookAt(attackTarget);
         currentState=State.coolDown;
         animator.SetBool("isCoolingDown",true);
         yield return new WaitForSeconds(attackCooldownTime);
@@ -88,7 +88,14 @@ public class TankController : EnemyContoller
             {
                 // keep chasing
                 if (isAlive(attackTarget))
-                    navMeshAgent.SetDestination(attackTarget.position);
+                {
+                    transform.LookAt(attackTarget);
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
+                    {
+                        curGoToDestination = attackTarget.position;
+                        navMeshAgent.SetDestination(curGoToDestination);
+                    }
+                }
                 else
                     backToDefault();
             }

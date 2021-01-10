@@ -9,7 +9,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public NavMeshAgent navMeshAgent;
     [HideInInspector] public Transform playerTransform;
     public State defaultState;
-    protected State currentState;
+    [HideInInspector] public State currentState;
     public Animator animator;
     public float attackDistance = 1.0f, chaseDistance = 5.0f;
     public float reachDistance;
@@ -20,7 +20,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public float chaseSpeed = 2.0f;
     [HideInInspector] public float patrolSpeed = 0.5f;
     public Transform childTransform;
-    protected float chaseAngle = 130.0f, attackAngle = 40.0f;
+    protected float chaseAngle = 70.0f, attackAngle = 40.0f;
     public float attackCooldownTime = 1;
     [HideInInspector] public bool canAttack = true;
     public int damagePerSec = 5;
@@ -29,18 +29,19 @@ public class EnemyContoller : MonoBehaviour
     protected Vector3 hearedLocation;
     protected Transform pipePosition;
     protected  Vector3 curGoToDestination;
+    protected float distanceToUpdateDestination = 0.5f;
     public HealthBar healthBar;
     public GameObject healthBarUI;
     public GameObject bloodEffect;
     public AudioClip hurtSFX;
     protected AudioSource audioSource;
-    public virtual void FaceTarget(Vector3 destination)
-    {
-        Vector3 lookPos = destination - transform.position;
-        lookPos.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.4f);
-    }
+    // public virtual void FaceTarget(Vector3 destination)
+    // {
+    //     Vector3 lookPos = destination - transform.position;
+    //     lookPos.y = 0;
+    //     Quaternion rotation = Quaternion.LookRotation(lookPos);
+    //     transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.4f);
+    // }
     public void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
@@ -108,7 +109,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
             return;
-        FaceTarget(attackTarget.position);
+        transform.LookAt(attackTarget);
         canAttack = false;
         currentState = State.attack;
         animator.SetBool("isAttacking", true);
@@ -244,6 +245,7 @@ public class EnemyContoller : MonoBehaviour
                 // keep chasing
                 if (isAlive(attackTarget))
                 {
+                    transform.LookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         curGoToDestination = attackTarget.position;
@@ -353,8 +355,10 @@ public class EnemyContoller : MonoBehaviour
         if (!isAlive(target))
             return false;
         Vector3 direction = (target.position - transform.position).normalized;
+        Debug.DrawRay(transform.position+new Vector3(0,2,0), direction*50, Color.green);
         direction *= rangeDistance;
         float angle = Vector3.Angle(transform.forward, direction);
+        print(angle);
         Ray ray = new Ray(transform.position + new Vector3(0, 1.0f, 0), direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
         if (checkDistance && Mathf.Abs(angle) < rangeAngle && hit.transform.position == target.position)
@@ -362,37 +366,36 @@ public class EnemyContoller : MonoBehaviour
         return false;
     }
 
-    public float CalculatePathLength(Vector3 targetPosition)
-    {
-        NavMeshPath path = new NavMeshPath();
+    // public float CalculatePathLength(Vector3 targetPosition)
+    // {
+    //     NavMeshPath path = new NavMeshPath();
 
-        if (navMeshAgent.enabled)
-            navMeshAgent.CalculatePath(targetPosition, path);
+    //     if (navMeshAgent.enabled)
+    //         navMeshAgent.CalculatePath(targetPosition, path);
 
 
-        float pathLength = 0f;
+    //     float pathLength = 0f;
 
-        if (path.corners.Length == 0)
-            pathLength = Vector3.Distance(transform.position, targetPosition);
-        else
-        {
-            pathLength = Vector3.Distance(transform.position, path.corners[0]);
-            pathLength += Vector3.Distance(path.corners[path.corners.Length - 1], targetPosition);
-        }
-        for (int i = 0; i < path.corners.Length - 1; i++)
-        {
-            pathLength += Vector3.Distance(path.corners[i], path.corners[i + 1]);
-        }
+    //     if (path.corners.Length == 0)
+    //         pathLength = Vector3.Distance(transform.position, targetPosition);
+    //     else
+    //     {
+    //         pathLength = Vector3.Distance(transform.position, path.corners[0]);
+    //         pathLength += Vector3.Distance(path.corners[path.corners.Length - 1], targetPosition);
+    //     }
+    //     for (int i = 0; i < path.corners.Length - 1; i++)
+    //     {
+    //         pathLength += Vector3.Distance(path.corners[i], path.corners[i + 1]);
+    //     }
 
-        return pathLength;
-    }
+    //     return pathLength;
+    // }
     public void canHearPlayer(float radius)
     {
-        if (currentState == State.chasing || currentState == State.attack || currentState == State.dead || currentState == State.stunned) return;
-        if (CalculatePathLength(playerTransform.position) < radius)
-        {
+        if (currentState == State.chasing || currentState == State.attack || currentState == State.dead || currentState == State.stunned) 
+            return;
+        if (Vector3.Distance(transform.position, playerTransform.position) < radius)
             currentState = State.chasing;
-        }
     }
     public virtual void pipeGrenade(Transform grenadePosition, bool resetTimer = true)
     {

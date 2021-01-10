@@ -15,7 +15,7 @@ public class HordeSpawner : MonoBehaviour
 
     void Start()
     {
-		playerTransform= GameObject.FindGameObjectWithTag("Player").transform;
+		playerTransform= PlayerController.instance.player.transform;
 		if(gameObject.tag == "Horde")
         {
 			isBomber = false;

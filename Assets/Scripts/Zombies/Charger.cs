@@ -10,7 +10,7 @@ public class Charger : EnemyContoller
     bool runningAttack;
     void Start()
     {
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -50,7 +50,14 @@ public class Charger : EnemyContoller
             {
                 // keep chasing
                 if (isAlive(attackTarget))
-                    navMeshAgent.SetDestination(attackTarget.position);
+                {
+                    transform.LookAt(attackTarget);
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
+                    {
+                        curGoToDestination = attackTarget.position;
+                        navMeshAgent.SetDestination(curGoToDestination);
+                    }
+                }
                 else
                     backToDefault();
             }
@@ -116,7 +123,7 @@ public class Charger : EnemyContoller
             return;
         canAttack = false;
         currentState = State.attack;
-        FaceTarget(attackTarget.position);
+        transform.LookAt(attackTarget);
         animator.SetBool("isAttacking", true);
         chargePosition = attackTarget.position;
         StartCoroutine(charge());
@@ -143,7 +150,7 @@ public class Charger : EnemyContoller
             animator.SetTrigger("pin");
             if (attackTarget.tag == "Player")
             {
-                PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
+                PlayerController cont = PlayerController.instance;
                 //call pin at player
                 StartCoroutine(attackAnyTarget(cont, null));
             }
