@@ -20,7 +20,7 @@ public class BoomerGrenadeScript : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = PlayerController.instance.player.transform;
         startPoint = new Vector3(transform.position.x,transform.position.y,transform.position.z);
         endPoint = new Vector3(playerTransform.position.x, transform.position.y , playerTransform.position.z);
         direction = (endPoint - startPoint).normalized;

@@ -8,20 +8,12 @@ public class BomberController : EnemyContoller
 
     public GameObject bomb;
 
-    //                   0        1           2            3            4           5         6                7
-    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying" };
-
-    public override void FaceTarget(Vector3 destination)
-    {
-        Vector3 lookPos = destination - transform.position;
-        lookPos.y = 0;
-        Quaternion rotation = Quaternion.LookRotation(lookPos);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 1f);
-    }
+    //                   0        1             2             3             4           5             6             7            8            9
+    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin" };
 
     void Start()
     {
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -36,7 +28,7 @@ public class BomberController : EnemyContoller
         if (currentState == State.dead)
             return;
         currentState = State.stunned;
-        navMeshAgent.SetDestination(transform.position);
+        navMeshAgent.ResetPath();
         SetAnimationFlags(4);
         endConfusion(false);
         stunTimer = 0;
@@ -48,21 +40,22 @@ public class BomberController : EnemyContoller
         navMeshAgent.speed = chaseSpeed;
         currentState = State.chasing;
         SetAnimationFlags(2);
-        navMeshAgent.SetDestination(target.position);
+        curGoToDestination = target.position;
+        navMeshAgent.SetDestination(curGoToDestination);
     }
     public override void attack()
     {
         if (currentState == State.dead)
             return;
-        FaceTarget(attackTarget.position);
+        transform.LookAt(attackTarget);
         if (attackTarget.tag == "Player")
         {
-            PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
+            PlayerController cont = PlayerController.instance;
             canAttack = false;
             currentState = State.attack;
             SetAnimationFlags(3);
-            navMeshAgent.SetDestination(transform.position);
-            StartCoroutine(applyDamage(cont));
+            navMeshAgent.ResetPath();
+            // StartCoroutine(applyDamage(cont));
         }
         else if (attackTarget.tag == "Enemy")
         {
@@ -71,7 +64,7 @@ public class BomberController : EnemyContoller
             canAttack = false;
             currentState = State.attack;
             SetAnimationFlags(3);
-            navMeshAgent.SetDestination(transform.position);
+            navMeshAgent.ResetPath();
             cont.TakeDamage(damagePerSec);
         }
         StartCoroutine(SetIdleAfterAttack());
@@ -101,7 +94,7 @@ public class BomberController : EnemyContoller
     {
         currentState = State.idle;
         SetAnimationFlags(0);
-        navMeshAgent.SetDestination(transform.position);
+        navMeshAgent.ResetPath();
     }
 
     public override void endStun(bool callBacktoDefault)
@@ -126,7 +119,7 @@ public class BomberController : EnemyContoller
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
 
         if (isConfused)
@@ -166,7 +159,12 @@ public class BomberController : EnemyContoller
                 // keep chasing
                 if (isAlive(attackTarget))
                 {
-                    navMeshAgent.SetDestination(attackTarget.position);
+                    transform.LookAt(attackTarget);
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
+                    {
+                        curGoToDestination = attackTarget.position;
+                        navMeshAgent.SetDestination(curGoToDestination);
+                    }
                     SetAnimationFlags(2);
                 }
                 else
@@ -221,7 +219,6 @@ public class BomberController : EnemyContoller
     public override void Die()
     {
         SetAnimationFlags(7);
-        navMeshAgent.SetDestination(transform.position);
         currentState = State.dead;
         Destroy(healthBarUI);
         Destroy(gameObject, 7.0f);
@@ -254,7 +251,7 @@ public class BomberController : EnemyContoller
     IEnumerator SetIdleAfterAttack()
     {
         yield return new WaitForSeconds(1.5f);
-        FaceTarget(attackTarget.position);
+        transform.LookAt(attackTarget);
         GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
         childGrenade.transform.parent = gameObject.transform;
         if (currentState == State.attack)

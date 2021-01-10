@@ -8,9 +8,10 @@ public class Charger : EnemyContoller
 {
     Vector3 chargePosition;
     bool runningAttack;
+    CapsuleCollider myCollider;
     void Start()
     {
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -19,6 +20,7 @@ public class Charger : EnemyContoller
         reachDistance = attackDistance + 6;
         runningAttack = false;
         healthBar.SetMaxHealth(health);
+        myCollider = GetComponent<CapsuleCollider>();
         audioSource = GetComponent<AudioSource>();
     }
     void Update()
@@ -32,7 +34,13 @@ public class Charger : EnemyContoller
         {
             confusionTimer += Time.deltaTime;
             if (confusionTimer > 1.2f)
-                endConfusion(true);
+            {
+                if(currentState == State.attack)
+                    endConfusion(false);
+                else
+                    endConfusion(true);
+                    
+            }
         }
         if (currentState == State.patrol)
         {
@@ -50,7 +58,14 @@ public class Charger : EnemyContoller
             {
                 // keep chasing
                 if (isAlive(attackTarget))
-                    navMeshAgent.SetDestination(attackTarget.position);
+                {
+                    transform.LookAt(attackTarget);
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
+                    {
+                        curGoToDestination = attackTarget.position;
+                        navMeshAgent.SetDestination(curGoToDestination);
+                    }
+                }
                 else
                     backToDefault();
             }
@@ -74,6 +89,7 @@ public class Charger : EnemyContoller
                 if (runningAttack)
                 {
                     runningAttack = false;
+                    colliderToDefault();
                     StartCoroutine(resumeAttack());
                 }
                 navMeshAgent.SetDestination(pipePosition.position);
@@ -116,7 +132,7 @@ public class Charger : EnemyContoller
             return;
         canAttack = false;
         currentState = State.attack;
-        FaceTarget(attackTarget.position);
+        transform.LookAt(attackTarget);
         animator.SetBool("isAttacking", true);
         chargePosition = attackTarget.position;
         StartCoroutine(charge());
@@ -141,16 +157,19 @@ public class Charger : EnemyContoller
         if (Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
         {
             animator.SetTrigger("pin");
+            myCollider.height = 1.6f;
+            myCollider.center = new Vector3(myCollider.center.x, 0.5f,myCollider.center.z);
+            navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
             if (attackTarget.tag == "Player")
             {
-                PlayerController cont = playerTransform.gameObject.GetComponent<PlayerController>();
+                PlayerController cont = PlayerController.instance;
                 //call pin at player
                 StartCoroutine(attackAnyTarget(cont, null));
             }
             else if (attackTarget.tag.EndsWith("Enemy"))
             {
                 EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
-                //call pin at zombie
+                cont.getPinned(false);
                 StartCoroutine(attackAnyTarget(null, cont));
             }
         }
@@ -168,6 +187,17 @@ public class Charger : EnemyContoller
         else
             playerCont.TakeDamage(damage);
     }
+    void unPinTarget(PlayerController playerCont, EnemyContoller enemyCont)
+    {
+        if(playerCont==null)
+        {
+            enemyCont.getUnpinned();
+        }
+        else
+        {
+            // playerCont.getUnpinned();
+        }
+    }
     IEnumerator attackAnyTarget(PlayerController playerCont, EnemyContoller enemyCont)
     {
         animator.SetBool("isAttacking", false);
@@ -175,6 +205,8 @@ public class Charger : EnemyContoller
         if (currentState != State.attack)
         {
             StartCoroutine(resumeAttack());
+            unPinTarget(playerCont, enemyCont);
+            colliderToDefault();
             yield break;
         }
         doDamageOnTarget(playerCont, enemyCont, 5);
@@ -184,11 +216,21 @@ public class Charger : EnemyContoller
             if (currentState != State.attack)
             {
                 StartCoroutine(resumeAttack());
+                unPinTarget(playerCont, enemyCont);
+                colliderToDefault();
                 yield break;
             }
             doDamageOnTarget(playerCont, enemyCont, 10);
         }
+        colliderToDefault();
         chase(attackTarget);
+        unPinTarget(playerCont, enemyCont);
         StartCoroutine(resumeAttack());
+    }
+    void colliderToDefault()
+    {
+        myCollider.center = new Vector3(myCollider.center.x, 1, myCollider.center.z);
+        myCollider.height = 2.2f;
+        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
     }
 }
