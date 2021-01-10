@@ -115,6 +115,14 @@ MonoBehaviour:
   criticallyDamagedEffect: {fileID: 3661411871043538828}
   healthBar: {fileID: 6133456232393010405, guid: 39934f96bf34a2346b5ff6d3dde9e7cd, type: 3}
   isGettingPinned: 0
+  damagedSFX:
+  - {fileID: 8300000, guid: 65f5984d06921614aa5949e5caf64205, type: 3}
+  - {fileID: 8300000, guid: a0013143e2f95cb4abfee688870e1954, type: 3}
+  - {fileID: 8300000, guid: 12047e8000f23144798ab05eae3b453b, type: 3}
+  - {fileID: 8300000, guid: a1eabdc97bf32aa43a520e991daefb07, type: 3}
+  - {fileID: 8300000, guid: 429729c403a6f4a49b1b79c25d67f04d, type: 3}
+  - {fileID: 8300000, guid: f9144faefa67581418ff9023f624b596, type: 3}
+  - {fileID: 8300000, guid: cfc338f04aa4da443a393bda0bf64723, type: 3}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0

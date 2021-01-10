@@ -223,10 +223,11 @@ public class CompanionController : MonoBehaviour
         }
 
         Quaternion lookRotation = transform.rotation;
+        Vector3 direction = Vector3.zero;
         if (chosenEnemy)
         {
-            Vector3 direction = (chosenEnemy.transform.position - transform.position);
-            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            direction = (chosenEnemy.hitPoint.position - transform.position);
+            lookRotation = Quaternion.LookRotation(direction);
         }
 
         float infrontOfWallDistance = 0.1f;
@@ -254,6 +255,8 @@ public class CompanionController : MonoBehaviour
         }
 
         Quaternion initialRotation = transform.rotation;
+        if(chosenEnemy)
+            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         for (float t = 0f; t < 1f; t += 5f * Time.deltaTime)
         {
             transform.rotation = Quaternion.Slerp(initialRotation, lookRotation, t);

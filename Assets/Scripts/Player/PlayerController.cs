@@ -54,6 +54,7 @@ public class PlayerController : MonoBehaviour
     public HealthBar healthBar;
     private MouseLook mouseLook;
     [HideInInspector] public bool isGettingPinned;
+    public AudioClip[] damagedSFX;
     
     private void Awake()
     {
@@ -221,6 +222,12 @@ public class PlayerController : MonoBehaviour
             healthBar.SetHealth(health);
             if (health <= 0)
                 Die();
+            else if(UnityEngine.Random.Range(0, 2) == 0)
+            {
+                AudioClip clip = damagedSFX[UnityEngine.Random.Range(0, damagedSFX.Length)];
+                AudioManager.instance.SetClip("DamagedSFX", clip);
+                AudioManager.instance.PlayOneShot("DamagedSFX");
+            }
 
             if (damageFadeRoutine != null)
                 StopCoroutine(damageFadeRoutine);
@@ -246,7 +253,8 @@ public class PlayerController : MonoBehaviour
         weaponInventory.currentGun.SetActive(false);
         character.SetActive(true);
         characterAnimation.Play("Pinned");
-        Camera.main.transform.position -= Camera.main.transform.forward * 2f + Camera.main.transform.up;
+        Vector3 origPos = Camera.main.transform.localPosition;
+        Camera.main.transform.position -= Vector3.forward - Vector3.right + Vector3.up;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         while (isPinned)
@@ -254,15 +262,16 @@ public class PlayerController : MonoBehaviour
         characterAnimation.Stop("Pinned");
         character.SetActive(false);
         character.transform.SetParent(origParent);
+        Camera.main.transform.localPosition = origPos;
         weaponInventory.currentGun.SetActive(true);
-        Camera.main.transform.position += Camera.main.transform.forward * 2f + Camera.main.transform.up;
     }
     public void GetPartiallyPinned(Vector3 topPoint, Vector3 endPoint, float speed, Vector3 poi)
     {
         isPartiallyPinned = true;
+        isPinned = true;
         isGettingPinned = true;
         isMoving = false;
-        Vector3[] points = { transform.position - transform.forward, topPoint, endPoint };
+        Vector3[] points = { transform.position, topPoint, endPoint };
         BezierPath bezierPath = new BezierPath(points);
         GameObject placeholder = new GameObject("PinningPathPlaceHolder");
         StartCoroutine(GetPartiallyPinnedHelper(new VertexPath(bezierPath, placeholder.transform), speed, poi));
@@ -272,7 +281,7 @@ public class PlayerController : MonoBehaviour
         weaponInventory.currentHandsAnimator.SetTrigger("reset");
         yield return new WaitForEndOfFrame();
         weaponInventory.currentGun.SetActive(false);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.8f);
         AudioManager.instance.Play("ScreamingSFX");
         character.transform.SetParent(Camera.main.transform);
         character.transform.Translate(0f, 0f, -0.12f);
@@ -281,7 +290,7 @@ public class PlayerController : MonoBehaviour
         characterAnimation.Play("Falling");
         motor.enabled = false;
         yield return null;
-        Time.timeScale = 0.4f;
+        Time.timeScale = 0.3f;
 
         float distanceTravelled = 0f;
         while(distanceTravelled < path.length)
@@ -311,6 +320,7 @@ public class PlayerController : MonoBehaviour
 
         isPartiallyPinned = false;
         motor.enabled = true;
+        isPinned = false;
     }
 
     // Effects

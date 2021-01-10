@@ -93,6 +93,7 @@ public class Rage : MonoBehaviour
         gunInventory.currentGun.SetActive(false);
         character.SetActive(true);
         characterAnimation.Play("Rage");
+        Vector3 origPos = Camera.main.transform.localPosition;
         Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up * 0.5f;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
@@ -103,7 +104,7 @@ public class Rage : MonoBehaviour
         character.SetActive(false);
         character.transform.SetParent(origParent);
         gunInventory.currentGun.SetActive(true);
-        Camera.main.transform.position += Camera.main.transform.forward + Camera.main.transform.up * 0.5f;
+        Camera.main.transform.localPosition = origPos;
         canBeDamaged = true;
     }
 
