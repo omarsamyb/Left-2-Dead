@@ -12,7 +12,6 @@ public class CompanionController : MonoBehaviour
 
     private GameObject[] muzzelFlash;
     private AudioClip shootSFX;
-    private GameObject bloodEffect;
     private GameObject wallDecalEffect;
     private GunStyles style;
     private int amountOfBulletsPerLoad;
@@ -53,7 +52,6 @@ public class CompanionController : MonoBehaviour
         GunScript weapon = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + weaponName + ".prefab", typeof(GameObject))).GetComponent<GunScript>();
         muzzelFlash = weapon.muzzelFlash;
         shootSFX = weapon.shootSFX;
-        bloodEffect = weapon.bloodEffect;
         wallDecalEffect = weapon.wallDecalEffect;
         style = weapon.currentStyle;
         amountOfBulletsPerLoad = (int)weapon.amountOfBulletsPerLoad;
@@ -80,13 +78,16 @@ public class CompanionController : MonoBehaviour
 
     void Update()
     {
-        Shooting();
-        Movement();
-
-        if(killCounter >= 10)
+        if (PlayerController.instance.health > 0)
         {
-            killCounter = 0;
-            AddClip();
+            Shooting();
+            Movement();
+
+            if (killCounter >= 10)
+            {
+                killCounter = 0;
+                AddClip();
+            }
         }
     }
     private void Movement()
@@ -194,6 +195,7 @@ public class CompanionController : MonoBehaviour
     }
     IEnumerator Bullet()
     {
+        bool isCriticalEnemy = false;
         if (playerController.criticalEnemy == null)
         {
             normalEnemy = null;
@@ -215,7 +217,10 @@ public class CompanionController : MonoBehaviour
                 chosenEnemy = normalEnemy;
         }
         else
+        {
             chosenEnemy = playerController.criticalEnemy;
+            isCriticalEnemy = true;
+        }
 
         Quaternion lookRotation = transform.rotation;
         if (chosenEnemy)
@@ -233,7 +238,14 @@ public class CompanionController : MonoBehaviour
                 EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
                 enemy.TakeDamage(damage, hitInfo.point);
                 if (enemy.health <= 0)
+                {
                     killCounter++;
+                    if(isCriticalEnemy && hitInfo.transform.CompareTag("SpecialEnemy"))
+                    {
+                        PlayerController.instance.criticalEnemy = null;
+                        PlayerController.instance.isPinned = false;
+                    }
+                }
             }
             else
             {

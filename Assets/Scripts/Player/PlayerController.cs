@@ -203,8 +203,10 @@ public class PlayerController : MonoBehaviour
         if (isPinned || isPartiallyPinned)
             characterAnimation.Play("Die_Pinned");
         else
+        {
             characterAnimation.Play("Die");
-        Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
+            Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
+        }
         character.transform.parent = null;
     }
     public void AddHealth(int points)
@@ -230,14 +232,17 @@ public class PlayerController : MonoBehaviour
     }
    
     // Pinning
-    public void GetPinned()
+    public void GetPinned(GameObject enemy)
     {
         isPinned = true;
         isMoving = false;
+        criticalEnemy = enemy.GetComponent<EnemyContoller>();
         StartCoroutine(GetPinnedHelper());
     }
     IEnumerator GetPinnedHelper()
     {
+        weaponInventory.currentHandsAnimator.SetTrigger("reset");
+        yield return new WaitForEndOfFrame();
         weaponInventory.currentGun.SetActive(false);
         character.SetActive(true);
         characterAnimation.Play("Pinned");
@@ -257,14 +262,18 @@ public class PlayerController : MonoBehaviour
         isPartiallyPinned = true;
         isGettingPinned = true;
         isMoving = false;
-        Vector3[] points = { transform.position, topPoint, endPoint };
+        Vector3[] points = { transform.position - transform.forward, topPoint, endPoint };
         BezierPath bezierPath = new BezierPath(points);
         GameObject placeholder = new GameObject("PinningPathPlaceHolder");
         StartCoroutine(GetPartiallyPinnedHelper(new VertexPath(bezierPath, placeholder.transform), speed, poi));
     }
     IEnumerator GetPartiallyPinnedHelper(VertexPath path, float speed, Vector3 poi)
     {
+        weaponInventory.currentHandsAnimator.SetTrigger("reset");
+        yield return new WaitForEndOfFrame();
         weaponInventory.currentGun.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        AudioManager.instance.Play("ScreamingSFX");
         character.transform.SetParent(Camera.main.transform);
         character.transform.Translate(0f, 0f, -0.12f);
         character.transform.Rotate(-3f, 0f, 0f);
@@ -282,6 +291,8 @@ public class PlayerController : MonoBehaviour
             transform.position = path.GetPointAtDistance(distanceTravelled, EndOfPathInstruction.Stop);
             yield return new WaitForEndOfFrame();
         }
+        AudioManager.instance.Play("HitGroundSFX");
+        AudioManager.instance.Stop("ScreamingSFX");
         mouseLook.AdjustEulers(Camera.main.transform.rotation);
         yield return null;
         characterAnimation.Stop("Falling");
