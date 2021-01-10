@@ -206,7 +206,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             characterAnimation.Play("Die");
-            Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up;
+            Camera.main.transform.position += Vector3.forward - Vector3.right - Vector3.up * 0.5f;
         }
         character.transform.parent = null;
     }

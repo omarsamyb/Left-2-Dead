@@ -491,7 +491,7 @@ public class GunScript : MonoBehaviour
               || Physics.Raycast(ray4, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray5, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray6, out hitInfo, 2f, ~ignoreLayer)
               || Physics.Raycast(ray7, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray8, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray9, out hitInfo, 2f, ~ignoreLayer))
         {
-            if (hitInfo.transform.CompareTag("Enemy") && hitInfo.transform.CompareTag("SpecialEnemy"))
+            if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
                 hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage, hitInfo.point);
             }
