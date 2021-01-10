@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEditor;
-public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown };
+public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown};
 public class EnemyContoller : MonoBehaviour
 {
     [HideInInspector] public NavMeshAgent navMeshAgent;
@@ -35,13 +35,8 @@ public class EnemyContoller : MonoBehaviour
     public GameObject bloodEffect;
     public AudioClip hurtSFX;
     protected AudioSource audioSource;
-    // public virtual void FaceTarget(Vector3 destination)
-    // {
-    //     Vector3 lookPos = destination - transform.position;
-    //     lookPos.y = 0;
-    //     Quaternion rotation = Quaternion.LookRotation(lookPos);
-    //     transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.4f);
-    // }
+    [HideInInspector] public bool isPinned;
+    public Transform hitPoint;
     public void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
@@ -76,6 +71,28 @@ public class EnemyContoller : MonoBehaviour
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
         audioSource = GetComponent<AudioSource>();
+    }
+    public void getPinned(bool isPerm)
+    {
+        isPinned = true;
+        navMeshAgent.ResetPath();
+        clearAnimator();
+        if(isPerm)
+        {
+            animator.SetBool("hunterPin", true);
+        }
+        else
+        {
+            animator.SetBool("chargerPin", true);
+        }
+        //animator
+    }
+    public void getUnpinned()
+    {
+        isPinned = false;
+        animator.SetBool("hunterPin", false);
+        animator.SetBool("chargerPin", false);
+        backToDefault();
     }
     public virtual void stun()
     {
@@ -147,8 +164,18 @@ public class EnemyContoller : MonoBehaviour
         }
         navMeshAgent.SetDestination(patrolling[patrollingIdx]);
     }
+    void clearAnimator()
+    {
+        animator.SetBool("isChasing", false);
+        animator.SetBool("isAttacking", false);
+        animator.SetBool("isStunned", false);
+        animator.SetBool("isPiped", false);
+        animator.SetBool("isReachedPipe", false);
+        animator.SetBool("isIdle", false);
+    }
     public void backToDefault()
     {
+        clearAnimator();
         if (currentState != State.dead)
         {
             if (defaultState == State.patrol)
@@ -212,7 +239,7 @@ public class EnemyContoller : MonoBehaviour
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
         if (isConfused)
         {
@@ -296,7 +323,7 @@ public class EnemyContoller : MonoBehaviour
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
                 chase(attackTarget);
-            else if (Vector3.Distance(hearedLocation, transform.position) < 0.5f)
+            else if (Vector3.Distance(hearedLocation, transform.position) < navMeshAgent.stoppingDistance)
                 backToDefault();
         }
     }
@@ -327,7 +354,6 @@ public class EnemyContoller : MonoBehaviour
     public virtual void Die()
     {
         animator.SetBool("isDying", true);
-        navMeshAgent.SetDestination(transform.position);
         currentState = State.dead;
         Destroy(healthBarUI);
         Destroy(gameObject, 7.0f);
@@ -355,10 +381,8 @@ public class EnemyContoller : MonoBehaviour
         if (!isAlive(target))
             return false;
         Vector3 direction = (target.position - transform.position).normalized;
-        Debug.DrawRay(transform.position+new Vector3(0,2,0), direction*50, Color.green);
         direction *= rangeDistance;
         float angle = Vector3.Angle(transform.forward, direction);
-        print(angle);
         Ray ray = new Ray(transform.position + new Vector3(0, 1.0f, 0), direction);
         bool checkDistance = Physics.Raycast(ray, out RaycastHit hit, rangeDistance);
         if (checkDistance && Mathf.Abs(angle) < rangeAngle && hit.transform.position == target.position)
@@ -418,7 +442,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void hearFire()
     {
-        if (currentState == State.idle || currentState == State.patrol || currentState == State.hear)
+        if ((currentState == State.idle || currentState == State.patrol || currentState == State.hear)&&!isPinned)
         {
             hearedLocation = playerTransform.position;
             currentState = State.hear;
@@ -430,9 +454,10 @@ public class EnemyContoller : MonoBehaviour
     }
     void OnCollisionEnter(Collision other)
     {
-        if (!(currentState == State.idle) && !(currentState == State.chasing)) //If state is not idle and its not chasing do nothing
-            return;
-        if (other.gameObject.tag == "Player" && PlayerController.instance.health > 0)
+        if (!isPinned && other.gameObject.tag == "Player" && PlayerController.instance.health > 0 && ((currentState == State.idle) || (currentState == State.chasing)))
+        {
+            transform.LookAt(other.transform);
             chase(other.transform);
+        }
     }
 }

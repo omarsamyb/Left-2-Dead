@@ -30,7 +30,7 @@ public class Hunter : EnemyContoller
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
         if (isConfused)
         {
@@ -176,6 +176,7 @@ public class Hunter : EnemyContoller
     IEnumerator jumpToTarget()
     {
         yield return new WaitForSeconds(0.73f);
+        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         navMeshAgent.speed = 5;
         navMeshAgent.SetDestination(jumpPosition);
         jumpingAttack = true;
@@ -200,6 +201,7 @@ public class Hunter : EnemyContoller
             {
                 EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
                 //call pin at zombie
+                cont.getPinned(true);
                 StartCoroutine(attackAnyTarget(null, cont));
             }
         }
@@ -227,6 +229,17 @@ public class Hunter : EnemyContoller
         }
         return true;
     }
+    void unPinTarget(PlayerController playerCont, EnemyContoller enemyCont)
+    {
+        if(playerCont==null)
+        {
+            enemyCont.getUnpinned();
+        }
+        else
+        {
+            // playerCont.getUnpinned();
+        }
+    }
     IEnumerator attackAnyTarget(PlayerController playerCont, EnemyContoller enemyCont)
     {
         isKilling = true;
@@ -237,6 +250,7 @@ public class Hunter : EnemyContoller
                 StartCoroutine(resumeAttack());
                 isKilling = false;
                 animator.SetBool("isAttacking", false);
+                unPinTarget(playerCont, enemyCont);
                 colliderToDefault();
                 if (isConfused && confusionTimer > 1.2)
                 {
@@ -257,5 +271,6 @@ public class Hunter : EnemyContoller
         myCollider.center = new Vector3(myCollider.center.x, 1.072f, myCollider.center.z);
         myCollider.height = 2.160231f;
         myCollider.direction = 1;
+        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
     }
 }

@@ -55,7 +55,7 @@ public class TankController : EnemyContoller
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
 
         if (isConfused)

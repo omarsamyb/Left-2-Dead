@@ -8,8 +8,8 @@ public class BomberController : EnemyContoller
 
     public GameObject bomb;
 
-    //                   0        1           2            3            4           5         6                7
-    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying" };
+    //                   0        1             2             3             4           5             6             7            8            9
+    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin" };
 
     void Start()
     {
@@ -119,7 +119,7 @@ public class BomberController : EnemyContoller
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
 
         if (isConfused)

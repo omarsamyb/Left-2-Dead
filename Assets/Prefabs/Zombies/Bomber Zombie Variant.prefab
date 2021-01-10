@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1551565967173837289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 375165809016676877}
+  m_Layer: 0
+  m_Name: HitPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &375165809016676877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1551565967173837289}
+  m_LocalRotation: {x: 6.319349e-17, y: 0.0000000013421013, z: -0.000000039518167, w: 1}
+  m_LocalPosition: {x: -0.024710398, y: 0.17727113, z: 0.0029789424}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4064467013321981974}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-3782200649964001341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37,27 +67,20 @@ MonoBehaviour:
   chaseDistance: 15
   reachDistance: 0
   patrolling: []
-  patrollingIdx: 0
   health: 50
   attackTarget: {fileID: 0}
   chaseSpeed: 2
   patrolSpeed: 0.5
   childTransform: {fileID: 4043953859124643615}
-  chaseAngle: 130
-  attackAngle: 40
   attackCooldownTime: 10
   canAttack: 1
   damagePerSec: 5
-  isConfused: 0
-  stunTimer: 0
-  confusionTimer: 0
-  pipeTimer: 10
-  hearedLocation: {x: 0, y: 0, z: 0}
-  pipePosition: {fileID: 0}
   healthBar: {fileID: 5250118602751662443, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
   healthBarUI: {fileID: 4200144858965876942}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
   hurtSFX: {fileID: 8300000, guid: 0e84038961d6c4b72af49c11e1553b9e, type: 3}
+  isPinned: 0
+  hitPoint: {fileID: 375165809016676877}
   bomb: {fileID: 6572764975774863566, guid: 20c320519fa60bd4eb2568f3bc908cd3, type: 3}
 --- !u!1001 &3457385329009353592
 PrefabInstance:
@@ -240,6 +263,11 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: d45367b165f324a49a44d884903c0b62, type: 3}
   m_PrefabInstance: {fileID: 4581774794911686900}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &4064467013321981974 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 572617754110402786, guid: d45367b165f324a49a44d884903c0b62, type: 3}
+  m_PrefabInstance: {fileID: 4581774794911686900}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4581774795783598790
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -253,15 +281,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 17.42
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -13.0879
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalRotation.x
