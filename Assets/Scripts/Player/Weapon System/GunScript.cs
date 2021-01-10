@@ -199,18 +199,21 @@ public class GunScript : MonoBehaviour
     }
     void Update()
     {
-        Controls();
-        AnimationStats();
-        WeaponPositioning();
-        WeaponRotation();
-        CrossHairExpansionWhenWalking();
+        if (!GameManager.instance.inMenu)
+        {
+            Controls();
+            AnimationStats();
+            WeaponPositioning();
+            WeaponRotation();
+            CrossHairExpansionWhenWalking();
 
-        if (weaponNoiseCoolDown > 0)
-            weaponNoiseCoolDown -= Time.deltaTime;
-        if (GameManager.instance.inRageMode)
-            damage = damageRef * 2;
-        else
-            damage = damageRef;
+            if (weaponNoiseCoolDown > 0)
+                weaponNoiseCoolDown -= Time.deltaTime;
+            if (GameManager.instance.inRageMode)
+                damage = damageRef * 2;
+            else
+                damage = damageRef;
+        }
     }
 
     // Controls

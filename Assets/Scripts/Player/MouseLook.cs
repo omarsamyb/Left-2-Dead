@@ -35,12 +35,12 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
-        if (!PlayerController.instance.isGettingPinned)
+        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
             MouseInput();
     }
     private void FixedUpdate()
     {
-        if (!PlayerController.instance.isGettingPinned)
+        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
         {
             yRotation = Mathf.SmoothDamp(yRotation, wantedYRotation, ref rotationYVelocity, yRotationSpeed);
             xRotation = Mathf.SmoothDamp(xRotation, wantedXRotation, ref rotationXVelocity, xRotationSpeed);
