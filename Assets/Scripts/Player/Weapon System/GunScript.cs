@@ -391,10 +391,14 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
                 EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
-                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                enemy.TakeDamage((int)damage);
+                // Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                enemy.TakeDamage((int)damage,hitInfo.point);
                 if (enemy.health <= 0)
+                {
                     rage.UpdateRage(hitInfo.transform.tag);
+                    CompanionController.instance.killCounter++;
+                    // TODO: if special is killed add bile to inventory
+                }
             }
         }
     }
@@ -490,8 +494,8 @@ public class GunScript : MonoBehaviour
         {
             if (hitInfo.transform.tag == "Enemy")
             {
-                Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
-                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage);
+                // Instantiate(bloodEffect, hitInfo.point, Quaternion.identity);
+                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage, hitInfo.point);
             }
         }
     }
