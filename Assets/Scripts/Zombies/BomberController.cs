@@ -7,7 +7,7 @@ public class BomberController : EnemyContoller
 {
 
     public GameObject bomb;
-
+    public float chasesDistance = 3.0f;
     //                   0        1             2             3             4           5             6             7            8            9
     string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin" };
 
@@ -115,7 +115,6 @@ public class BomberController : EnemyContoller
 
     void Update()
     {
-
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
@@ -149,7 +148,7 @@ public class BomberController : EnemyContoller
                 attack();
             }
             // calculate distance between zombie and player 
-            else if ((Vector3.Distance(transform.position, attackTarget.position) < attackDistance))
+            else if ((Vector3.Distance(transform.position, attackTarget.position) < (chasesDistance)))
             {
                 navMeshAgent.ResetPath();
                 SetAnimationFlags(0);
@@ -180,6 +179,11 @@ public class BomberController : EnemyContoller
             else if (canAttack && isAlive(attackTarget))
             {
                 attack();
+            }
+            else if (!canAttack && isAlive(attackTarget) && animator.GetBool("isIdle"))
+            {
+                chase(attackTarget);
+
             }
         }
         else if (currentState == State.pipe)
