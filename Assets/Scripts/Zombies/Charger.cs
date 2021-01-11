@@ -185,7 +185,7 @@ public class Charger : EnemyContoller
             if (attackTarget.tag == "Player")
             {
                 PlayerController cont = PlayerController.instance;
-                cont.GetPartiallyPinned(transform.position, transform.position - transform.forward - transform.up * 1.2f, 2f, transform.position - transform.up);
+                PlayerController.instance.GetPartiallyPinned(transform.position, transform.position - transform.forward - transform.up * 1.2f, 2f, transform.position - transform.up);
                 StartCoroutine(attackAnyTarget(cont, null));
             }
             else if (attackTarget.tag.EndsWith("Enemy"))
