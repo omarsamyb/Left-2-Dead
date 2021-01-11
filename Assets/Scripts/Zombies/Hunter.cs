@@ -18,7 +18,7 @@ public class Hunter : EnemyContoller
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator.SetBool("isIdle", defaultState == State.idle);
-        attackDistance = 1;
+        attackDistance = 2;
         reachDistance = attackDistance + 7;
         body = transform.GetChild(0).GetChild(4);
         myCollider = GetComponent<CapsuleCollider>();
@@ -52,7 +52,7 @@ public class Hunter : EnemyContoller
         {
             if (!isAlive(attackTarget))
                 backToDefault();
-            else if (canAttack)
+            else if (canAttack && canAttackCheck(attackTarget))
             {
                 if (navMeshAgent.remainingDistance < reachDistance)
                     attack();
@@ -92,12 +92,17 @@ public class Hunter : EnemyContoller
         }
         else if (currentState == State.attack)
         {
-            if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && isAlive(attackTarget))
+            if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && canAttackCheck(attackTarget))
                 attack();
-            else if (jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+            else if (jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(attackTarget))
             {
                 jumpingAttack = false;
                 pinTarget();
+            }
+            else if(!canAttackCheck(attackTarget))
+            {
+                jumpingAttack = false;
+                navMeshAgent.ResetPath();
             }
             else if (jumpingAttack)
                 myCollider.center = new Vector3(myCollider.center.x, body.position.y, myCollider.center.z);
@@ -176,10 +181,13 @@ public class Hunter : EnemyContoller
     IEnumerator jumpToTarget()
     {
         yield return new WaitForSeconds(0.73f);
-        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-        navMeshAgent.speed = 5;
-        navMeshAgent.SetDestination(jumpPosition);
-        jumpingAttack = true;
+        if(currentState == State.attack)
+        {
+            navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+            navMeshAgent.speed = 5;
+            navMeshAgent.SetDestination(jumpPosition);
+            jumpingAttack = true;
+        }
     }
     void pinTarget()
     {
@@ -200,7 +208,6 @@ public class Hunter : EnemyContoller
             else if (attackTarget.tag.EndsWith("Enemy"))
             {
                 EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
-                //call pin at zombie
                 cont.getPinned(true);
                 StartCoroutine(attackAnyTarget(null, cont));
             }
