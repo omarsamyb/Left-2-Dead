@@ -217,7 +217,7 @@ public class Charger : EnemyContoller
         }
         else
         {
-            // playerCont.getUnpinned();
+            PlayerController.instance.isPartiallyPinned = false;
         }
     }
     IEnumerator attackAnyTarget(PlayerController playerCont, EnemyContoller enemyCont)

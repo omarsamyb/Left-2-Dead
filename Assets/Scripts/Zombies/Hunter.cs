@@ -202,7 +202,7 @@ public class Hunter : EnemyContoller
             if (attackTarget.tag == "Player")
             {
                 PlayerController cont = PlayerController.instance;
-                //call pin at player
+                cont.GetPinned(gameObject);
                 StartCoroutine(attackAnyTarget(cont, null));
             }
             else if (attackTarget.tag.EndsWith("Enemy"))
