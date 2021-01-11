@@ -173,3 +173,11 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
+  - name: PlayerVoice
+    source: {fileID: 0}
+    audioClip: {fileID: 0}
+    mixerGroup: {fileID: -3026178028513709603, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
