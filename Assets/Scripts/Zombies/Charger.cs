@@ -16,7 +16,7 @@ public class Charger : EnemyContoller
         currentState = defaultState;
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator.SetBool("isIdle", defaultState == State.idle);
-        attackDistance = 1;
+        attackDistance = 2;
         reachDistance = attackDistance + 6;
         runningAttack = false;
         healthBar.SetMaxHealth(health);
@@ -28,7 +28,7 @@ public class Charger : EnemyContoller
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
         if (isConfused)
         {
@@ -52,29 +52,51 @@ public class Charger : EnemyContoller
 
         else if (currentState == State.chasing)
         {
-            if (navMeshAgent.remainingDistance < reachDistance && canAttack)
-                attack();
-            else
+            if (!isAlive(attackTarget))
+                backToDefault();
+            else if (canAttack && canAttackCheck(attackTarget))
             {
-                // keep chasing
-                if (isAlive(attackTarget))
+                if (navMeshAgent.remainingDistance < reachDistance)
+                    attack();
+                else //Can Attack but im far
                 {
                     transform.LookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
+                        animator.SetBool("isChasing", true);
+                        animator.SetBool("isIdle", false);
                         curGoToDestination = attackTarget.position;
                         navMeshAgent.SetDestination(curGoToDestination);
                     }
                 }
-                else
-                    backToDefault();
+            }
+            else //Can't attack
+            {
+                if (Vector3.Distance(transform.position, attackTarget.position) > 3) //Im still far
+                {
+                    transform.LookAt(attackTarget);
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
+                    {
+                        animator.SetBool("isChasing", true);
+                        animator.SetBool("isIdle", false);
+                        curGoToDestination = attackTarget.position;
+                        navMeshAgent.SetDestination(curGoToDestination);
+                    }
+                }
+                else //Im getting too close
+                {
+                    navMeshAgent.ResetPath();
+                    animator.SetBool("isIdle", true);
+                    animator.SetBool("isChasing", false);
+                }
+
             }
         }
         else if (currentState == State.attack)
         {
-            if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && isAlive(attackTarget))
+            if (canSee(reachDistance, attackAngle, attackTarget) && canAttack &&  canAttackCheck(attackTarget))
                 attack();
-            else if (runningAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+            else if (runningAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(attackTarget))
             {
                 runningAttack = false;
                 pinTarget();
@@ -140,7 +162,7 @@ public class Charger : EnemyContoller
     IEnumerator charge()
     {
         yield return new WaitForSeconds(3.2f);
-        if (currentState != State.attack)
+        if (currentState != State.attack || isPinned || !canAttackCheck(attackTarget))
         {
             animator.SetBool("isAttacking", false);
             StartCoroutine(resumeAttack());
@@ -148,6 +170,7 @@ public class Charger : EnemyContoller
         }
         navMeshAgent.speed = 5;
         navMeshAgent.SetDestination(chargePosition);
+        navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         runningAttack = true;
     }
 
@@ -159,7 +182,6 @@ public class Charger : EnemyContoller
             animator.SetTrigger("pin");
             myCollider.height = 1.6f;
             myCollider.center = new Vector3(myCollider.center.x, 0.5f,myCollider.center.z);
-            navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
             if (attackTarget.tag == "Player")
             {
                 PlayerController cont = PlayerController.instance;
@@ -202,18 +224,18 @@ public class Charger : EnemyContoller
     {
         animator.SetBool("isAttacking", false);
         yield return new WaitForSeconds(2.33f);
-        if (currentState != State.attack)
+        if (currentState != State.attack || isPinned)
         {
             StartCoroutine(resumeAttack());
             unPinTarget(playerCont, enemyCont);
             colliderToDefault();
             yield break;
         }
-        doDamageOnTarget(playerCont, enemyCont, 5);
-        for (int i = 0; i < 7; i++)
+        doDamageOnTarget(playerCont, enemyCont, 15);
+        for (int i = 0; i < 6; i++)
         {
             yield return new WaitForSeconds(0.35f);
-            if (currentState != State.attack)
+            if (currentState != State.attack || isPinned)
             {
                 StartCoroutine(resumeAttack());
                 unPinTarget(playerCont, enemyCont);

@@ -156,13 +156,13 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isAttacking", false);
         animator.SetBool("isChasing", false);
 
-        if (navMeshAgent.remainingDistance <= 0.5f)
+        if (navMeshAgent.remainingDistance <= 1f)
         {
             patrollingIdx++;
             if (patrollingIdx >= patrolling.Length)
                 patrollingIdx = 0;
+            navMeshAgent.SetDestination(patrolling[patrollingIdx]);
         }
-        navMeshAgent.SetDestination(patrolling[patrollingIdx]);
     }
     void clearAnimator()
     {
@@ -350,6 +350,8 @@ public class EnemyContoller : MonoBehaviour
         audioSource.PlayOneShot(hurtSFX);
         if (health <= 0)
             Die();
+        animator.SetTrigger("gotHit");
+        hearFire();
     }
     public virtual void Die()
     {
@@ -450,6 +452,19 @@ public class EnemyContoller : MonoBehaviour
             navMeshAgent.SetDestination(hearedLocation);
             animator.SetBool("isChasing", true);
             animator.SetBool("isIdle", false);
+        }
+    }
+    protected bool canAttackCheck(Transform target)
+    {
+        if(target.tag=="Player")
+        {
+            PlayerController cont = PlayerController.instance;
+            return !cont.isPinned && cont.health>0;
+        }
+        else
+        {
+            EnemyContoller cont = target.GetComponent<EnemyContoller>();
+            return !cont.isPinned && cont.health>0;
         }
     }
     void OnCollisionEnter(Collision other)
