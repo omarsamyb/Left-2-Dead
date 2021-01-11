@@ -37,6 +37,7 @@ public class EnemyContoller : MonoBehaviour
     protected AudioSource audioSource;
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
+    private PlayerVoiceOver pvo;
     public void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
@@ -71,6 +72,7 @@ public class EnemyContoller : MonoBehaviour
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
         audioSource = GetComponent<AudioSource>();
+        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
     }
     public void getPinned(bool isPerm)
     {
@@ -120,6 +122,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", false);
         curGoToDestination = target.position;
         navMeshAgent.SetDestination(curGoToDestination);
+        pvo.inFight = true;
     }
     public virtual void attack()
     {

@@ -16,21 +16,26 @@ public class PlayerVoiceOver : MonoBehaviour
     private int pinnedIndex;
     private int bileIndex;
     private int detectionIndex;
+    private int spottedIndex;
+    private int fightFinishedIndex;
 
     RaycastHit hitinfo;
     private LayerMask enemyLayer;
     private LayerMask detectionLayer;
-    private float detectionRange = 40f;
-    private float detectionRateRef = 1f;
+    private float detectionRange = 30f;
+    private float detectionRateRef = 0.5f;
     private float detectionTime;
     private bool isDetecting;
     private bool detected;
-
-    private bool inFight;
+    private bool spotted;
+    [HideInInspector] public bool inFight;
+    private float fightTimerRef = 0.5f;
+    private float fightTimer;
 
     void Start()
     {
         detectionTime = detectionRateRef;
+        fightTimer = fightTimerRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         detectionLayer = ~(1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Weapon"));
     }
@@ -39,10 +44,26 @@ public class PlayerVoiceOver : MonoBehaviour
     {
         if (detectionTime > 0f)
             detectionTime -= Time.deltaTime;
-        else if(detectionTime <= 0f && !isDetecting && !inFight)
+        else if(detectionTime <= 0f && !isDetecting)
         {
             isDetecting = true;
             StartCoroutine(Detection());
+        }
+
+        if(inFight && !spotted)
+        {
+            spotted = true;
+            StartCoroutine(Spotted());
+        }
+
+        if(inFight && !detected)
+            fightTimer -= Time.deltaTime;
+        if(fightTimer <= 0f)
+        {
+            fightTimer = fightTimerRef;
+            spotted = false;
+            inFight = false;
+            FightFinished();
         }
     }
 
@@ -78,7 +99,7 @@ public class PlayerVoiceOver : MonoBehaviour
     IEnumerator Detection()
     {
         Collider[] hits = Physics.OverlapBox(transform.position + transform.forward * detectionRange/2f + transform.up, new Vector3(detectionRange/2f, 1f, detectionRange/2f), Quaternion.identity, enemyLayer);
-
+        
         bool currentDetection = false;
         foreach (Collider collider in hits)
         {
@@ -94,8 +115,6 @@ public class PlayerVoiceOver : MonoBehaviour
                 }
                 break;
             }
-            if (inFight)
-                break;
             yield return new WaitForSeconds(0.1f);
         }
         if (!currentDetection)
@@ -103,5 +122,21 @@ public class PlayerVoiceOver : MonoBehaviour
 
         detectionTime = detectionRateRef;
         isDetecting = false;
+    }
+    IEnumerator Spotted()
+    {
+        yield return new WaitForSeconds(0.3f);
+        if (!AudioManager.instance.isPlaying("PlayerVoice"))
+        {
+            AudioManager.instance.SetClip("PlayerVoice", spottedClips[spottedIndex]);
+            AudioManager.instance.Play("PlayerVoice");
+            spottedIndex = (spottedIndex + 1) % spottedClips.Length;
+        }
+    }
+    private void FightFinished()
+    {
+        AudioManager.instance.SetClip("PlayerVoice", fightFinishedClips[fightFinishedIndex]);
+        AudioManager.instance.Play("PlayerVoice");
+        fightFinishedIndex = (fightFinishedIndex + 1) % fightFinishedClips.Length;
     }
 }
