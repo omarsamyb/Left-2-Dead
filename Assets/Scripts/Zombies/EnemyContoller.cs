@@ -6,8 +6,8 @@ using UnityEditor;
 public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown};
 public class EnemyContoller : MonoBehaviour
 {
-    [HideInInspector] public NavMeshAgent navMeshAgent;
-    [HideInInspector] public Transform playerTransform;
+    public NavMeshAgent navMeshAgent;
+    public Transform playerTransform;
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -71,6 +71,7 @@ public class EnemyContoller : MonoBehaviour
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
         audioSource = GetComponent<AudioSource>();
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
     public void getPinned(bool isPerm)
     {
