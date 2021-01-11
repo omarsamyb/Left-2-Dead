@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 469019212214358614}
   - component: {fileID: 469019212214358615}
   - component: {fileID: 5930430884219837051}
+  - component: {fileID: -6448269759036601124}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -168,6 +169,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 979357917699480901}
   canBeDamaged: 0
+--- !u!114 &-6448269759036601124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469019212214358608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a599cb583b50a43a7d0e9a9c12a4d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rageClips:
+  - {fileID: 8300000, guid: c7f84e6a406646d4abf410afacb810d5, type: 3}
+  - {fileID: 8300000, guid: aea68c96e53c59e4fbd4856526fa4496, type: 3}
+  detectionClips: []
+  spottedClips: []
+  fightFinishedClips: []
+  equipmentClips: []
+  bileClips: []
+  unpinnedClips: []
 --- !u!1 &469019212245449976
 GameObject:
   m_ObjectHideFlags: 0

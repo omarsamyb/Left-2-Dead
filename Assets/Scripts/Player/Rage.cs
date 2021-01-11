@@ -19,6 +19,7 @@ public class Rage : MonoBehaviour
     private int specialKillPointsRef = 50;
     private int normalKillPoints = 10;
     private int specialKillPoints = 50;
+    private PlayerVoiceOver pvo;
 
     public event Action<float> OnRageChange = delegate { };
 
@@ -30,6 +31,7 @@ public class Rage : MonoBehaviour
         characterAnimation = character.GetComponent<Animation>();
         gunInventory = GetComponent<GunInventory>();
         canBeDamaged = true;
+        pvo = GetComponent<PlayerVoiceOver>();
     }
 
     void Update()
@@ -80,13 +82,17 @@ public class Rage : MonoBehaviour
             ragePoints = Mathf.Clamp(ragePoints + specialKillPoints, 0, 100);
         else
             ragePoints = Mathf.Clamp(ragePoints + normalKillPoints, 0, 100);
-        if (ragePoints == 100)
+        if (ragePoints == 100 && !canActivate)
+        {
             canActivate = true;
+            pvo.StartCoroutine(pvo.Rage());
+        }
         OnRageChange((float)ragePoints / 100f);
     }
 
     IEnumerator ActivateRageMode()
     {
+        AudioManager.instance.Stop("PlayerVoice");
         canBeDamaged = false;
         AudioManager.instance.Play("RageModeMusic");
         GameManager.instance.inRageMode = true;
