@@ -184,12 +184,33 @@ MonoBehaviour:
   rageClips:
   - {fileID: 8300000, guid: c7f84e6a406646d4abf410afacb810d5, type: 3}
   - {fileID: 8300000, guid: aea68c96e53c59e4fbd4856526fa4496, type: 3}
-  detectionClips: []
+  detectionClips:
+  - {fileID: 8300000, guid: 932cbf779638ccb4c93f5846692fe4dc, type: 3}
+  - {fileID: 8300000, guid: e65ecc0d40209094991ca0e2b06cc28b, type: 3}
+  - {fileID: 8300000, guid: 74ec4564dd6bc6c42a2d81dc2fc48a6e, type: 3}
+  - {fileID: 8300000, guid: 36d8eef0a32d498459fece60f15bf7a6, type: 3}
+  - {fileID: 8300000, guid: 3ae8479bde7c38547a8a304b5c027c81, type: 3}
+  - {fileID: 8300000, guid: 8fc4a3d3d3ae64640bf01043b7a2ebc0, type: 3}
+  - {fileID: 8300000, guid: 332632e9b8c5e1a4a98c2e1314fd5216, type: 3}
+  - {fileID: 8300000, guid: 30af82363925023418126f4cbc3f6ef2, type: 3}
+  - {fileID: 8300000, guid: 267ccc7757f131046bc3c748b6d89b1d, type: 3}
+  - {fileID: 8300000, guid: 05a3581a1044db64c9ed110aec8b25c0, type: 3}
+  - {fileID: 8300000, guid: b8b695c58d53c184cbcc1d1e2651ed3a, type: 3}
+  - {fileID: 8300000, guid: 150547362dcf9ae43bdfc683a011147a, type: 3}
+  - {fileID: 8300000, guid: 2efb58f5e2d4c39458edf35095971cbb, type: 3}
   spottedClips: []
   fightFinishedClips: []
   equipmentClips: []
-  bileClips: []
-  unpinnedClips: []
+  bileClips:
+  - {fileID: 8300000, guid: f81ec2180eb87bb40b780d8b586eaa6b, type: 3}
+  - {fileID: 8300000, guid: 56e6c5f3740ae2e4c834090cb35a34b2, type: 3}
+  - {fileID: 8300000, guid: 73d52e8652045b14bac9eb407679923c, type: 3}
+  unpinnedClips:
+  - {fileID: 8300000, guid: 4949352be7d0d8348a33c4425a0207f8, type: 3}
+  - {fileID: 8300000, guid: 876b6ef275263e5448ba18b947e0733d, type: 3}
+  pinnedClips:
+  - {fileID: 8300000, guid: d67292ea17727ed498d456c00e5accb7, type: 3}
+  - {fileID: 8300000, guid: a3c7d24a2203b22488856a594bc4ddbb, type: 3}
 --- !u!1 &469019212245449976
 GameObject:
   m_ObjectHideFlags: 0

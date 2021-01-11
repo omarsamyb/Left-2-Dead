@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
     private MouseLook mouseLook;
     [HideInInspector] public bool isGettingPinned;
     public AudioClip[] damagedSFX;
+    private PlayerVoiceOver pvo;
     
     private void Awake()
     {
@@ -83,6 +84,7 @@ public class PlayerController : MonoBehaviour
         characterAnimation = character.GetComponent<Animation>();
         rage = GetComponent<Rage>();
         addHealthTime = 1;
+        pvo = GetComponent<PlayerVoiceOver>();
     }
 
     void Update()
@@ -259,6 +261,7 @@ public class PlayerController : MonoBehaviour
         character.transform.parent = null;
         while (isPinned)
             yield return null;
+        pvo.StartCoroutine(pvo.Unpinned(1));
         characterAnimation.Stop("Pinned");
         character.SetActive(false);
         character.transform.SetParent(origParent);
@@ -278,6 +281,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator GetPartiallyPinnedHelper(VertexPath path, float speed, Vector3 poi)
     {
+        pvo.StartCoroutine(pvo.Pinned());
         weaponInventory.currentHandsAnimator.SetTrigger("reset");
         yield return new WaitForEndOfFrame();
         weaponInventory.currentGun.SetActive(false);
@@ -314,6 +318,7 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f;
         while (isPartiallyPinned)
             yield return null;
+        pvo.StartCoroutine(pvo.Unpinned(0));
         Vector3 resetY = transform.position;
         resetY.y += 2;
         transform.position = resetY;
@@ -386,11 +391,12 @@ public class PlayerController : MonoBehaviour
     }
     public void BileVisionEffect()
     {
-        AudioManager.instance.Play("BileEffectSFX");
+        pvo.StartCoroutine(pvo.Bile());
         bileEffect.SetActive(true);
         bileVisionTime = bileVisionTimeRef;
+        AudioManager.instance.Play("BileEffectSFX");
     }
-    
+
     // GUI
     void OnGUI()
     {
