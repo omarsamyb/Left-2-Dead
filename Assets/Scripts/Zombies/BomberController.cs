@@ -8,8 +8,10 @@ public class BomberController : EnemyContoller
 
     public GameObject bomb;
     public float chasesDistance = 3.0f;
-    //                   0        1             2             3             4           5             6             7            8            9
-    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin" };
+    public float boomerAttackDistance = 10.0f;
+
+    //                   0        1             2             3             4           5             6             7            8            9       10
+    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin","isAttackingZombies" };
 
     void Start()
     {
@@ -56,19 +58,23 @@ public class BomberController : EnemyContoller
             SetAnimationFlags(3);
             navMeshAgent.ResetPath();
             // StartCoroutine(applyDamage(cont));
+            StartCoroutine(SetIdleAfterAttack());
+            StartCoroutine(resumeAttack());
         }
         else if (attackTarget.tag == "Enemy")
         {
             EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
-
+            if (currentState == State.dead)
+                return;
+            transform.LookAt(attackTarget);
+            SetAnimationFlags(10);
             canAttack = false;
             currentState = State.attack;
-            SetAnimationFlags(3);
             navMeshAgent.ResetPath();
-            cont.TakeDamage(damagePerSec);
+            StartCoroutine(applyDamage(cont));
+            StartCoroutine(resumeAttack());
+
         }
-        StartCoroutine(SetIdleAfterAttack());
-        StartCoroutine(resumeAttack());
     }
     public override void patrol()
     {
@@ -170,7 +176,7 @@ public class BomberController : EnemyContoller
                     backToDefault();
             }
         }
-        else if (currentState == State.attack)
+        else if (currentState == State.attack && !animator.GetBool("isAttacking"))
         {
             if (!canSee(reachDistance, attackAngle, attackTarget))
             {
@@ -268,5 +274,15 @@ public class BomberController : EnemyContoller
         {
             animator.SetBool(arr[i], i == g);
         }
+    }
+    public override void Confuse()
+    {
+        base.Confuse();
+        attackDistance = 1f;
+    }
+    public override void endConfusion(bool callBacktoDefault)
+    {
+        base.endConfusion(callBacktoDefault);
+        attackDistance = boomerAttackDistance;
     }
 }

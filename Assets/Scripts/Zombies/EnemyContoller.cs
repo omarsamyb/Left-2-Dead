@@ -37,7 +37,7 @@ public class EnemyContoller : MonoBehaviour
     protected AudioSource audioSource;
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
-    public void Confuse()
+    public virtual void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
 
@@ -192,7 +192,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         navMeshAgent.ResetPath();
     }
-    public void endConfusion(bool callBacktoDefault)
+    public virtual void endConfusion(bool callBacktoDefault)
     {
         isConfused = false;
         attackTarget = playerTransform;
