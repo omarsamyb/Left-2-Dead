@@ -61,7 +61,7 @@ public class BomberController : EnemyContoller
             StartCoroutine(SetIdleAfterAttack());
             StartCoroutine(resumeAttack());
         }
-        else if (attackTarget.tag == "Enemy")
+        else if (attackTarget.tag.EndsWith("Enemy"))
         {
             EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
             if (currentState == State.dead)
@@ -263,7 +263,7 @@ public class BomberController : EnemyContoller
         yield return new WaitForSeconds(1.5f);
         transform.LookAt(attackTarget);
         GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
-        childGrenade.transform.parent = gameObject.transform;
+        //childGrenade.transform.parent = gameObject.transform;
         if (currentState == State.attack)
             SetAnimationFlags(0);
     }

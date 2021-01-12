@@ -24,11 +24,11 @@ public class BoomerGrenadeScript : MonoBehaviour
         startPoint = new Vector3(transform.position.x,transform.position.y,transform.position.z);
         endPoint = new Vector3(playerTransform.position.x, transform.position.y , playerTransform.position.z);
         direction = (endPoint - startPoint).normalized;
-        parentTransform = transform.parent.transform;
-
+        //   parentTransform = transform.parent.transform;
+        parentTransform = playerTransform;
         rb = GetComponent<Rigidbody>();
-
-        rb.velocity = new Vector3(direction.x, 0f, direction.z)* thrust;
+        float dist = Vector3.Distance(playerTransform.position, transform.position);
+        rb.velocity = new Vector3(direction.x, 0f, direction.z)* thrust * (dist/10.0f);
         rb.AddTorque(new Vector3(10, 0, 10));
         Destroy(gameObject, 10.0f);
 
@@ -38,9 +38,6 @@ public class BoomerGrenadeScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player" && !isSpawned)
         {
-            HordeSpawner hordeSpawner = transform.parent.gameObject.GetComponent<HordeSpawner>();
-            hordeSpawner.bomberSpawnFlag = true;
-            Destroy(gameObject);
             isSpawned = true;
             GameObject thunderObject1= Instantiate(thunder, parentTransform.position, parentTransform.rotation);
             thunderObject1.GetComponent<LightningBoltScript>().StartPosition= new Vector3(parentTransform.position.x, parentTransform.position.y -1f, parentTransform.position.z - 1f);
@@ -61,6 +58,9 @@ public class BoomerGrenadeScript : MonoBehaviour
 
             // need to call vision effect
             PlayerController.instance.BileVisionEffect();
+
+            HordeSpawner hordeSpawner = transform.gameObject.GetComponent<HordeSpawner>();
+            hordeSpawner.bomberSpawnFlag = true;
 
         }
     }
