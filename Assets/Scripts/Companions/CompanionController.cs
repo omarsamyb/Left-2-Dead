@@ -43,6 +43,10 @@ public class CompanionController : MonoBehaviour
     [HideInInspector] public int killCounter;
     [HideInInspector] public bool canApplyAbility;
     private CompanionVoiceOver cvo;
+    private float weaponNoiseCoolDownRef = 0.5f;
+    private float weaponNoiseCoolDown;
+    private float noiseRange = 10f;
+
 
     private void Awake()
     {
@@ -74,6 +78,7 @@ public class CompanionController : MonoBehaviour
         runningSpeed = agent.speed;
         walkingSpeed = agent.speed / 2f;
         cvo = GetComponent<CompanionVoiceOver>();
+        weaponNoiseCoolDown = weaponNoiseCoolDownRef;
 
         agent.SetDestination(player.position);
     }
@@ -90,6 +95,9 @@ public class CompanionController : MonoBehaviour
                 killCounter = 0;
                 AddClip();
             }
+
+            if (weaponNoiseCoolDown > 0)
+                weaponNoiseCoolDown -= Time.deltaTime;
         }
     }
     private void Movement()
@@ -265,6 +273,16 @@ public class CompanionController : MonoBehaviour
         {
             transform.rotation = Quaternion.Slerp(initialRotation, lookRotation, t);
             yield return null;
+        }
+
+        if (weaponNoiseCoolDown <= 0)
+        {
+            weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+            hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
+            foreach (Collider collider in hits)
+            {
+                collider.GetComponent<EnemyContoller>().hearFire();
+            }
         }
 
     }
