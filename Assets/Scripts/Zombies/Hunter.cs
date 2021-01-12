@@ -11,19 +11,13 @@ public class Hunter : EnemyContoller
     bool isKilling;
     Transform body;
     CapsuleCollider myCollider;
-    void Start()
+    protected override void Start()
     {
-        playerTransform = PlayerController.instance.player.transform;
-        attackTarget = playerTransform;
-        currentState = defaultState;
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        animator.SetBool("isIdle", defaultState == State.idle);
+        base.Start();
+        myCollider = GetComponent<CapsuleCollider>();
+        body = transform.GetChild(0).GetChild(4);
         attackDistance = 2;
         reachDistance = attackDistance + 7;
-        body = transform.GetChild(0).GetChild(4);
-        myCollider = GetComponent<CapsuleCollider>();
-        audioSource = GetComponent<AudioSource>();
-        healthBar.SetMaxHealth(health);
     }
     void Update()
     {

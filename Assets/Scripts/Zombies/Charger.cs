@@ -9,19 +9,13 @@ public class Charger : EnemyContoller
     Vector3 chargePosition;
     bool runningAttack;
     CapsuleCollider myCollider;
-    void Start()
+    protected override void Start()
     {
-        playerTransform = PlayerController.instance.player.transform;
-        attackTarget = playerTransform;
-        currentState = defaultState;
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        animator.SetBool("isIdle", defaultState == State.idle);
+        base.Start();
+        myCollider = GetComponent<CapsuleCollider>();
+        runningAttack = false;
         attackDistance = 2;
         reachDistance = attackDistance + 6;
-        runningAttack = false;
-        healthBar.SetMaxHealth(health);
-        myCollider = GetComponent<CapsuleCollider>();
-        audioSource = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -156,7 +150,6 @@ public class Charger : EnemyContoller
         currentState = State.attack;
         transform.LookAt(attackTarget);
         animator.SetBool("isAttacking", true);
-        chargePosition = attackTarget.position;
         StartCoroutine(charge());
     }
     IEnumerator charge()
@@ -168,7 +161,8 @@ public class Charger : EnemyContoller
             StartCoroutine(resumeAttack());
             yield break;
         }
-        navMeshAgent.speed = 5;
+        navMeshAgent.speed = 10;
+        chargePosition = attackTarget.position;
         navMeshAgent.SetDestination(chargePosition);
         navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         runningAttack = true;
