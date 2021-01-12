@@ -169,7 +169,7 @@ public class GunScript : MonoBehaviour
     Collider[] hits;
     LayerMask enemyLayer;
 
-    public InventoryObject ingredientInventory;
+    InventoryObject ingredientInventory;
     // alcohol  bile  canister  gunpowder  rag  sugar
     //    0      1       2         3        4     5
 
@@ -196,6 +196,7 @@ public class GunScript : MonoBehaviour
     {
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        ingredientInventory = PlayerController.instance.player.GetComponent<PlayerInventory>().ingredientInventory;
     }
     void Update()
     {

@@ -8,87 +8,64 @@ public class PlayerInventory : MonoBehaviour
     public InventoryObject ammoInventory;
     public InventoryObject craftableInventory;
     GameObject player;
-    public List<Item> itemsCollection;
     public int[] collectableItemsCount;
-    float distanceFromPlayer;
-    List<Item> collectableItems;
-    List<Item> destroyedItems;
+    public float distanceFromPlayer = 2;
+    public LayerMask m_LayerMask;
+    Vector3 size = new Vector3(2f,2f,2f);
     void Start(){
-        itemsCollection = new List<Item>();
         player = PlayerController.instance.player;
-        distanceFromPlayer = 2;
-        StartCoroutine(GetCollectables());
-        
     }
 
-    IEnumerator GetCollectables(){
+    void FixedUpdate(){
+        GetCollectables();
+    }
+
+    void GetCollectables(){
+        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, size, Quaternion.identity, m_LayerMask);
         collectableItemsCount = new int[9];
-        collectableItems = new List<Item>();
-        destroyedItems = new List<Item>();
-        string itemsToPick ="";
-        if(itemsCollection.Count > 0){
-            foreach (Item i in itemsCollection){
-                if(i.gameObj == null){
-                    destroyedItems.Add(i);
+        if(hitColliders.Length > 0){
+            foreach (Collider col in hitColliders){
+                Item itemScript = col.gameObject.GetComponent<Item>();
+                if(itemScript.item.name == "Heavy Ammo"){
+                    collectableItemsCount[0] += itemScript.amount;
                 }
-                else{
-                    if (Vector3.Distance(player.transform.position , i.itemPos) <= distanceFromPlayer){
-                        itemsToPick += i.item.name + " / ";
-                        collectableItems.Add(i);
-                        if(i.item.name == "Heavy Ammo"){
-                            collectableItemsCount[0] += i.amount;
-                        }
-                        else if(i.item.name == "Light Ammo"){
-                            collectableItemsCount[1] += i.amount;
-                        }
-                        else if(i.item.name == "Shotgun shells"){
-                            collectableItemsCount[2] += i.amount;
-                        }
-                        else if(i.item.name == "Alcohol"){
-                            collectableItemsCount[3] += i.amount;
-                        }
-                        else if(i.item.name == "Canister"){
-                            collectableItemsCount[4] += i.amount;
-                        }
-                        else if(i.item.name == "Sugar"){
-                            collectableItemsCount[5] += i.amount;
-                        }
-                        else if(i.item.name == "GunPowder"){
-                            collectableItemsCount[6] += i.amount;
-                        }
-                        else if(i.item.name == "Rag"){
-                            collectableItemsCount[7] += i.amount;
-                        }
-                        else if(i.item.name == "Health pack"){
-                            collectableItemsCount[8] += i.amount;
-                        }
-                    }
+                else if(itemScript.item.name == "Light Ammo"){
+                    collectableItemsCount[1] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Shotgun shells"){
+                    collectableItemsCount[2] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Alcohol"){
+                    collectableItemsCount[3] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Canister"){
+                    collectableItemsCount[4] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Sugar"){
+                    collectableItemsCount[5] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "GunPowder"){
+                    collectableItemsCount[6] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Rag"){
+                    collectableItemsCount[7] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Health pack"){
+                    collectableItemsCount[8] += itemScript.amount;
                 }
             }
         }
-        yield return new WaitForSecondsRealtime(0.01f);
-        if(destroyedItems.Count > 0){
-            foreach(Item i in destroyedItems){
-                itemsCollection.Remove(i);
-            }
-        }
-        yield return new WaitForSecondsRealtime(0.03f);
-        StartCoroutine(GetCollectables());
     }
 
 
     public void pickUp(string itemName){
-        List<Item> remove = new List<Item>();
-        
-        foreach (Item i in collectableItems){
-            if(i.item.name == itemName){
-                Destroy(i.gameObj);
-                remove.Add(i);
-            }
-        }
 
-        foreach(Item i in destroyedItems){
-            collectableItems.Remove(i);
+        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, size, Quaternion.identity, m_LayerMask);
+        foreach (Collider col in hitColliders){
+            Item itemScript = col.gameObject.GetComponent<Item>();
+            if(itemScript.item.name == itemName){
+                Destroy(col.gameObject);
+            }
         }
 
         if(itemName == "Heavy Ammo"){
@@ -119,5 +96,4 @@ public class PlayerInventory : MonoBehaviour
             craftableInventory.addItem(itemName, collectableItemsCount[8]);
         }
     }
-
 }
