@@ -11,7 +11,6 @@ public class BoomerGrenadeScript : MonoBehaviour
     Vector3 endPoint;
     public float timer = 0;
     private Vector3 direction;
-    private bool isSpawned = false;
     public float thrust = 20f;
     Rigidbody rb;
     private bool hitGround;
