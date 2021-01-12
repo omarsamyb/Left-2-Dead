@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Inventory ", menuName = "Iventory/Inventory")]
+// [CreateAssetMenu(fileName = "New Inventory ", menuName = "Iventory/Inventory")]
 public class InventoryObject : ScriptableObject
 {
     public List<InventorySlot> container = new List<InventorySlot>();
@@ -19,6 +19,16 @@ public class InventoryObject : ScriptableObject
         }
         if(!hasItem){
             container.Add(new InventorySlot(obj, num));
+        }
+    }
+
+    public void addItem(string obj, int num){
+        for(int i =0; i < container.Count; i++){
+            if(container[i].item.name == obj)
+            {
+                container[i].addAmount(num);
+                break;
+            }
         }
     }
 }

@@ -8,15 +8,37 @@ public class UIManager : MonoBehaviour
 
     public GameObject craftingCanvas;
     public GameObject inventoryCanvas;
+    public GameObject gameScreenCanvas;
+    public GameObject pickUpCanvas;
     private bool craftingToggle = false;
     private bool inventoryPanelToggle = false;
+    private bool gameScreenCanvasToggle = true;
+    private bool pickUpCanvasToggle = false;
     private bool InGamePause = false;
 
     void Update(){
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if(gameScreenCanvasToggle){
+                pickUpCanvasToggle = !pickUpCanvasToggle;
+                if(pickUpCanvasToggle == false )
+                {
+                    lockCursor();
+                }
+                else
+                {
+                    unLockCursor();
+                }
+                pickUpCanvas.SetActive(pickUpCanvasToggle);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.T))
         {
             inventoryPanelToggle = false;
             inventoryCanvas.SetActive(inventoryPanelToggle);
+            gameScreenCanvasToggle = false;
+            gameScreenCanvas.SetActive(gameScreenCanvasToggle);
+
             craftingToggle = !craftingToggle;
             if(craftingToggle == false )
             {
@@ -32,6 +54,9 @@ public class UIManager : MonoBehaviour
         {
             craftingToggle = false;
             craftingCanvas.SetActive(craftingToggle);
+            gameScreenCanvasToggle = false;
+            gameScreenCanvas.SetActive(gameScreenCanvasToggle);
+
             inventoryPanelToggle = !inventoryPanelToggle;
             if(inventoryPanelToggle == false )
             {
@@ -53,6 +78,8 @@ public class UIManager : MonoBehaviour
         inventoryCanvas.SetActive(inventoryPanelToggle);
         craftingToggle = false;
         craftingCanvas.SetActive(craftingToggle);
+        gameScreenCanvasToggle = true;
+        gameScreenCanvas.SetActive(gameScreenCanvasToggle);
         Time.timeScale = 1f;
     }
     
@@ -75,5 +102,15 @@ public class UIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0f;
         InGamePause = true;
+    }
+
+    public void unLockCursor(){
+        GameManager.instance.inMenu = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void lockCursor(){
+        GameManager.instance.inMenu = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

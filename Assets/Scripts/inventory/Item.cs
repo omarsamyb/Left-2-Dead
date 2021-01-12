@@ -8,6 +8,7 @@ public class Item : MonoBehaviour
     [HideInInspector] public GameObject gameObj;
     [HideInInspector] public Vector3 itemPos;
     PlayerInventory playerInventory; 
+    public int amount = 2;
     void Start(){
         gameObj = this.gameObject;
         itemPos = transform.position;
