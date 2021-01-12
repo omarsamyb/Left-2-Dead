@@ -516,7 +516,7 @@ public class GunScript : MonoBehaviour
             }
             catch (System.Exception ex)
             {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+                // print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
             }
         }
         if (HUD_bullets)

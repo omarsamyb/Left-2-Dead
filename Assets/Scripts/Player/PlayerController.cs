@@ -405,7 +405,7 @@ public class PlayerController : MonoBehaviour
             }
             catch (System.Exception ex)
             {
-                print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
+                // print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
             }
         }
         if (HUD_health)
