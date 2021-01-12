@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timer: 0
   thrust: 20
+  Explosion: {fileID: 1807845155049051315, guid: fedeff51c2e19504fbb62cb583d66121, type: 3}
   thunder: {fileID: 106988, guid: 15dec7b07032b2f4aa6f855bfbe120f7, type: 3}
 --- !u!114 &313288479058802196
 MonoBehaviour:

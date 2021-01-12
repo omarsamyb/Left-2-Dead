@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEditor;
-public class BomberController : EnemyContoller
+public class BoomerController : EnemyContoller
 {
 
     public GameObject bomb;
@@ -13,7 +13,7 @@ public class BomberController : EnemyContoller
     //                   0        1             2             3             4           5             6             7            8            9       10
     string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin","isAttackingZombies" };
 
-    void Start()
+    protected override void Start()
     {
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;

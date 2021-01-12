@@ -27,42 +27,44 @@ public class HordeSpawner : MonoBehaviour
 	}
 
     void Update()
-	{
-		if (!fire && !isBomber) {
-			fire = true;
-			isSpawning = true;
-		}
-		// true represent the pile bomb is attached to the player
-		if (isBomber && bomberSpawnFlag && !fire)
-		{
-			fire = true;
-			SetBomberHorde();
-			bomberSpawnFlag = false;
-		}
-
-		if (isSpawning)
+    {
+        if (!fire && !isBomber)
         {
-			isSpawning = false;
-			StartCoroutine(SpawnEnemy());
-		}
-		if (!isChasing&&!isBomber) {
-			for (int i = 0; i < transform.childCount; i++)
-			{
-				GameObject childObject = transform.GetChild(i).gameObject;
-				if (childObject.tag == "Enemy")
-				{
-					string childState = childObject.GetComponent<EnemyContoller>().getState();
-					if (childState == "chasing" || childState == "attack")
-					{
-						isChasing = true;
-						StartCoroutine(SetAllEnemiesToChase());
-						return;
-					}
-				}
-			}
-		}
-	}
-	IEnumerator SpawnEnemy()
+            fire = true;
+            isSpawning = true;
+        }
+        // true represent the pile bomb is attached to the player
+        if (isBomber && bomberSpawnFlag && !fire)
+        {
+            fire = true;
+            SetBomberHorde();
+            bomberSpawnFlag = false;
+        }
+
+        if (isSpawning)
+        {
+            isSpawning = false;
+            StartCoroutine(SpawnEnemy());
+        }
+        if (!isChasing && !isBomber)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                GameObject childObject = transform.GetChild(i).gameObject;
+                if (childObject.tag == "Enemy")
+                {
+                    string childState = childObject.GetComponent<EnemyContoller>().getState();
+                    if (childState == "chasing" || childState == "attack")
+                    {
+                        isChasing = true;
+                        StartCoroutine(SetAllEnemiesToChase());
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    IEnumerator SpawnEnemy()
 	{
 		for (int i = 0; i <hordeCount ; i++)
 		{
