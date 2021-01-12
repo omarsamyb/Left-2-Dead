@@ -107,20 +107,18 @@ public class Spitter : EnemyContoller
 
         if (!playerInSightRange && !playerInAttackRange)
         {
-            Debug.Log("Case 1");
             patrol();
         }
         if (playerInSightRange && !playerInAttackRange)
         {
             if (canSee(chaseDistance, chaseAngle, attackTarget))
             {
-                Debug.Log("Case 2");
                 chase(attackTarget);
 
             }
             else
             {
-                Debug.Log("Case 3");
+
                 patrol();
             }
         }
@@ -129,13 +127,11 @@ public class Spitter : EnemyContoller
 
             if (canSee(chaseDistance, chaseAngle, attackTarget))
             {
-                Debug.Log("Case 4");
                 attack();
 
             }
             else
             {
-                Debug.Log("Case 5");
                 patrol();
             }
         }
@@ -225,6 +221,8 @@ public class Spitter : EnemyContoller
             navMeshAgent.SetDestination(walkPoint);
             currentState = State.patrol;
             turnAgentWhileWalking(walkPoint);
+            animator.SetBool("isAttacking", false);
+            animator.SetBool("isChasing", false);
 
 
 
