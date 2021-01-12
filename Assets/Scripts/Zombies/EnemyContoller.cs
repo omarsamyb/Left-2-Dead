@@ -6,8 +6,8 @@ using UnityEditor;
 public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown};
 public class EnemyContoller : MonoBehaviour
 {
-    [HideInInspector] public NavMeshAgent navMeshAgent;
-    [HideInInspector] public Transform playerTransform;
+    public NavMeshAgent navMeshAgent;
+    public Transform playerTransform;
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -51,16 +51,20 @@ public class EnemyContoller : MonoBehaviour
                 enemies.Add(hit.transform);
             }
         }
-
+        
         if (enemies.Count == 0)
             return;
         confusionTimer = 0;
         isConfused = true;
         int min = 0;
         for (int i = 0; i < enemies.Count; i++)
+        {
             if (Vector3.Distance(((Transform)enemies[i]).position, transform.position) < Vector3.Distance(((Transform)enemies[min]).position, transform.position))
                 min = i;
+
+        }
         attackTarget = (Transform)enemies[min];
+        
     }
 
     protected virtual void Start()
@@ -73,6 +77,7 @@ public class EnemyContoller : MonoBehaviour
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
         audioSource = GetComponent<AudioSource>();
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
     public void getPinned(bool isPerm)
     {
