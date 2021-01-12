@@ -74,9 +74,11 @@ MonoBehaviour:
   childTransform: {fileID: 4043953859124643615}
   attackCooldownTime: 10
   canAttack: 1
+  canHitReaction: 1
+  hitReactionDelay: 5
   damagePerSec: 5
-  healthBar: {fileID: 5250118602751662443, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
-  healthBarUI: {fileID: 4200144858965876942}
+  healthBar: {fileID: 1047832234948622548}
+  healthBarUI: {fileID: 2413326348133845944}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
   hurtSFX: {fileID: 8300000, guid: 0e84038961d6c4b72af49c11e1553b9e, type: 3}
   isPinned: 0
@@ -84,7 +86,7 @@ MonoBehaviour:
   bomb: {fileID: 6914601646843120041, guid: 178fbd42ece787a43998da6e38837379, type: 3}
   chasesDistance: 3
   boomerAttackDistance: 10
---- !u!1001 &3457385329009353592
+--- !u!1001 &3805307882333538318
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -129,7 +131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1563576854523659186, guid: a26131835138a444cbc519373922615d, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1563576854523659186, guid: a26131835138a444cbc519373922615d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -149,7 +151,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1563576854523659186, guid: a26131835138a444cbc519373922615d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 2.26
+      value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 1563576854523659186, guid: a26131835138a444cbc519373922615d, type: 3}
       propertyPath: m_SizeDelta.x
@@ -189,11 +191,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a26131835138a444cbc519373922615d, type: 3}
---- !u!1 &4200144858965876942 stripped
+--- !u!1 &2413326348133845944 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1563576854523659190, guid: a26131835138a444cbc519373922615d, type: 3}
-  m_PrefabInstance: {fileID: 3457385329009353592}
+  m_PrefabInstance: {fileID: 3805307882333538318}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1047832234948622548 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4198918934829527258, guid: a26131835138a444cbc519373922615d, type: 3}
+  m_PrefabInstance: {fileID: 3805307882333538318}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ba5f922b73d3e4ea62369483c66b50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4581774794911686900
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -231,7 +244,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d45367b165f324a49a44d884903c0b62, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d45367b165f324a49a44d884903c0b62, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -327,7 +340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226087, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_Name
-      value: Bomber Zombie Variant
+      value: Boomer
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226087, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_TagString

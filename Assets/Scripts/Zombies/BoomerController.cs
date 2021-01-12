@@ -11,10 +11,11 @@ public class BoomerController : EnemyContoller
     public float boomerAttackDistance = 10.0f;
 
     //                   0        1             2             3             4           5             6             7            8            9       10
-    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin","isAttackingZombies" };
+    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin", "isAttackingZombies" };
 
     protected override void Start()
     {
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
@@ -262,10 +263,13 @@ public class BoomerController : EnemyContoller
     {
         yield return new WaitForSeconds(1.5f);
         transform.LookAt(attackTarget);
-        GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
+
         //childGrenade.transform.parent = gameObject.transform;
-        if (currentState == State.attack)
+        if (currentState == State.attack && canAttackCheck(attackTarget))
+        {
+            GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
             SetAnimationFlags(0);
+        }
     }
     void SetAnimationFlags(int g)
     {
@@ -278,6 +282,7 @@ public class BoomerController : EnemyContoller
     public override void Confuse()
     {
         base.Confuse();
+        canAttack = true;
         attackDistance = 1f;
     }
     public override void endConfusion(bool callBacktoDefault)

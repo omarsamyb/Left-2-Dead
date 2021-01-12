@@ -39,14 +39,14 @@ public class EnemyContoller : MonoBehaviour
     protected AudioSource audioSource;
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
+    protected LayerMask enemyLayer;
     public virtual void Confuse()
     {
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
-
-        ArrayList enemies = new ArrayList();
-        foreach (RaycastHit hit in hits)
+        Collider[] hits = Physics.OverlapSphere(transform.position, chaseDistance, enemyLayer);
+        List <Transform> enemies = new List<Transform>();
+        foreach (Collider hit in hits)
         {
-            if (hit.transform.gameObject.tag.EndsWith("Enemy") && hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health > 0)
+            if (hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health > 0)
             {
                 enemies.Add(hit.transform);
             }
@@ -55,16 +55,19 @@ public class EnemyContoller : MonoBehaviour
         if (enemies.Count == 0)
             return;
         confusionTimer = 0;
-        isConfused = true;
         int min = 0;
         for (int i = 0; i < enemies.Count; i++)
             if (Vector3.Distance(((Transform)enemies[i]).position, transform.position) < Vector3.Distance(((Transform)enemies[min]).position, transform.position))
                 min = i;
         attackTarget = (Transform)enemies[min];
+        if(!isConfused)
+            chase(attackTarget);
+        isConfused = true;
     }
 
     protected virtual void Start()
     {
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;

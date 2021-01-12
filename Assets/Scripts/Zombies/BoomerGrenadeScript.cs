@@ -16,7 +16,7 @@ public class BoomerGrenadeScript : MonoBehaviour
     Rigidbody rb;
     private bool hitGround;
     public GameObject Explosion;
-    float explosionRadius = 4;
+    float explosionRadius = 3;
     private LayerMask playerLayer;
 
     public GameObject thunder;
@@ -25,12 +25,12 @@ public class BoomerGrenadeScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         playerTransform = PlayerController.instance.player.transform;
-        startPoint = new Vector3(transform.position.x,transform.position.y,transform.position.z);
-        endPoint = new Vector3(playerTransform.position.x, transform.position.y , playerTransform.position.z);
+        startPoint = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        endPoint = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
         direction = (endPoint - startPoint).normalized;
         rb = GetComponent<Rigidbody>();
         float dist = Vector3.Distance(playerTransform.position, transform.position);
-        rb.velocity = new Vector3(direction.x, 0f, direction.z)* thrust * (dist/10.0f);
+        rb.velocity = new Vector3(direction.x, 0f, direction.z) * thrust * (dist / 10.0f);
         rb.AddTorque(new Vector3(10, 0, 10));
         playerLayer = 1 << LayerMask.NameToLayer("Player");
 
@@ -52,7 +52,7 @@ public class BoomerGrenadeScript : MonoBehaviour
                 boom.transform.position = transform.position;
             }
         }
-        else if (other.gameObject.tag == "Player"&& !hitGround)
+        else if (other.gameObject.tag == "Player" && !hitGround)
         {
             rb.velocity = new Vector3(0, 0, 0);
             rb.mass = 1000;
@@ -84,15 +84,15 @@ public class BoomerGrenadeScript : MonoBehaviour
             hordeSpawner.bomberSpawnFlag = true;
             gotEffected = true;
             Thunder();
-            Destroy(this.gameObject,6f);
+            Destroy(this.gameObject, 6f);
         }
     }
-    public Vector3 CalculateBezierCurve(float t , Vector3 p0, Vector3 p1, Vector3 p2)
+    public Vector3 CalculateBezierCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
     {
         float u = 1 - t;
         float tt = t * t;
         float uu = u * u;
-        return (uu * p0 )+ (2 * u*t* p1) +( tt * p2);
+        return (uu * p0) + (2 * u * t * p1) + (tt * p2);
     }
     public void Thunder()
     {
