@@ -60,11 +60,21 @@ public class WeaponPanel : MonoBehaviour
     }
 
     void setAmmoCount(){
+        string weapon = "";
+        if(PlayerController.instance.player.GetComponent<GunInventory>().currentGun != null){
+            weapon = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().weaponName;
+        }
         if(PlayerController.instance.player.GetComponent<GunInventory>().currentGun != null){
             float bulletsInTheGun = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsInTheGun;
-            float bulletsIHave = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsIHave;
             float amountOfBulletsPerLoad = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().amountOfBulletsPerLoad;
-            ammoCount.GetComponent<TextMeshProUGUI>().SetText(bulletsInTheGun + " / " + bulletsIHave);
+            if(weapon == "Pistol"){
+                string bulletsIHave = "∞";
+                ammoCount.GetComponent<TextMeshProUGUI>().SetText(bulletsInTheGun + " / " + bulletsIHave);
+            }
+            else{
+                float bulletsIHave = PlayerController.instance.player.GetComponent<GunInventory>().currentGun.GetComponent<GunScript>().bulletsIHave;
+                ammoCount.GetComponent<TextMeshProUGUI>().SetText(bulletsInTheGun + " / " + bulletsIHave);
+            }
             if (amountOfBulletsPerLoad - bulletsInTheGun > 0){
                 ReloadIcon.SetActive(true);
             }
