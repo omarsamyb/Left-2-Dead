@@ -1067,8 +1067,8 @@ MonoBehaviour:
   defaultState: 0
   currentState: 0
   animator: {fileID: 2506284069892852989}
-  attackDistance: 5
-  chaseDistance: 10
+  attackDistance: 10
+  chaseDistance: 15
   reachDistance: 0
   patrolling: []
   health: 100
@@ -2561,7 +2561,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   acid: {fileID: 7725264978924912073}
-  acidPuddle: {fileID: 3510760846545802108, guid: 3aee8c88c81a7dd48bb4205ee404a757, type: 3}
 --- !u!1001 &8332373704019967892
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2754,7 +2753,7 @@ PrefabInstance:
     - target: {fileID: 5758294243078946196, guid: 41658c8df6152ac4cb0d4e1f034daf43, type: 3}
       propertyPath: acidPuddle
       value: 
-      objectReference: {fileID: 3510760846545802108, guid: 3aee8c88c81a7dd48bb4205ee404a757, type: 3}
+      objectReference: {fileID: 4663527740721390144, guid: f89262087bf6b01439afc558791612c2, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41658c8df6152ac4cb0d4e1f034daf43, type: 3}
 --- !u!1 &7725264978924912073 stripped

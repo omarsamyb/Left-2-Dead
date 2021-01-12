@@ -11,39 +11,23 @@ public class ParticleThrow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        //sc = FindObjectOfType<SpitController>();
-        //head = GameObject.FindGameObjectWithTag("SpitterHead");
         transform.parent = head.transform;
         rb = this.gameObject.GetComponent<Rigidbody>();
         rb.useGravity = false;
-        this.gameObject.active = false;
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        this.gameObject.SetActive(false);
+        player = PlayerController.instance.player.transform;
     }
     public void createPuddle()
     {
-        //GameObject acidSpare = Instantiate(this.gameObject, head.transform.position, Quaternion.identity);
-
-
         Vector3 acidPuddlePos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y, this.gameObject.transform.position.z);
-        //Destroy(this.gameObject, 1f);
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        GameObject acidPuddleSpare = Instantiate(acidPuddle, acidPuddlePos, Quaternion.identity);
-        //head = GameObject.FindGameObjectWithTag("SpitterHead");
+        GameObject acidPuddleSpare = Instantiate(acidPuddle, acidPuddlePos, Quaternion.Euler(90, 0, 0));
 
         this.gameObject.transform.position = head.transform.position;
-        this.gameObject.active = false;
+        this.gameObject.SetActive(false);
 
         Destroy(acidPuddleSpare, 10f);
-
-
     }
 
 
@@ -61,19 +45,15 @@ public class ParticleThrow : MonoBehaviour
     public void ReleaseMe()
     {
         
-        this.gameObject.active = true;
+        this.gameObject.SetActive(true);
         transform.parent = null;
 
         rb.useGravity = true;
         transform.rotation = head.transform.rotation;
-
-        rb.AddForce(transform.forward * 180f, ForceMode.Impulse);
-        rb.AddForce(transform.up * 50f, ForceMode.Impulse);
-
-
+        Vector3 dir = player.position - transform.position;         
+        float distance = dir.magnitude;         
+        dir.Normalize();         
+        rb.AddForce(dir * distance * 20,ForceMode.Impulse);
+        rb.AddForce(transform.up*50, ForceMode.Impulse);
     }
-
-   
-
-
 }
