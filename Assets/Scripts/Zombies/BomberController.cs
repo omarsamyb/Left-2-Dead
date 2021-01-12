@@ -21,7 +21,7 @@ public class BomberController : EnemyContoller
         animator.SetBool("isPatrol", defaultState == State.patrol);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
     }
     public override void stun()
     {

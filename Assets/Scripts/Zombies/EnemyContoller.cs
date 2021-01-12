@@ -34,11 +34,12 @@ public class EnemyContoller : MonoBehaviour
     public GameObject healthBarUI;
     public GameObject bloodEffect;
     public AudioClip hurtSFX;
-    protected AudioSource audioSource;
+    //protected AudioSource audioSource;
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
     private PlayerVoiceOver pvo;
     private bool isChasing;
+    protected EnemyEffects ef;
     public void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
@@ -63,7 +64,7 @@ public class EnemyContoller : MonoBehaviour
         attackTarget = (Transform)enemies[min];
     }
 
-    void Start()
+    public virtual void Start()
     {
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
@@ -72,8 +73,10 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", defaultState == State.idle);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
         pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
+        ef = transform.GetComponent<EnemyEffects>();
+
     }
     public void getPinned(bool isPerm)
     {
@@ -234,12 +237,14 @@ public class EnemyContoller : MonoBehaviour
     public virtual IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
+        ef.Attack(-1);
         if (cont.health > 0 && currentState == State.attack)
             cont.TakeDamage(damagePerSec);
     }
     public virtual IEnumerator applyDamage(EnemyContoller cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
+        ef.Attack(-1);
         if (cont.health > 0 && currentState == State.attack)
             cont.TakeDamage(damagePerSec, attackTarget.position + new Vector3(0, 1.5f, 0));
     }
@@ -346,6 +351,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public void TakeDamage(int damage)
     {
+        ef.Damaged();
         health -= damage;
         healthBar.SetHealth(health);
         if (health <= 0)
@@ -353,10 +359,11 @@ public class EnemyContoller : MonoBehaviour
     }
     public void TakeDamage(int damage, Vector3 pos)
     {
+        ef.Damaged();
         health -= damage;
         healthBar.SetHealth(health);
         Instantiate(bloodEffect, pos, Quaternion.identity);
-        audioSource.PlayOneShot(hurtSFX);
+        //audioSource.PlayOneShot(hurtSFX);
         if (health <= 0)
             Die();
         animator.SetTrigger("gotHit");
@@ -364,6 +371,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void Die()
     {
+        ef.Dead();
         animator.SetBool("isDying", true);
         currentState = State.dead;
         Destroy(healthBarUI);

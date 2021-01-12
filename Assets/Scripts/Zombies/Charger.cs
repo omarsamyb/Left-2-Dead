@@ -9,8 +9,9 @@ public class Charger : EnemyContoller
     Vector3 chargePosition;
     bool runningAttack;
     CapsuleCollider myCollider;
-    void Start()
+    public override void Start()
     {
+        base.Start();
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
@@ -21,7 +22,7 @@ public class Charger : EnemyContoller
         runningAttack = false;
         healthBar.SetMaxHealth(health);
         myCollider = GetComponent<CapsuleCollider>();
-        audioSource = GetComponent<AudioSource>();
+        //audioSource = GetComponent<AudioSource>();
     }
     void Update()
     {
@@ -161,6 +162,7 @@ public class Charger : EnemyContoller
     }
     IEnumerator charge()
     {
+        ef.Attack(0);
         yield return new WaitForSeconds(3.2f);
         if (currentState != State.attack || isPinned || !canAttackCheck(attackTarget))
         {
@@ -243,6 +245,7 @@ public class Charger : EnemyContoller
                 yield break;
             }
             doDamageOnTarget(playerCont, enemyCont, 10);
+            ef.Attack(1);
         }
         colliderToDefault();
         chase(attackTarget);

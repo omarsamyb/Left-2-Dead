@@ -8,17 +8,19 @@ public class TankController : EnemyContoller
     private bool inAttackAnimation=false;
     public override IEnumerator applyDamage(PlayerController cont)
     {
-        float frames=50;
-        yield return new WaitForSeconds(frames/30.0f);
-        
+        yield return new WaitForSeconds(0.6f);
+        ef.Attack(0);
+        yield return new WaitForSeconds(1f);
+
         if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
             cont.TakeDamage(damagePerSec);
     }
     public override IEnumerator applyDamage(EnemyContoller cont)
     {
-        float frames=50;
-        yield return new WaitForSeconds(frames/30.0f);
-        
+        yield return new WaitForSeconds(0.6f);
+        ef.Attack(0);
+        yield return new WaitForSeconds(1f);
+
         if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
             cont.TakeDamage(damagePerSec);
     }

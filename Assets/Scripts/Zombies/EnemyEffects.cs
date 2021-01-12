@@ -4,32 +4,84 @@ using UnityEngine;
 
 public class EnemyEffects : MonoBehaviour
 {
-    private AudioSource audioSource;
+    public AudioSource source;
     private State currentState;
     private EnemyContoller enemyController;
-    public AudioClip[] idleClips, attackAndChasingClips;
+
+    public AudioClip[] idleClips;
+    public AudioClip[] chasingClips;
+    public AudioClip[] damagedClips;
+    public AudioClip[] deadClips;
+    public AudioClip[] attackClips;
+    private int idleIndex;
+    private int chasingIndex;
+    private int damagedIndex;
+    private int deadIndex;
+    private int attackIndex;
+
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
         enemyController = GetComponent<EnemyContoller>();
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (audioSource.isPlaying)
-            return;
         currentState = enemyController.currentState;
-        if (currentState == State.patrol || currentState == State.idle || currentState == State.coolDown)
+        Idle();
+        Chasing();
+    }
+
+    private void Idle()
+    {
+        if (!source.isPlaying)
         {
-            audioSource.clip = idleClips[Random.Range(0, idleClips.Length)];
-            audioSource.Play();
+            if (currentState == State.patrol || currentState == State.idle || currentState == State.coolDown)
+            {
+                source.clip = idleClips[idleIndex];
+                source.Play();
+                idleIndex = (idleIndex + 1) % idleClips.Length;
+            }
         }
-        else if (currentState == State.attack || currentState == State.hear || currentState == State.chasing)
+    }
+    private void Chasing()
+    {
+        if (!source.isPlaying)
         {
-            audioSource.clip = attackAndChasingClips[Random.Range(0, attackAndChasingClips.Length)];
-            audioSource.Play();
+            if (currentState == State.hear || currentState == State.chasing)
+            {
+                source.clip = chasingClips[chasingIndex];
+                source.Play();
+                chasingIndex = (chasingIndex + 1) % chasingClips.Length;
+            }
         }
+    }
+    public void Attack(int index)
+    {
+        if (!source.isPlaying && index == -1)
+        {
+            source.clip = attackClips[attackIndex];
+            source.Play();
+            attackIndex = (attackIndex + 1) % attackClips.Length;
+        }
+        else if(index != -1)
+        {
+            source.clip = attackClips[index];
+            source.Play();
+        }
+    }
+    public void Damaged()
+    {
+        if (!source.isPlaying || currentState == State.chasing || currentState == State.idle || currentState == State.patrol)
+        {
+            source.clip = damagedClips[damagedIndex];
+            source.Play();
+            damagedIndex = (damagedIndex + 1) % damagedClips.Length;
+        }
+    }
+    public void Dead()
+    {
+        deadIndex = Random.Range(0, deadClips.Length);
+        source.clip = deadClips[deadIndex];
+        source.Play();
     }
 }
