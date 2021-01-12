@@ -6,8 +6,8 @@ using UnityEditor;
 public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown};
 public class EnemyContoller : MonoBehaviour
 {
-    [HideInInspector] public NavMeshAgent navMeshAgent;
-    [HideInInspector] public Transform playerTransform;
+    public NavMeshAgent navMeshAgent;
+    public Transform playerTransform;
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -23,6 +23,8 @@ public class EnemyContoller : MonoBehaviour
     protected float chaseAngle = 70.0f, attackAngle = 40.0f;
     public float attackCooldownTime = 1;
     [HideInInspector] public bool canAttack = true;
+    [HideInInspector] public bool canHitReaction = true;
+    [HideInInspector] public float hitReactionDelay = 5.0f;
     public int damagePerSec = 5;
     protected bool isConfused = false;
     protected float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
@@ -37,35 +39,42 @@ public class EnemyContoller : MonoBehaviour
     //protected AudioSource audioSource;
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
+    protected LayerMask enemyLayer;
     private PlayerVoiceOver pvo;
     private bool isChasing;
     protected EnemyEffects ef;
-    public void Confuse()
+    
+    public virtual void Confuse()
     {
-        RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
-
-        ArrayList enemies = new ArrayList();
-        foreach (RaycastHit hit in hits)
+        Collider[] hits = Physics.OverlapSphere(transform.position, chaseDistance, enemyLayer);
+        List <Transform> enemies = new List<Transform>();
+        foreach (Collider hit in hits)
         {
-            if (hit.transform.gameObject.tag.EndsWith("Enemy") && hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health > 0)
+            if (hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health > 0)
             {
                 enemies.Add(hit.transform);
             }
         }
-
+        
         if (enemies.Count == 0)
             return;
         confusionTimer = 0;
-        isConfused = true;
         int min = 0;
         for (int i = 0; i < enemies.Count; i++)
+        {
             if (Vector3.Distance(((Transform)enemies[i]).position, transform.position) < Vector3.Distance(((Transform)enemies[min]).position, transform.position))
                 min = i;
+
+        }
         attackTarget = (Transform)enemies[min];
+        if(!isConfused)
+            chase(attackTarget);
+        isConfused = true;
     }
 
-    public virtual void Start()
+    protected virtual void Start()
     {
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
@@ -73,10 +82,9 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", defaultState == State.idle);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
-        //audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         ef = transform.GetComponent<EnemyEffects>();
-
     }
     public void getPinned(bool isPerm)
     {
@@ -204,7 +212,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         navMeshAgent.ResetPath();
     }
-    public void endConfusion(bool callBacktoDefault)
+    public virtual void endConfusion(bool callBacktoDefault)
     {
         isConfused = false;
         attackTarget = playerTransform;
@@ -233,6 +241,11 @@ public class EnemyContoller : MonoBehaviour
     {
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
+    }
+    public virtual IEnumerator resumeHitReaction()
+    {
+        yield return new WaitForSeconds(hitReactionDelay);
+        canHitReaction = true;
     }
     public virtual IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
@@ -274,7 +287,6 @@ public class EnemyContoller : MonoBehaviour
                 patrol();
             }
         }
-
         else if (currentState == State.chasing)
         {
             if (navMeshAgent.remainingDistance < attackDistance && canAttack)
@@ -366,7 +378,12 @@ public class EnemyContoller : MonoBehaviour
         //audioSource.PlayOneShot(hurtSFX);
         if (health <= 0)
             Die();
-        animator.SetTrigger("gotHit");
+        if(canHitReaction)
+        {
+            canHitReaction = false;
+            animator.SetTrigger("gotHit");
+            StartCoroutine(resumeHitReaction());
+        }
         hearFire();
     }
     public virtual void Die()
@@ -487,9 +504,6 @@ public class EnemyContoller : MonoBehaviour
     void OnCollisionEnter(Collision other)
     {
         if (!isPinned && other.gameObject.tag == "Player" && PlayerController.instance.health > 0 && ((currentState == State.idle) || (currentState == State.chasing)))
-        {
-            transform.LookAt(other.transform);
             chase(other.transform);
-        }
     }
 }
