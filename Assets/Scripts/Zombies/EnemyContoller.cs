@@ -49,16 +49,20 @@ public class EnemyContoller : MonoBehaviour
                 enemies.Add(hit.transform);
             }
         }
-
+        
         if (enemies.Count == 0)
             return;
         confusionTimer = 0;
         isConfused = true;
         int min = 0;
         for (int i = 0; i < enemies.Count; i++)
+        {
             if (Vector3.Distance(((Transform)enemies[i]).position, transform.position) < Vector3.Distance(((Transform)enemies[min]).position, transform.position))
                 min = i;
+
+        }
         attackTarget = (Transform)enemies[min];
+        
     }
 
     void Start()
