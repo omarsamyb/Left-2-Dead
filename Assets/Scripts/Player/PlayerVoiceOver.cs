@@ -28,15 +28,14 @@ public class PlayerVoiceOver : MonoBehaviour
     private bool detected;
     private bool spotted;
     [HideInInspector] public bool inFight;
-    private float fightTimerRef = 0.5f;
-    private float fightTimer;
+    [HideInInspector] public int requiredKills;
+    [HideInInspector] public int fightKills;
 
     private CompanionVoiceOver cvo;
 
     void Start()
     {
         detectionTime = detectionRateRef;
-        fightTimer = fightTimerRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         detectionLayer = ~(1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Weapon"));
         cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
@@ -60,11 +59,10 @@ public class PlayerVoiceOver : MonoBehaviour
                 StartCoroutine(Spotted());
             }
 
-            if (inFight && !detected)
-                fightTimer -= Time.deltaTime;
-            if (fightTimer <= 0f)
+            if (inFight && fightKills >= requiredKills)
             {
-                fightTimer = fightTimerRef;
+                fightKills = 0;
+                requiredKills = 0;
                 spotted = false;
                 inFight = false;
                 FightFinished();
@@ -103,8 +101,10 @@ public class PlayerVoiceOver : MonoBehaviour
     }
     IEnumerator Detection()
     {
-        Collider[] hits = Physics.OverlapBox(transform.position + transform.forward * detectionRange/2f + transform.up, new Vector3(detectionRange/2f, 1f, detectionRange/2f), Quaternion.identity, enemyLayer);
-        
+        Collider[] hits = Physics.OverlapBox(transform.position + transform.forward * detectionRange / 2f + transform.up, new Vector3(detectionRange / 2f, 1f, detectionRange / 2f), Quaternion.identity, enemyLayer);
+        if (inFight)
+            detected = true;
+
         bool currentDetection = false;
         foreach (Collider collider in hits)
         {
@@ -114,7 +114,7 @@ public class PlayerVoiceOver : MonoBehaviour
                 if (!AudioManager.instance.isPlaying("PlayerVoice") && !detected)
                 {
                     detected = true;
-                    if (Random.Range(0, 10) == 5)
+                    if (Random.Range(0, 6) == 3)
                         cvo.Detection();
                     else
                     {

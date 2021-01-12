@@ -15,6 +15,7 @@ public class GunScript : MonoBehaviour
     private PlayerController playerController;
     private GunInventory gunInventory;
     private CompanionVoiceOver cvo;
+    private PlayerVoiceOver pvo;
     private Rage rage;
     public string weaponName;
     public Animator handsAnimator;
@@ -194,6 +195,7 @@ public class GunScript : MonoBehaviour
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
+        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
     }
     void Update()
     {
@@ -400,6 +402,7 @@ public class GunScript : MonoBehaviour
                 {
                     rage.UpdateRage(hitInfo.transform.tag);
                     CompanionController.instance.killCounter++;
+                    pvo.fightKills++;
                     // TODO: if special is killed add bile to inventory
                 }
             }

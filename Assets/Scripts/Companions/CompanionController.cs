@@ -43,6 +43,7 @@ public class CompanionController : MonoBehaviour
     [HideInInspector] public int killCounter;
     [HideInInspector] public bool canApplyAbility;
     private CompanionVoiceOver cvo;
+    private PlayerVoiceOver pvo;
     private float weaponNoiseCoolDownRef = 0.5f;
     private float weaponNoiseCoolDown;
     private float noiseRange = 10f;
@@ -78,6 +79,7 @@ public class CompanionController : MonoBehaviour
         runningSpeed = agent.speed;
         walkingSpeed = agent.speed / 2f;
         cvo = GetComponent<CompanionVoiceOver>();
+        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
 
         agent.SetDestination(player.position);
@@ -252,6 +254,7 @@ public class CompanionController : MonoBehaviour
                 if (enemy.health <= 0)
                 {
                     cvo.StartCoroutine(cvo.Kill());
+                    pvo.fightKills++;
                     killCounter++;
                     if(isCriticalEnemy && hitInfo.transform.CompareTag("SpecialEnemy"))
                     {

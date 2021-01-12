@@ -38,6 +38,7 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
     private PlayerVoiceOver pvo;
+    private bool isChasing;
     public void Confuse()
     {
         RaycastHit[] hits = Physics.SphereCastAll(transform.position, chaseDistance, transform.forward, 0.0f);
@@ -122,7 +123,12 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", false);
         curGoToDestination = target.position;
         navMeshAgent.SetDestination(curGoToDestination);
-        pvo.inFight = true;
+        if (!isChasing)
+        {
+            isChasing = true;
+            pvo.inFight = true;
+            pvo.requiredKills++;
+        }
     }
     public virtual void attack()
     {
