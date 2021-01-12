@@ -23,6 +23,8 @@ public class EnemyContoller : MonoBehaviour
     protected float chaseAngle = 70.0f, attackAngle = 40.0f;
     public float attackCooldownTime = 1;
     [HideInInspector] public bool canAttack = true;
+    [HideInInspector] public bool canHitReaction = true;
+    [HideInInspector] public float hitReactionDelay = 5.0f;
     public int damagePerSec = 5;
     protected bool isConfused = false;
     protected float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
@@ -61,7 +63,7 @@ public class EnemyContoller : MonoBehaviour
         attackTarget = (Transform)enemies[min];
     }
 
-    void Start()
+    protected virtual void Start()
     {
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
@@ -222,6 +224,11 @@ public class EnemyContoller : MonoBehaviour
         yield return new WaitForSeconds(attackCooldownTime);
         canAttack = true;
     }
+    public virtual IEnumerator resumeHitReaction()
+    {
+        yield return new WaitForSeconds(hitReactionDelay);
+        canHitReaction = true;
+    }
     public virtual IEnumerator applyDamage(PlayerController cont) //Delayed damage on player for effect
     {
         yield return new WaitForSeconds(0.5f);
@@ -260,7 +267,6 @@ public class EnemyContoller : MonoBehaviour
                 patrol();
             }
         }
-
         else if (currentState == State.chasing)
         {
             if (navMeshAgent.remainingDistance < attackDistance && canAttack)
@@ -350,7 +356,12 @@ public class EnemyContoller : MonoBehaviour
         audioSource.PlayOneShot(hurtSFX);
         if (health <= 0)
             Die();
-        animator.SetTrigger("gotHit");
+        if(canHitReaction)
+        {
+            canHitReaction = false;
+            animator.SetTrigger("gotHit");
+            StartCoroutine(resumeHitReaction());
+        }
         hearFire();
     }
     public virtual void Die()
@@ -470,9 +481,6 @@ public class EnemyContoller : MonoBehaviour
     void OnCollisionEnter(Collision other)
     {
         if (!isPinned && other.gameObject.tag == "Player" && PlayerController.instance.health > 0 && ((currentState == State.idle) || (currentState == State.chasing)))
-        {
-            transform.LookAt(other.transform);
             chase(other.transform);
-        }
     }
 }
