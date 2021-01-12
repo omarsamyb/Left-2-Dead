@@ -44,28 +44,31 @@ public class PlayerVoiceOver : MonoBehaviour
 
     void Update()
     {
-        if (detectionTime > 0f)
-            detectionTime -= Time.deltaTime;
-        else if(detectionTime <= 0f && !isDetecting)
+        if (PlayerController.instance.health > 0)
         {
-            isDetecting = true;
-            StartCoroutine(Detection());
-        }
+            if (detectionTime > 0f)
+                detectionTime -= Time.deltaTime;
+            else if (detectionTime <= 0f && !isDetecting)
+            {
+                isDetecting = true;
+                StartCoroutine(Detection());
+            }
 
-        if(inFight && !spotted)
-        {
-            spotted = true;
-            StartCoroutine(Spotted());
-        }
+            if (inFight && !spotted)
+            {
+                spotted = true;
+                StartCoroutine(Spotted());
+            }
 
-        if(inFight && !detected)
-            fightTimer -= Time.deltaTime;
-        if(fightTimer <= 0f)
-        {
-            fightTimer = fightTimerRef;
-            spotted = false;
-            inFight = false;
-            FightFinished();
+            if (inFight && !detected)
+                fightTimer -= Time.deltaTime;
+            if (fightTimer <= 0f)
+            {
+                fightTimer = fightTimerRef;
+                spotted = false;
+                inFight = false;
+                FightFinished();
+            }
         }
     }
 

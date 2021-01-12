@@ -20,7 +20,7 @@ public class CompanionVoiceOver : MonoBehaviour
     private float healUpTimer;
     private float orderTimerRef = 1f;
     private float orderTimer;
-    private float killTimerRef = 1f;
+    private float killTimerRef = 3f;
     private float killTimer;
 
     void Start()
