@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEditor;
-public class BomberController : EnemyContoller
+public class BoomerController : EnemyContoller
 {
 
     public GameObject bomb;
+    public float chasesDistance = 3.0f;
+    public float boomerAttackDistance = 10.0f;
 
-    //                   0        1             2             3             4           5             6             7            8            9
-    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin" };
+    //                   0        1             2             3             4           5             6             7            8            9       10
+    string[] arr = { "isIdle", "isPatrol", "isChasing", "isAttacking", "isStunned", "isPiped", "isReachedPipe", "isDying", "chargerPin", "hunterPin", "isAttackingZombies" };
 
-    void Start()
+    protected override void Start()
     {
+        enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         playerTransform = PlayerController.instance.player.transform;
         attackTarget = playerTransform;
         currentState = defaultState;
@@ -56,19 +59,23 @@ public class BomberController : EnemyContoller
             SetAnimationFlags(3);
             navMeshAgent.ResetPath();
             // StartCoroutine(applyDamage(cont));
+            StartCoroutine(SetIdleAfterAttack());
+            StartCoroutine(resumeAttack());
         }
-        else if (attackTarget.tag == "Enemy")
+        else if (attackTarget.tag.EndsWith("Enemy"))
         {
             EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
-
+            if (currentState == State.dead)
+                return;
+            transform.LookAt(attackTarget);
+            SetAnimationFlags(10);
             canAttack = false;
             currentState = State.attack;
-            SetAnimationFlags(3);
             navMeshAgent.ResetPath();
-            cont.TakeDamage(damagePerSec);
+            StartCoroutine(applyDamage(cont));
+            StartCoroutine(resumeAttack());
+
         }
-        StartCoroutine(SetIdleAfterAttack());
-        StartCoroutine(resumeAttack());
     }
     public override void patrol()
     {
@@ -115,7 +122,6 @@ public class BomberController : EnemyContoller
 
     void Update()
     {
-
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
@@ -149,7 +155,7 @@ public class BomberController : EnemyContoller
                 attack();
             }
             // calculate distance between zombie and player 
-            else if ((Vector3.Distance(transform.position, attackTarget.position) < attackDistance))
+            else if ((Vector3.Distance(transform.position, attackTarget.position) < (chasesDistance)))
             {
                 navMeshAgent.ResetPath();
                 SetAnimationFlags(0);
@@ -171,7 +177,7 @@ public class BomberController : EnemyContoller
                     backToDefault();
             }
         }
-        else if (currentState == State.attack)
+        else if (currentState == State.attack && !animator.GetBool("isAttacking"))
         {
             if (!canSee(reachDistance, attackAngle, attackTarget))
             {
@@ -180,6 +186,11 @@ public class BomberController : EnemyContoller
             else if (canAttack && isAlive(attackTarget))
             {
                 attack();
+            }
+            else if (!canAttack && isAlive(attackTarget) && animator.GetBool("isIdle"))
+            {
+                chase(attackTarget);
+
             }
         }
         else if (currentState == State.pipe)
@@ -252,10 +263,13 @@ public class BomberController : EnemyContoller
     {
         yield return new WaitForSeconds(1.5f);
         transform.LookAt(attackTarget);
-        GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
-        childGrenade.transform.parent = gameObject.transform;
-        if (currentState == State.attack)
+
+        //childGrenade.transform.parent = gameObject.transform;
+        if (currentState == State.attack && canAttackCheck(attackTarget))
+        {
+            GameObject childGrenade = Instantiate(bomb, new Vector3(transform.position.x, transform.position.y + 1.7f, transform.position.z), transform.rotation);
             SetAnimationFlags(0);
+        }
     }
     void SetAnimationFlags(int g)
     {
@@ -264,5 +278,16 @@ public class BomberController : EnemyContoller
         {
             animator.SetBool(arr[i], i == g);
         }
+    }
+    public override void Confuse()
+    {
+        base.Confuse();
+        canAttack = true;
+        attackDistance = 1f;
+    }
+    public override void endConfusion(bool callBacktoDefault)
+    {
+        base.endConfusion(callBacktoDefault);
+        attackDistance = boomerAttackDistance;
     }
 }
