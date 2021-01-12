@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6536328330669710800}
   - component: {fileID: 6536328330669710767}
   - component: {fileID: 9144165604175207901}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Sugar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1286,3 +1286,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 3530395ac297aec468ebcb908fb9818e, type: 2}
+  gameObj: {fileID: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  amount: 2

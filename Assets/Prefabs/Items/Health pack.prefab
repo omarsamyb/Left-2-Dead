@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3015937431523836571}
   - component: {fileID: 2865645418708677744}
   - component: {fileID: 3307567427337753776}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Health pack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -109,3 +109,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 71d7742d306d65849b56e32bd1890d61, type: 2}
+  gameObj: {fileID: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  amount: 2

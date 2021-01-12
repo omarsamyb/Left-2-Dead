@@ -15,8 +15,8 @@ public class CompanionController : MonoBehaviour
     private GameObject wallDecalEffect;
     private GunStyles style;
     private int amountOfBulletsPerLoad;
-    private int bulletsIHave;
-    private int currentClips;
+    [HideInInspector] public int bulletsIHave;
+    [HideInInspector] public int currentClips;
     private float roundsPerSecond;
     private int damage;
     private float waitTillNextFire;
@@ -280,7 +280,7 @@ public class CompanionController : MonoBehaviour
             }
             catch (System.Exception ex)
             {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+                // print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
             }
         }
         if (HUD_companion)

@@ -169,6 +169,10 @@ public class GunScript : MonoBehaviour
     Collider[] hits;
     LayerMask enemyLayer;
 
+    InventoryObject ingredientInventory;
+    // alcohol  bile  canister  gunpowder  rag  sugar
+    //    0      1       2         3        4     5
+
     void Awake()
     {
         mouseLook = Camera.main.gameObject.GetComponent<MouseLook>();
@@ -192,21 +196,25 @@ public class GunScript : MonoBehaviour
     {
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        ingredientInventory = PlayerController.instance.player.GetComponent<PlayerInventory>().ingredientInventory;
     }
     void Update()
     {
-        Controls();
-        AnimationStats();
-        WeaponPositioning();
-        WeaponRotation();
-        CrossHairExpansionWhenWalking();
+        if (!GameManager.instance.inMenu)
+        {
+            Controls();
+            AnimationStats();
+            WeaponPositioning();
+            WeaponRotation();
+            CrossHairExpansionWhenWalking();
 
-        if (weaponNoiseCoolDown > 0)
-            weaponNoiseCoolDown -= Time.deltaTime;
-        if (GameManager.instance.inRageMode)
-            damage = damageRef * 2;
-        else
-            damage = damageRef;
+            if (weaponNoiseCoolDown > 0)
+                weaponNoiseCoolDown -= Time.deltaTime;
+            if (GameManager.instance.inRageMode)
+                damage = damageRef * 2;
+            else
+                damage = damageRef;
+        }
     }
 
     // Controls
@@ -379,9 +387,6 @@ public class GunScript : MonoBehaviour
     {
         float infrontOfWallDistance = 0.1f; // Good values is between 0.01 to 0.1
         float maxDistance = 1000000;
-        ray1 = new Ray(bulletSpawnPlace.position, rotation * Vector3.forward);
-        Debug.DrawRay(ray1.origin, ray1.direction * 20f, Color.red);
-
         if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer))
         {
             if (hitInfo.transform.CompareTag("Untagged"))
@@ -396,7 +401,10 @@ public class GunScript : MonoBehaviour
                 {
                     rage.UpdateRage(hitInfo.transform.tag);
                     CompanionController.instance.killCounter++;
-                    // TODO: if special is killed add bile to inventory
+                    if(hitInfo.transform.tag[0] == 'S')
+                    {
+                        ingredientInventory.container[1].addAmount(1);
+                    }
                 }
             }
         }
@@ -509,7 +517,7 @@ public class GunScript : MonoBehaviour
             }
             catch (System.Exception ex)
             {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+                // print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
             }
         }
         if (HUD_bullets)

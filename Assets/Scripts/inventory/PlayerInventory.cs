@@ -5,51 +5,95 @@ using UnityEngine;
 public class PlayerInventory : MonoBehaviour
 {
     public InventoryObject ingredientInventory;
-    public InventoryObject AmmoInventory;
-    public GameObject inventoryPanel;
-
-    public bool inventoryPanelToggle;
-
+    public InventoryObject ammoInventory;
+    public InventoryObject craftableInventory;
+    GameObject player;
+    public int[] collectableItemsCount;
+    public float distanceFromPlayer = 2;
+    public LayerMask m_LayerMask;
+    Vector3 size = new Vector3(2f,2f,2f);
     void Start(){
-        inventoryPanelToggle = false;
+        player = PlayerController.instance.player;
     }
-    void OnTriggerEnter(Collider other)
-    {
-        var obj = other.GetComponent<Item>();
-        if(obj){ // check if object has the script item
-        
-            if(obj.item.type == ItemType.Ingredient){ // check if the item is of type ingredient then add it to ingredient inventory
-                ingredientInventory.addItem(obj.item, 1);
-                Destroy(other.gameObject);
+
+    void FixedUpdate(){
+        GetCollectables();
+    }
+
+    void GetCollectables(){
+        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, size, Quaternion.identity, m_LayerMask);
+        collectableItemsCount = new int[9];
+        if(hitColliders.Length > 0){
+            foreach (Collider col in hitColliders){
+                Item itemScript = col.gameObject.GetComponent<Item>();
+                if(itemScript.item.name == "Heavy Ammo"){
+                    collectableItemsCount[0] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Light Ammo"){
+                    collectableItemsCount[1] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Shotgun shells"){
+                    collectableItemsCount[2] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Alcohol"){
+                    collectableItemsCount[3] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Canister"){
+                    collectableItemsCount[4] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Sugar"){
+                    collectableItemsCount[5] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "GunPowder"){
+                    collectableItemsCount[6] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Rag"){
+                    collectableItemsCount[7] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Health pack"){
+                    collectableItemsCount[8] += itemScript.amount;
+                }
             }
+        }
+    }
 
-            if(obj.item.type == ItemType.Ammo){ // check if the item is of type Ammo then add it to Ammo inventory
-                AmmoInventory.addItem(obj.item, 1);
-                Destroy(other.gameObject);
+
+    public void pickUp(string itemName){
+
+        Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, size, Quaternion.identity, m_LayerMask);
+        foreach (Collider col in hitColliders){
+            Item itemScript = col.gameObject.GetComponent<Item>();
+            if(itemScript.item.name == itemName){
+                Destroy(col.gameObject);
             }
         }
-    }
 
-    void OnApplicationQuit() // reseting the inventoryafter exiting the game
-    {
-        // for(int i = 0; i < ingredientInventory.container.Count; i++){ 
-        //     ingredientInventory.container[i].resetAmount();
-        // }
-
-        for(int i = 0; i < AmmoInventory.container.Count; i++){ 
-            AmmoInventory.container[i].resetAmount();
+        if(itemName == "Heavy Ammo"){
+            ammoInventory.addItem(itemName, collectableItemsCount[0]);
         }
-    }
-
-    void Update(){
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            inventoryPanelToggle = !inventoryPanelToggle;
-            inventoryPanel.SetActive(inventoryPanelToggle);
+        else if(itemName == "Light Ammo"){
+            ammoInventory.addItem(itemName, collectableItemsCount[1]);
         }
-    }
-
-    public void SetinventoryPanel(bool val){
-        inventoryPanel.SetActive(val);
+        else if(itemName == "Shotgun shells"){
+            ammoInventory.addItem(itemName, collectableItemsCount[2]);
+        }
+        else if(itemName == "Alcohol"){
+            ingredientInventory.addItem(itemName, collectableItemsCount[3]);
+        }
+        else if(itemName == "Canister"){
+            ingredientInventory.addItem(itemName, collectableItemsCount[4]);
+        }
+        else if(itemName == "Sugar"){
+            ingredientInventory.addItem(itemName, collectableItemsCount[5]);
+        }
+        else if(itemName == "GunPowder"){
+            ingredientInventory.addItem(itemName, collectableItemsCount[6]);
+        }
+        else if(itemName == "Rag"){
+            ingredientInventory.addItem(itemName, collectableItemsCount[7]);
+        }
+        else if(itemName == "Health pack"){
+            craftableInventory.addItem(itemName, collectableItemsCount[8]);
+        }
     }
 }

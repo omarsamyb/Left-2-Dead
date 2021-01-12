@@ -120,6 +120,46 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1563576854523659186}
     m_Modifications:
+    - target: {fileID: 7434129440852834445, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9d5f6625b0b035841a1153f7e5466a94, type: 3}
+    - target: {fileID: 7434129440852834445, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129440852834446, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.027000427
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129440852834446, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -2.160614
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129440852834446, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.21600008
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129440852834446, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -1.0174847
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217188, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4f8e653bf1c0b054680c13a05741c202, type: 3}
+    - target: {fileID: 7434129441288217188, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217188, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217188, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7434129441288217189, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -127,6 +167,26 @@ PrefabInstance:
     - target: {fileID: 7434129441288217189, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217189, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217189, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -3.0028763
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217189, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.08699989
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441288217189, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: -2.8260608
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441597426870, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7434129441597426871, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -215,6 +275,10 @@ PrefabInstance:
     - target: {fileID: 7434129441597426872, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
       propertyPath: m_Name
       value: ZombieHealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 7434129441994997481, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7352f3d4b4db5344d946134f4175cdf7, type: 3}

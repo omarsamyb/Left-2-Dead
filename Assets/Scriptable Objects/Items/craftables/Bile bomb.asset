@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ab9928e03080f479e2c55f047debd9, type: 3}
   m_Name: Bile bomb
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4147769549580548705, guid: 6b32d63eaf29cbe4e947e7343d99f794, type: 3}
+  prefab: {fileID: 7410048941841015715, guid: 9556cd7c5af5f864d9e6f0503c243118, type: 3}
   type: 1
