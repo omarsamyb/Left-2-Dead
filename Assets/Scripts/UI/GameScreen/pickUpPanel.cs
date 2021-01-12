@@ -32,13 +32,13 @@ public class pickUpPanel : MonoBehaviour
         for(int i = 0; i < buttons.Length; i++){
             if(itemCount[i] > 0){
                 buttons[i].GetComponentsInChildren<TextMeshProUGUI>()[0].SetText(itemCount[i]+"");
-                // if(!buttons[i].gameObject.activeSelf){
+                if(!buttons[i].gameObject.activeSelf){
                     buttons[i].gameObject.SetActive(true);
                     // print(s);
-                // }
+                }
             }
             else{
-                // if(buttons[i].gameObject.activeSelf)
+                if(buttons[i].gameObject.activeSelf)
                     buttons[i].gameObject.SetActive(false);
             }
         }

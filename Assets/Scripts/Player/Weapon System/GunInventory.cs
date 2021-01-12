@@ -50,7 +50,8 @@ public class GunInventory : MonoBehaviour
     {
         if(GetComponent<PlayerController>().health>0)
         {
-            Controls();
+            if(!GameManager.instance.inMenu)
+                Controls();
             switchWeaponCooldown += 1 * Time.deltaTime;
         }
         else

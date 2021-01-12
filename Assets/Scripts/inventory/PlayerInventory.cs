@@ -29,7 +29,6 @@ public class PlayerInventory : MonoBehaviour
         if(itemsCollection.Count > 0){
             foreach (Item i in itemsCollection){
                 if(i.gameObj == null){
-                    print(i.item.name + "was destroyed");
                     destroyedItems.Add(i);
                 }
                 else{
@@ -68,18 +67,12 @@ public class PlayerInventory : MonoBehaviour
             }
         }
         yield return new WaitForSecondsRealtime(0.01f);
-        print(itemsToPick);
-        string s = "";
-        for(int i=0;i<collectableItemsCount.Length;i++){
-            s += collectableItemsCount[i]+" "; 
-        }
-        print(s);
         if(destroyedItems.Count > 0){
             foreach(Item i in destroyedItems){
                 itemsCollection.Remove(i);
             }
         }
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(0.03f);
         StartCoroutine(GetCollectables());
     }
 
@@ -99,15 +92,12 @@ public class PlayerInventory : MonoBehaviour
         }
 
         if(itemName == "Heavy Ammo"){
-            print("adding Heavy Ammo");
             ammoInventory.addItem(itemName, collectableItemsCount[0]);
         }
         else if(itemName == "Light Ammo"){
-            print("adding Light Ammo");
             ammoInventory.addItem(itemName, collectableItemsCount[1]);
         }
         else if(itemName == "Shotgun shells"){
-            print("adding Shotgun shells");
             ammoInventory.addItem(itemName, collectableItemsCount[2]);
         }
         else if(itemName == "Alcohol"){
@@ -126,7 +116,6 @@ public class PlayerInventory : MonoBehaviour
             ingredientInventory.addItem(itemName, collectableItemsCount[7]);
         }
         else if(itemName == "Health pack"){
-            print("adding Health pack");
             craftableInventory.addItem(itemName, collectableItemsCount[8]);
         }
     }
