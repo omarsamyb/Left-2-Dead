@@ -55,7 +55,10 @@ public class PlayerController : MonoBehaviour
     private MouseLook mouseLook;
     [HideInInspector] public bool isGettingPinned;
     public AudioClip[] damagedSFX;
+    public AudioClip deathSFX;
     private PlayerVoiceOver pvo;
+    private CompanionVoiceOver cvo;
+    private int damagedIndex;
     
     private void Awake()
     {
@@ -85,6 +88,7 @@ public class PlayerController : MonoBehaviour
         rage = GetComponent<Rage>();
         addHealthTime = 1;
         pvo = GetComponent<PlayerVoiceOver>();
+        cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
     }
 
     void Update()
@@ -202,6 +206,10 @@ public class PlayerController : MonoBehaviour
     // Health
     private void Die()
     {
+        cvo.PlayerDeath();
+        AudioManager.instance.Stop("DamagedSFX");
+        AudioManager.instance.SetClip("DamagedSFX", deathSFX);
+        AudioManager.instance.Play("DamagedSFX");
         character.SetActive(true);
         if (isPinned || isPartiallyPinned)
             characterAnimation.Play("Die_Pinned");
@@ -224,19 +232,23 @@ public class PlayerController : MonoBehaviour
             healthBar.SetHealth(health);
             if (health <= 0)
                 Die();
-            else if(UnityEngine.Random.Range(0, 2) == 0)
+            else if(!AudioManager.instance.isPlaying("DamagedSFX"))
             {
-                AudioClip clip = damagedSFX[UnityEngine.Random.Range(0, damagedSFX.Length)];
+                AudioClip clip = damagedSFX[damagedIndex];
                 AudioManager.instance.SetClip("DamagedSFX", clip);
-                AudioManager.instance.PlayOneShot("DamagedSFX");
+                AudioManager.instance.Play("DamagedSFX");
+                damagedIndex = (damagedIndex + 1) % damagedSFX.Length;
             }
 
             if (damageFadeRoutine != null)
                 StopCoroutine(damageFadeRoutine);
             damageFadeRoutine = StartCoroutine(DamagedEffect());
 
-            if (health < 50 && !AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
-                StartCoroutine(CriticallyDamagedEffect());
+            if (health < 50) {
+                cvo.HealUp();
+                if(!AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
+                    StartCoroutine(CriticallyDamagedEffect());
+            }
         }
     }
    

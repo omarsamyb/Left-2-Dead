@@ -830,7 +830,9 @@ GameObject:
   - component: {fileID: 7625683376737407092}
   - component: {fileID: 6778154151899341359}
   - component: {fileID: 6900114107129951132}
+  - component: {fileID: 5957550315077121300}
   - component: {fileID: 4043973276479150952}
+  - component: {fileID: -983978274760609121}
   m_Layer: 0
   m_Name: Zoey
   m_TagString: Companion
@@ -940,6 +942,67 @@ MonoBehaviour:
   weaponName: Hunting Rifle
   maxClips: 5
   muzzelSpawn: {fileID: 5531442307510897906}
+  killCounter: 0
+  canApplyAbility: 0
+--- !u!114 &5957550315077121300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917571053234061240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 433d23ab894f36145802e94f5838fe5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  voiceOverSource: {fileID: -983978274760609121}
+  detectionClips:
+  - {fileID: 8300000, guid: fc9113b724ec23e4f8292858d4508368, type: 3}
+  - {fileID: 8300000, guid: 89a79f1160fbec6478b2e522fb8645a5, type: 3}
+  - {fileID: 8300000, guid: 0a68ea93ac97d1c4395be9f43ebe3d12, type: 3}
+  - {fileID: 8300000, guid: 149c55b0ac481e245ada7fa6129883ce, type: 3}
+  - {fileID: 8300000, guid: 11dfbe962c07c364cb8dae2b1d219e7f, type: 3}
+  - {fileID: 8300000, guid: 0d6ef6b7fdcd53e41adc02893817a14b, type: 3}
+  - {fileID: 8300000, guid: 5952dd7cec7037a4aa40bc8d918f3f89, type: 3}
+  - {fileID: 8300000, guid: 6a0784b8afeac744eac66fea8c20e255, type: 3}
+  friendlyFireClips:
+  - {fileID: 8300000, guid: f388e7052263970459ebcbc3aadb4e35, type: 3}
+  - {fileID: 8300000, guid: 19913ef087c8b2b4eaa35f0000682800, type: 3}
+  - {fileID: 8300000, guid: 57128f238e6755a4cb8b8ca7f85645d5, type: 3}
+  - {fileID: 8300000, guid: eecb7e33d08fcae4da2009f1e20fb9cc, type: 3}
+  - {fileID: 8300000, guid: 69b2ffb237d822d409bd28686f087a35, type: 3}
+  - {fileID: 8300000, guid: 593232d93fb98974fa80bf64c02349ab, type: 3}
+  - {fileID: 8300000, guid: aac822375b244bd449cf2d666e1ec474, type: 3}
+  - {fileID: 8300000, guid: 0556074d1f315814d8bd523bc799c4c7, type: 3}
+  - {fileID: 8300000, guid: 6b5c9e45d4a8b3349a6a6f3c0cf7cb78, type: 3}
+  - {fileID: 8300000, guid: 7295c2cf62b77074f93b0668b8e3a9a2, type: 3}
+  - {fileID: 8300000, guid: e26c5e226b175e44bac7664851120c8b, type: 3}
+  - {fileID: 8300000, guid: 56eed35b9d1e31d49a39fb61fe49d467, type: 3}
+  - {fileID: 8300000, guid: da049910395286449bd9ac672c387503, type: 3}
+  - {fileID: 8300000, guid: 08900801728763b459343bb3b43dd1cd, type: 3}
+  healUpClips:
+  - {fileID: 8300000, guid: 4dc29c5c766778040a23613a87d76b7c, type: 3}
+  - {fileID: 8300000, guid: d4c2c450d19748846b71bb9ef616b475, type: 3}
+  - {fileID: 8300000, guid: 0dbf763607b4a5f4fab97ccade33d93b, type: 3}
+  - {fileID: 8300000, guid: 122cbe787d35dd54cb770cdbb8233d49, type: 3}
+  orderClips:
+  - {fileID: 8300000, guid: ed39507f20a4d134d943a9df4b919ded, type: 3}
+  - {fileID: 8300000, guid: d6383f595dd8cf140ad2a60c921cc15f, type: 3}
+  genericClips:
+  - {fileID: 8300000, guid: 589c7806659cbc84a95c5ca682cb7924, type: 3}
+  - {fileID: 8300000, guid: 5dded6c3e12dfdb429dfadcfd07ac845, type: 3}
+  - {fileID: 8300000, guid: 6918b6138a797bd428d88e43522fa69d, type: 3}
+  killClips:
+  - {fileID: 8300000, guid: 32368165fe95d2d498d8ca97aa118a72, type: 3}
+  - {fileID: 8300000, guid: c2b2d19ae5da69f49b015a4d7ea9b3d4, type: 3}
+  - {fileID: 8300000, guid: 8a8a6c98db4fbb54cb2d64ddf79d54bc, type: 3}
+  - {fileID: 8300000, guid: a161438a43174c24db208525b6a65e9e, type: 3}
+  - {fileID: 8300000, guid: bca32a6c48049a34887548cf8a59d86f, type: 3}
+  - {fileID: 8300000, guid: 0b2f4f3b74d1e5248a1bdb129bf884cd, type: 3}
+  - {fileID: 8300000, guid: 420032a418c7e964399a7a2089a20aec, type: 3}
+  - {fileID: 8300000, guid: 09ac7b3f962b3814982804c258e66e3a, type: 3}
+  - {fileID: 8300000, guid: 4aa458a0ae60f3c4fb2c55acba2e26ea, type: 3}
 --- !u!82 &4043973276479150952
 AudioSource:
   m_ObjectHideFlags: 0
@@ -951,6 +1014,102 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
   m_audioClip: {fileID: 8300000, guid: 0aaf223fc317ee649b501a0e68a87a43, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 5
+  MaxDistance: 50
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &-983978274760609121
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2917571053234061240}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -3026178028513709603, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

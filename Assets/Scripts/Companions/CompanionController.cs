@@ -42,6 +42,7 @@ public class CompanionController : MonoBehaviour
     private bool isJumping;
     [HideInInspector] public int killCounter;
     [HideInInspector] public bool canApplyAbility;
+    private CompanionVoiceOver cvo;
 
     private void Awake()
     {
@@ -72,6 +73,7 @@ public class CompanionController : MonoBehaviour
         range = 60f;
         runningSpeed = agent.speed;
         walkingSpeed = agent.speed / 2f;
+        cvo = GetComponent<CompanionVoiceOver>();
 
         agent.SetDestination(player.position);
     }
@@ -171,6 +173,7 @@ public class CompanionController : MonoBehaviour
     {
         if (waitTillNextFire <= 0 && bulletsIHave > 0)
         {
+            cvo.StartCoroutine(cvo.Order());
             if (!agent.enabled)
             {
                 if(style == GunStyles.automatic)
@@ -240,6 +243,7 @@ public class CompanionController : MonoBehaviour
                 enemy.TakeDamage(damage, hitInfo.point);
                 if (enemy.health <= 0)
                 {
+                    cvo.StartCoroutine(cvo.Kill());
                     killCounter++;
                     if(isCriticalEnemy && hitInfo.transform.CompareTag("SpecialEnemy"))
                     {

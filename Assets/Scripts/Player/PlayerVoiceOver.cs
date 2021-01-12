@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerVoiceOver : MonoBehaviour
@@ -22,7 +21,7 @@ public class PlayerVoiceOver : MonoBehaviour
     RaycastHit hitinfo;
     private LayerMask enemyLayer;
     private LayerMask detectionLayer;
-    private float detectionRange = 30f;
+    private float detectionRange = 40f;
     private float detectionRateRef = 0.5f;
     private float detectionTime;
     private bool isDetecting;
@@ -32,12 +31,15 @@ public class PlayerVoiceOver : MonoBehaviour
     private float fightTimerRef = 0.5f;
     private float fightTimer;
 
+    private CompanionVoiceOver cvo;
+
     void Start()
     {
         detectionTime = detectionRateRef;
         fightTimer = fightTimerRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         detectionLayer = ~(1 << LayerMask.NameToLayer("Player") | 1 << LayerMask.NameToLayer("Weapon"));
+        cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
     }
 
     void Update()
@@ -109,9 +111,14 @@ public class PlayerVoiceOver : MonoBehaviour
                 if (!AudioManager.instance.isPlaying("PlayerVoice") && !detected)
                 {
                     detected = true;
-                    AudioManager.instance.SetClip("PlayerVoice", detectionClips[detectionIndex]);
-                    AudioManager.instance.Play("PlayerVoice");
-                    detectionIndex = (detectionIndex + 1) % detectionClips.Length;
+                    if (Random.Range(0, 10) == 5)
+                        cvo.Detection();
+                    else
+                    {
+                        AudioManager.instance.SetClip("PlayerVoice", detectionClips[detectionIndex]);
+                        AudioManager.instance.Play("PlayerVoice");
+                        detectionIndex = (detectionIndex + 1) % detectionClips.Length;
+                    }
                 }
                 break;
             }

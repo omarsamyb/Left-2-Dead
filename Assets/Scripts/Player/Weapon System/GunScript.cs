@@ -14,6 +14,7 @@ public class GunScript : MonoBehaviour
     private Camera secondCamera;
     private PlayerController playerController;
     private GunInventory gunInventory;
+    private CompanionVoiceOver cvo;
     private Rage rage;
     public string weaponName;
     public Animator handsAnimator;
@@ -192,6 +193,7 @@ public class GunScript : MonoBehaviour
     {
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
     }
     void Update()
     {
@@ -337,15 +339,6 @@ public class GunScript : MonoBehaviour
         {
             if (bulletsInTheGun > 0)
             {
-                if (weaponNoiseCoolDown <= 0)
-                {
-                    weaponNoiseCoolDown = weaponNoiseCoolDownRef;
-                    hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
-                    foreach (Collider collider in hits)
-                    {
-                        collider.GetComponent<EnemyContoller>().hearFire();
-                    }
-                }
                 int randomNumberForMuzzelFlash = Random.Range(0, 5);
                 if (currentStyle == GunStyles.shotgun)
                 {
@@ -363,6 +356,17 @@ public class GunScript : MonoBehaviour
                 {
                     Bullet(bulletSpawnPlace.rotation);
                 }
+
+                if (weaponNoiseCoolDown <= 0)
+                {
+                    weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+                    hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
+                    foreach (Collider collider in hits)
+                    {
+                        collider.GetComponent<EnemyContoller>().hearFire();
+                    }
+                }
+
                 Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
                 AudioManager.instance.Play("ShootSFX");
                 RecoilMath();
@@ -398,6 +402,10 @@ public class GunScript : MonoBehaviour
                     CompanionController.instance.killCounter++;
                     // TODO: if special is killed add bile to inventory
                 }
+            }
+            else if (hitInfo.transform.CompareTag("Companion"))
+            {
+                cvo.FriendlyFire();
             }
         }
     }
