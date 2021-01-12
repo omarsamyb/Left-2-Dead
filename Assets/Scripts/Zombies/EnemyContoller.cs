@@ -128,7 +128,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
             return;
-        // transform.LookAt(attackTarget);
+        transform.LookAt(attackTarget);
         canAttack = false;
         currentState = State.attack;
         animator.SetBool("isAttacking", true);
