@@ -8,6 +8,7 @@ public class Hunter : EnemyContoller
 {
     Vector3 jumpPosition;
     bool jumpingAttack;
+    bool finishedJump;
     bool isKilling;
     Transform body;
     CapsuleCollider myCollider;
@@ -88,7 +89,7 @@ public class Hunter : EnemyContoller
         {
             if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && canAttackCheck(attackTarget))
                 attack();
-            else if (jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(attackTarget))
+            else if (finishedJump && jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(attackTarget))
             {
                 jumpingAttack = false;
                 pinTarget();
@@ -174,7 +175,8 @@ public class Hunter : EnemyContoller
     }
     IEnumerator jumpToTarget()
     {
-        yield return new WaitForSeconds(0.73f);
+        finishedJump = false;
+        yield return new WaitForSeconds(0.5f);
         if(currentState == State.attack)
         {
             navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
@@ -183,6 +185,8 @@ public class Hunter : EnemyContoller
             jumpingAttack = true;
             ef.Attack(0);
         }
+        yield return new WaitForSeconds(1f);
+        finishedJump = true;
     }
     void pinTarget()
     {
