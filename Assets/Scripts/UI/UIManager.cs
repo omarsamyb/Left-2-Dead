@@ -48,18 +48,16 @@ public class UIManager : MonoBehaviour
         }
         if(GameManager.instance.isGameOver)
         {
-            hideCraftingScreen();
-            hideInventoryScreen();
-            hideGameScreen();
+
             showGameOverScreen();
         }
     }
     public void Resume()
     {
+        GameManager.instance.inMenu = false;
         hideInventoryScreen();
         hideCraftingScreen();
         showGameScreen();
-        GameManager.instance.inMenu = false;
     }
     
     public void RestartLevel()
@@ -104,7 +102,6 @@ public class UIManager : MonoBehaviour
         GameManager.instance.inMenu = true;
         Cursor.lockState = CursorLockMode.None;
     }
-
     public void lockCursor(){
         GameManager.instance.inMenu = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -133,6 +130,10 @@ public class UIManager : MonoBehaviour
 
     public void showGameOverScreen()
     {
+
+        hideCraftingScreen();
+        hideInventoryScreen();
+        hideGameScreen();
         gameOverScreen.SetActive(true);
     }
     public void QuitGame(){
