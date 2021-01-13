@@ -8,7 +8,7 @@ public class UIparticleSystem : MonoBehaviour
     public float distToTarget = 0.2f;
     protected bool letPlay = false;
     protected bool showFlame = false;
-    ParticleSystem particleSystem;
+    ParticleSystem myParticleSystem;
     public List<GameObject> targets;
     float step;
     int targetIndex;
@@ -22,7 +22,7 @@ public class UIparticleSystem : MonoBehaviour
 
     void Start(){
         startPos = this.transform.position;
-        particleSystem = gameObject.GetComponent<ParticleSystem>();
+        myParticleSystem = gameObject.GetComponent<ParticleSystem>();
         targetIndex = 0;
         step = speed * Time.unscaledDeltaTime;
     }
@@ -72,14 +72,14 @@ public class UIparticleSystem : MonoBehaviour
     void showOrHide(){
         if(showFlame)
         {
-            if(!particleSystem.isPlaying)
+            if(!myParticleSystem.isPlaying)
             {
-                particleSystem.Play();
+                myParticleSystem.Play();
             }
         }else{
-            if(particleSystem.isPlaying)
+            if(myParticleSystem.isPlaying)
             {
-                particleSystem.Stop();
+                myParticleSystem.Stop();
             }
         }
     }
