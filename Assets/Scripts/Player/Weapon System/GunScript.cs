@@ -169,6 +169,10 @@ public class GunScript : MonoBehaviour
     Collider[] hits;
     LayerMask enemyLayer;
 
+    InventoryObject ingredientInventory;
+    // alcohol  bile  canister  gunpowder  rag  sugar
+    //    0      1       2         3        4     5
+
     void Awake()
     {
         mouseLook = Camera.main.gameObject.GetComponent<MouseLook>();
@@ -194,21 +198,25 @@ public class GunScript : MonoBehaviour
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
         pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
+        ingredientInventory = PlayerController.instance.player.GetComponent<PlayerInventory>().ingredientInventory;
     }
     void Update()
     {
-        Controls();
-        AnimationStats();
-        WeaponPositioning();
-        WeaponRotation();
-        CrossHairExpansionWhenWalking();
+        if (!GameManager.instance.inMenu)
+        {
+            Controls();
+            AnimationStats();
+            WeaponPositioning();
+            WeaponRotation();
+            CrossHairExpansionWhenWalking();
 
-        if (weaponNoiseCoolDown > 0)
-            weaponNoiseCoolDown -= Time.deltaTime;
-        if (GameManager.instance.inRageMode)
-            damage = damageRef * 2;
-        else
-            damage = damageRef;
+            if (weaponNoiseCoolDown > 0)
+                weaponNoiseCoolDown -= Time.deltaTime;
+            if (GameManager.instance.inRageMode)
+                damage = damageRef * 2;
+            else
+                damage = damageRef;
+        }
     }
 
     // Controls
@@ -399,7 +407,10 @@ public class GunScript : MonoBehaviour
                     rage.UpdateRage(hitInfo.transform.tag);
                     CompanionController.instance.killCounter++;
                     pvo.fightKills++;
-                    // TODO: if special is killed add bile to inventory
+                    if(hitInfo.transform.tag[0] == 'S')
+                    {
+                        ingredientInventory.container[1].addAmount(1);
+                    }
                 }
             }
             else if (hitInfo.transform.CompareTag("Companion"))

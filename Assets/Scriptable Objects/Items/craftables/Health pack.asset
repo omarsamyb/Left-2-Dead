@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ab9928e03080f479e2c55f047debd9, type: 3}
   m_Name: Health pack
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4380688414756892967, guid: 12f376ed3c7dc5b41a691852379ec3ff, type: 3}
+  prefab: {fileID: 3514486917815817451, guid: 12f376ed3c7dc5b41a691852379ec3ff, type: 3}
   type: 1

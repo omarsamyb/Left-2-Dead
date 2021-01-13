@@ -26,10 +26,13 @@ public class GunInventory : MonoBehaviour
     private float switchWeaponCooldown;
     private List<GameObject> myWeapons = new List<GameObject>();
 
-    private int currentGrenadeCounter;
+    [HideInInspector] public int currentGrenadeCounter;
     public List<string> grenadesIHave = new List<string>();
     public List<int> grenadesCounter = new List<int>();
     [HideInInspector] public bool isThrowing;
+    public InventoryObject CraftableInventory;
+    // bile  molotov  pipe  stun  healthpack
+    //  0       1      2     3        4
 
     void Awake()
     {
@@ -44,7 +47,8 @@ public class GunInventory : MonoBehaviour
     {
         if(GetComponent<PlayerController>().health>0)
         {
-            Controls();
+            if(!GameManager.instance.inMenu)
+                Controls();
             switchWeaponCooldown += 1 * Time.deltaTime;
         }
         else
@@ -219,7 +223,9 @@ public class GunInventory : MonoBehaviour
             currentHandsAnimator.SetTrigger("isThrowing");
             yield return new WaitForSeconds(0.07f);
             StartCoroutine(Throw());
-
+            removeFromInvObj(grenadesIHave[currentGrenadeCounter]);
+            if(grenadesIHave.Count == 0)
+                print("wtf man");
             if (grenadesCounter[currentGrenadeCounter] - 1 == 0)
             {
                 grenadesIHave.RemoveAt(currentGrenadeCounter);
@@ -269,5 +275,15 @@ public class GunInventory : MonoBehaviour
             return true;
         }
     }
-
+    
+    void removeFromInvObj(string grenade){
+        if(grenade == "Bile Bomb")
+            CraftableInventory.container[0].addAmount(-1);
+        else if(grenade == "Molotov Cocktail")
+            CraftableInventory.container[1].addAmount(-1);
+        else if(grenade == "Pipe Bomb")
+            CraftableInventory.container[2].addAmount(-1);
+        else
+            CraftableInventory.container[3].addAmount(-1);
+    }
 }

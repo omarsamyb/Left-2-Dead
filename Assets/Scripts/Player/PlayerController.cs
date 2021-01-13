@@ -93,28 +93,31 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (health > 0)
+        if (!GameManager.instance.inMenu)
         {
-            if(!isPinned && !isPartiallyPinned)
-                PlayerMovement();
-
-            if (GameManager.instance.companionId == 2)
+            if (health > 0)
             {
-                addHealthTime -= Time.deltaTime;
-                if (addHealthTime <= 0)
+                if (!isPinned && !isPartiallyPinned)
+                    PlayerMovement();
+
+                if (GameManager.instance.companionId == 2)
                 {
-                    addHealthTime = 1f;
-                    if (CompanionController.instance.canApplyAbility)
-                        AddHealth(1);
+                    addHealthTime -= Time.deltaTime;
+                    if (addHealthTime <= 0)
+                    {
+                        addHealthTime = 1f;
+                        if (CompanionController.instance.canApplyAbility)
+                            AddHealth(1);
+                    }
                 }
             }
-        }
 
-        if (bileEffect.activeSelf)
-        {
-            bileVisionTime -= Time.deltaTime;
-            if (bileVisionTime <= 0)
-                bileEffect.SetActive(false);
+            if (bileEffect.activeSelf)
+            {
+                bileVisionTime -= Time.deltaTime;
+                if (bileVisionTime <= 0)
+                    bileEffect.SetActive(false);
+            }
         }
     }
 
