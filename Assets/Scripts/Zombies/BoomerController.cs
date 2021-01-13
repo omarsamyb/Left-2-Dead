@@ -24,7 +24,8 @@ public class BoomerController : EnemyContoller
         animator.SetBool("isPatrol", defaultState == State.patrol);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
-        audioSource = GetComponent<AudioSource>();
+        ef = transform.GetComponent<EnemyEffects>();
+        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
     }
     public override void stun()
     {
@@ -45,6 +46,12 @@ public class BoomerController : EnemyContoller
         SetAnimationFlags(2);
         curGoToDestination = target.position;
         navMeshAgent.SetDestination(curGoToDestination);
+        if (!isChasing)
+        {
+            isChasing = true;
+            pvo.inFight = true;
+            pvo.requiredKills++;
+        }
     }
     public override void attack()
     {
@@ -53,6 +60,7 @@ public class BoomerController : EnemyContoller
         transform.LookAt(attackTarget);
         if (attackTarget.tag == "Player")
         {
+            ef.Attack(-1);
             PlayerController cont = PlayerController.instance;
             canAttack = false;
             currentState = State.attack;

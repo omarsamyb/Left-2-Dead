@@ -181,6 +181,7 @@ public class Hunter : EnemyContoller
             navMeshAgent.speed = 5;
             navMeshAgent.SetDestination(jumpPosition);
             jumpingAttack = true;
+            ef.Attack(0);
         }
     }
     void pinTarget()
@@ -244,6 +245,8 @@ public class Hunter : EnemyContoller
     IEnumerator attackAnyTarget(PlayerController playerCont, EnemyContoller enemyCont)
     {
         isKilling = true;
+        ef.Attack(1);
+        ef.source.loop = true;
         while (true)
         {
             if (currentState != State.attack || !doDamageOnTarget(playerCont, enemyCont, 10))
@@ -260,6 +263,8 @@ public class Hunter : EnemyContoller
                     else
                         endConfusion(false);
                 }
+                ef.source.loop = false;
+                ef.source.Stop();
 
                 yield break;
             }

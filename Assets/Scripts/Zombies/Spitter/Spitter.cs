@@ -16,5 +16,12 @@ public class Spitter : EnemyContoller
         currentState = State.attack;
         
         StartCoroutine(resumeAttack());
+        StartCoroutine(SFX());
+    }
+
+    IEnumerator SFX()
+    {
+        yield return new WaitForSeconds(0.3f);
+        ef.Attack(-1);
     }
 }
