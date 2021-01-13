@@ -12,6 +12,7 @@ TagManager:
   - Fire
   - Horde
   - Companion
+  - Grenade
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - FireLayer
   - Enemy
   - Item
-  - 
+  - Ground
   - 
   - 
   - 
