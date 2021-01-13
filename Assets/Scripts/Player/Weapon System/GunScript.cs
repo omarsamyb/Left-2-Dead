@@ -383,8 +383,6 @@ public class GunScript : MonoBehaviour
     {
         float infrontOfWallDistance = 0.1f; // Good values is between 0.01 to 0.1
         float maxDistance = 1000000;
-        ray1 = new Ray(bulletSpawnPlace.position, rotation * Vector3.forward);
-        Debug.DrawRay(ray1.origin, ray1.direction * 20f, Color.red);
 
         if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer))
         {

@@ -126,10 +126,8 @@ public class GunInventory : MonoBehaviour
         {
             gunsIHave.Add(weaponName);
             PopulateWeapons();
-            Debug.Log("Added Weapon " + weaponName);
             return true;
         }
-        Debug.Log("Already have weapon");
         return false;
     }
     public int AddAmmo(string weaponName, int amount)
@@ -146,7 +144,6 @@ public class GunInventory : MonoBehaviour
             float currentBulletCount = weapon.bulletsIHave;
             if (currentBulletCount == weapon.maxCapacity)
             {
-                Debug.Log("Max Ammo Capacity Reached");
                 return -1;
             }
             float newCount = currentBulletCount + amount;
@@ -155,7 +152,6 @@ public class GunInventory : MonoBehaviour
             weapon.bulletsIHave = newCount;
             return 1;
         }
-        Debug.Log("We don't have this Ammo's Weapon");
         return 0;
     }
     IEnumerator SpawnWeaponUponStart()
