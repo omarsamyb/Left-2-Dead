@@ -14,6 +14,8 @@ public class GunScript : MonoBehaviour
     private Camera secondCamera;
     private PlayerController playerController;
     private GunInventory gunInventory;
+    private CompanionVoiceOver cvo;
+    private PlayerVoiceOver pvo;
     private Rage rage;
     public string weaponName;
     public Animator handsAnimator;
@@ -153,8 +155,6 @@ public class GunScript : MonoBehaviour
     [HideInInspector]
     public float gunPrecision;
 
-    private TextMesh HUD_bullets;
-
     RaycastHit hitInfo;
     [Tooltip("Put 'Player' layer here")]
     [Header("Shooting Properties")]
@@ -196,6 +196,8 @@ public class GunScript : MonoBehaviour
     {
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
+        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         ingredientInventory = PlayerController.instance.player.GetComponent<PlayerInventory>().ingredientInventory;
     }
     void Update()
@@ -345,15 +347,6 @@ public class GunScript : MonoBehaviour
         {
             if (bulletsInTheGun > 0)
             {
-                if (weaponNoiseCoolDown <= 0)
-                {
-                    weaponNoiseCoolDown = weaponNoiseCoolDownRef;
-                    hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
-                    foreach (Collider collider in hits)
-                    {
-                        collider.GetComponent<EnemyContoller>().hearFire();
-                    }
-                }
                 int randomNumberForMuzzelFlash = Random.Range(0, 5);
                 if (currentStyle == GunStyles.shotgun)
                 {
@@ -371,6 +364,17 @@ public class GunScript : MonoBehaviour
                 {
                     Bullet(bulletSpawnPlace.rotation);
                 }
+
+                if (weaponNoiseCoolDown <= 0)
+                {
+                    weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+                    hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
+                    foreach (Collider collider in hits)
+                    {
+                        collider.GetComponent<EnemyContoller>().hearFire();
+                    }
+                }
+
                 Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
                 AudioManager.instance.Play("ShootSFX");
                 RecoilMath();
@@ -387,6 +391,7 @@ public class GunScript : MonoBehaviour
     {
         float infrontOfWallDistance = 0.1f; // Good values is between 0.01 to 0.1
         float maxDistance = 1000000;
+
         if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer))
         {
             if (hitInfo.transform.CompareTag("Untagged"))
@@ -401,11 +406,17 @@ public class GunScript : MonoBehaviour
                 {
                     rage.UpdateRage(hitInfo.transform.tag);
                     CompanionController.instance.killCounter++;
+                    pvo.fightKills++;
                     if(hitInfo.transform.tag[0] == 'S')
                     {
                         ingredientInventory.container[1].addAmount(1);
                     }
                 }
+            }
+            else if (hitInfo.transform.CompareTag("Companion"))
+            {
+                cvo.FriendlyFire();
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             }
         }
     }
@@ -509,19 +520,6 @@ public class GunScript : MonoBehaviour
     // GUI
     void OnGUI()
     {
-        if (!HUD_bullets)
-        {
-            try
-            {
-                HUD_bullets = GameObject.Find("HUD_bullets").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                // print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_bullets)
-            HUD_bullets.text = bulletsIHave.ToString() + " - " + bulletsInTheGun.ToString();
         DrawCrosshair();
     }
     private void DrawCrosshair()

@@ -154,6 +154,7 @@ public class Charger : EnemyContoller
     }
     IEnumerator charge()
     {
+        ef.Attack(0);
         yield return new WaitForSeconds(3.2f);
         if (currentState != State.attack || isPinned || !canAttackCheck(attackTarget))
         {
@@ -237,6 +238,7 @@ public class Charger : EnemyContoller
                 yield break;
             }
             doDamageOnTarget(playerCont, enemyCont, 10);
+            ef.Attack(1);
         }
         colliderToDefault();
         chase(attackTarget);
