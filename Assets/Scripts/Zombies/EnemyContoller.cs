@@ -35,13 +35,11 @@ public class EnemyContoller : MonoBehaviour
     public HealthBar healthBar;
     public GameObject healthBarUI;
     public GameObject bloodEffect;
-    public AudioClip hurtSFX;
-    //protected AudioSource audioSource;
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
     protected LayerMask enemyLayer;
-    private PlayerVoiceOver pvo;
-    private bool isChasing;
+    protected PlayerVoiceOver pvo;
+    protected bool isChasing;
     protected EnemyEffects ef;
     
     public virtual void Confuse()

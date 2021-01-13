@@ -23,7 +23,6 @@ public class GunInventory : MonoBehaviour
     [HideInInspector] public Animator currentHandsAnimator;
     private int currentGunCounter = 0;
     public List<string> gunsIHave = new List<string>();
-    private Texture[] icons;
     private float switchWeaponCooldown;
     private List<GameObject> myWeapons = new List<GameObject>();
 
@@ -31,11 +30,9 @@ public class GunInventory : MonoBehaviour
     public List<string> grenadesIHave = new List<string>();
     public List<int> grenadesCounter = new List<int>();
     [HideInInspector] public bool isThrowing;
-    private TextMesh HUD_grenades;
 
     void Awake()
     {
-        StartCoroutine(UpdateIconsFromResources());
         StartCoroutine(SpawnWeaponUponStart());
         PopulateWeapons();
     }
@@ -129,7 +126,6 @@ public class GunInventory : MonoBehaviour
         {
             gunsIHave.Add(weaponName);
             PopulateWeapons();
-            StartCoroutine(UpdateIconsFromResources());
             Debug.Log("Added Weapon " + weaponName);
             return true;
         }
@@ -278,89 +274,4 @@ public class GunInventory : MonoBehaviour
         }
     }
 
-    // GUI
-    void OnGUI()
-    {
-        if (!HUD_grenades)
-        {
-            try
-            {
-                HUD_grenades = GameObject.Find("HUD_grenades").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_grenades && grenadesIHave.Count != 0)
-            HUD_grenades.text = grenadesIHave[currentGrenadeCounter].ToString() + " - " + grenadesCounter[currentGrenadeCounter].ToString();
-        else if (HUD_grenades)
-            HUD_grenades.text = "";
-
-        if (currentGun)
-        {
-            for (int i = 0; i < gunsIHave.Count; i++)
-            {
-                DrawCorrespondingImage(i);
-            }
-        }
-    }
-    void DrawCorrespondingImage(int _number)
-    {
-        string deleteCloneFromName = currentGun.name.Substring(0, currentGun.name.Length - 7);
-        if (icons.Length == gunsIHave.Count)
-        {
-            if (menuStyle == MenuStyle.horizontal)
-            {
-                if (deleteCloneFromName == gunsIHave[_number])
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x + (_number * position_x(spacing)), vec2(beginPosition).y,//position variables
-                        vec2(size).x, vec2(size).y),//size
-                        icons[_number]);
-                }
-                else
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x + (_number * position_x(spacing) + 10), vec2(beginPosition).y + 10,//position variables
-                        vec2(size).x - 20, vec2(size).y - 20),//size
-                        icons[_number]);
-                }
-            }
-            else if (menuStyle == MenuStyle.vertical)
-            {
-                if (deleteCloneFromName == gunsIHave[_number])
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x, vec2(beginPosition).y + (_number * position_y(spacing)),//position variables
-                        vec2(size).x, vec2(size).y),//size
-                        icons[_number]);
-                }
-                else
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x, vec2(beginPosition).y + 10 + (_number * position_y(spacing)),//position variables
-                        vec2(size).x - 20, vec2(size).y - 20),//size
-                        icons[_number]);
-                }
-            }
-        }
-    }
-    IEnumerator UpdateIconsFromResources()
-    {
-        yield return new WaitForEndOfFrame();
-        icons = new Texture[gunsIHave.Count];
-        for (int i = 0; i < gunsIHave.Count; i++)
-        {
-            icons[i] = (Texture)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Weapon Icons/" + gunsIHave[i].ToString() + "_img.png", typeof(Texture));
-        }
-    }
-    private float position_x(float var)
-    {
-        return Screen.width * var / 100;
-    }
-    private float position_y(float var)
-    {
-        return Screen.height * var / 100;
-    }
-    private Vector2 vec2(Vector2 _vec2)
-    {
-        return new Vector2(Screen.width * _vec2.x / 100, Screen.height * _vec2.y / 100);
-    }
 }

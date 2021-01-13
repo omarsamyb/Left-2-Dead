@@ -10,7 +10,6 @@ public class Rage : MonoBehaviour
     private float rageDuration;
     private int ragePoints;
     private bool canActivate;
-    private TextMesh HUD_rage;
     public GameObject character;
     private Animation characterAnimation;
     private GunInventory gunInventory;
@@ -100,7 +99,10 @@ public class Rage : MonoBehaviour
         character.SetActive(true);
         characterAnimation.Play("Rage");
         Vector3 origPos = Camera.main.transform.localPosition;
-        Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up * 0.5f;
+        Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward;
+        camVector.y = 0f;
+        camVector += Vector3.up * 1.2f;
+        Camera.main.transform.position = camVector;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         yield return new WaitForSeconds(0.1f);
@@ -112,22 +114,5 @@ public class Rage : MonoBehaviour
         gunInventory.currentGun.SetActive(true);
         Camera.main.transform.localPosition = origPos;
         canBeDamaged = true;
-    }
-
-    void OnGUI()
-    {
-        if (!HUD_rage)
-        {
-            try
-            {
-                HUD_rage = GameObject.Find("HUD_rage").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_rage)
-            HUD_rage.text = ragePoints.ToString() + " - " + rageReset.ToString() + " - " + rageDuration.ToString();
     }
 }

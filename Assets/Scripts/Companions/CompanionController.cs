@@ -293,22 +293,4 @@ public class CompanionController : MonoBehaviour
     {
         currentClips = Mathf.Clamp(++currentClips, 0, maxClips);
     }
-
-    // GUI
-    void OnGUI()
-    {
-        if (!HUD_companion)
-        {
-            try
-            {
-                HUD_companion = GameObject.Find("HUD_companion").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_companion)
-            HUD_companion.text = currentClips.ToString() + " - " + bulletsIHave.ToString();
-    }
 }

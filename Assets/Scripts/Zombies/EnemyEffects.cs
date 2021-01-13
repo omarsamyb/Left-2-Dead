@@ -49,6 +49,7 @@ public class EnemyEffects : MonoBehaviour
         {
             if (currentState == State.hear || currentState == State.chasing)
             {
+                chasingIndex = Random.Range(0, chasingClips.Length);
                 source.clip = chasingClips[chasingIndex];
                 source.Play();
                 chasingIndex = (chasingIndex + 1) % chasingClips.Length;
@@ -57,7 +58,7 @@ public class EnemyEffects : MonoBehaviour
     }
     public void Attack(int index)
     {
-        if (!source.isPlaying && index == -1)
+        if (index == -1)
         {
             source.clip = attackClips[attackIndex];
             source.Play();

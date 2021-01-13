@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         groundMask = 1 << LayerMask.NameToLayer("World");
         isGrounded = true;
         isMoving = false;
-        health = 300;
+        health = 20;
         healthBar.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
@@ -216,7 +216,10 @@ public class PlayerController : MonoBehaviour
         else
         {
             characterAnimation.Play("Die");
-            Camera.main.transform.position += Vector3.forward - Vector3.right - Vector3.up * 0.5f;
+            Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward * 2f;
+            camVector.y = 0f;
+            camVector += Vector3.up;
+            Camera.main.transform.position = camVector;
         }
         character.transform.parent = null;
     }
@@ -268,7 +271,10 @@ public class PlayerController : MonoBehaviour
         character.SetActive(true);
         characterAnimation.Play("Pinned");
         Vector3 origPos = Camera.main.transform.localPosition;
-        Camera.main.transform.position -= Vector3.forward - Vector3.right + Vector3.up;
+        Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward * 2f;
+        camVector.y = 0f;
+        camVector += Vector3.up;
+        Camera.main.transform.position = camVector;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         while (isPinned)
@@ -407,23 +413,5 @@ public class PlayerController : MonoBehaviour
         bileEffect.SetActive(true);
         bileVisionTime = bileVisionTimeRef;
         AudioManager.instance.Play("BileEffectSFX");
-    }
-
-    // GUI
-    void OnGUI()
-    {
-        if (!HUD_health)
-        {
-            try
-            {
-                HUD_health = GameObject.Find("HUD_health").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_health)
-            HUD_health.text = health.ToString();
     }
 }

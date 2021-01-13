@@ -82,6 +82,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fc297b84a5d67489299c7dbcc008ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  source: {fileID: 0}
   idleClips:
   - {fileID: 8300000, guid: 90d342cf6f89440b9aa6c6ef4af6af88, type: 3}
   - {fileID: 8300000, guid: 8c8b4012f639545b2a1f70a2082307b3, type: 3}
@@ -89,13 +90,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d254381ee39254b86b2ad79941106ced, type: 3}
   - {fileID: 8300000, guid: 51481181258134093b3ac957766db260, type: 3}
   - {fileID: 8300000, guid: c9bd2da8e9aef4886a02e17824e44eb1, type: 3}
-  attackAndChasingClips:
-  - {fileID: 8300000, guid: 2628db55e50fe41cc9879051d359847a, type: 3}
-  - {fileID: 8300000, guid: 94e452828af664292a97c95ec9452126, type: 3}
-  - {fileID: 8300000, guid: 2c706f39dc7b645e0a17766d7757d4c5, type: 3}
-  - {fileID: 8300000, guid: c5e72c14120434b7d8c3248afc4851b6, type: 3}
-  - {fileID: 8300000, guid: 2e0680160a6414c50821ce2b3586bedf, type: 3}
-  - {fileID: 8300000, guid: 7666bab29b4a04b149e8f5cefdf0c6e6, type: 3}
+  chasingClips: []
+  damagedClips: []
+  deadClips: []
+  attackClips: []
 --- !u!82 &2607167697769483701
 AudioSource:
   m_ObjectHideFlags: 0
@@ -116,10 +114,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 5
-  MaxDistance: 50
+  MinDistance: 2
+  MaxDistance: 15
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -127,23 +125,41 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.10663147
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -5.0019917
+      outSlope: -5.0019917
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.34526673
+      value: 0.35775757
+      inSlope: -1.2504979
+      outSlope: -1.2504979
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.7034424
+      value: 0.06982422
+      inSlope: -0.6282323
+      outSlope: -0.6282323
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.5071153
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.20007975
+      outSlope: -0.20007975
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

@@ -155,8 +155,6 @@ public class GunScript : MonoBehaviour
     [HideInInspector]
     public float gunPrecision;
 
-    private TextMesh HUD_bullets;
-
     RaycastHit hitInfo;
     [Tooltip("Put 'Player' layer here")]
     [Header("Shooting Properties")]
@@ -409,6 +407,7 @@ public class GunScript : MonoBehaviour
             else if (hitInfo.transform.CompareTag("Companion"))
             {
                 cvo.FriendlyFire();
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             }
         }
     }
@@ -512,19 +511,6 @@ public class GunScript : MonoBehaviour
     // GUI
     void OnGUI()
     {
-        if (!HUD_bullets)
-        {
-            try
-            {
-                HUD_bullets = GameObject.Find("HUD_bullets").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_bullets)
-            HUD_bullets.text = bulletsIHave.ToString() + " - " + bulletsInTheGun.ToString();
         DrawCrosshair();
     }
     private void DrawCrosshair()
