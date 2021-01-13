@@ -225,6 +225,7 @@ public class PlayerController : MonoBehaviour
             Camera.main.transform.position = camVector;
         }
         character.transform.parent = null;
+        GameManager.instance.isGameOver = true;
     }
     public void AddHealth(int points)
     {
