@@ -634,7 +634,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2231470540158694768}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.6004655, y: 0, z: 2.0529275}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3162521661593010715}
@@ -733,6 +733,8 @@ MonoBehaviour:
   weaponName: Assault Rifle
   maxClips: 4
   muzzelSpawn: {fileID: 6464681266711815095}
+  bulletsIHave: 0
+  currentClips: 0
   killCounter: 0
   canApplyAbility: 0
 --- !u!114 &-1779771205941063576
