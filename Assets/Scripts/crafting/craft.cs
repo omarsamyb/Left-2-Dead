@@ -32,6 +32,7 @@ public class craft : MonoBehaviour
             ingredientInventory.container[3].addAmount(-1);
             StartCoroutine(succORfail(succParticle, bileTarget));
             CraftableInventory.container[0].addAmount(1);
+            PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Bile Bomb");
         }
         else{
             StartCoroutine(succORfail(failParticle, bileTarget));
@@ -43,6 +44,7 @@ public class craft : MonoBehaviour
             ingredientInventory.container[5].addAmount(-2);
             StartCoroutine(succORfail(succParticle, molotovTarget));
             CraftableInventory.container[1].addAmount(1);
+            PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Molotov Cocktail");
         }
         else{
             StartCoroutine(succORfail(failParticle, molotovTarget));
@@ -55,6 +57,7 @@ public class craft : MonoBehaviour
             ingredientInventory.container[3].addAmount(-1);
             StartCoroutine(succORfail(succParticle, pipeTarget));
             CraftableInventory.container[2].addAmount(1);
+            PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Pipe Bomb");
         }
         else{
             StartCoroutine(succORfail(failParticle, pipeTarget));
@@ -66,6 +69,7 @@ public class craft : MonoBehaviour
             ingredientInventory.container[5].addAmount(-1);
             StartCoroutine(succORfail(succParticle, stunTarget));
             CraftableInventory.container[3].addAmount(1);
+            PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Stun Grenade");
         }
         else{
             StartCoroutine(succORfail(failParticle, stunTarget));
@@ -96,11 +100,4 @@ public class craft : MonoBehaviour
             p.Stop();
         }
     }
-
-    // void succ(){
-    //     print("succ");
-    // }
-    // void fail(){
-    //     print("fail");
-    // }
 }

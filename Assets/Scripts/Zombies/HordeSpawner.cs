@@ -15,7 +15,7 @@ public class HordeSpawner : MonoBehaviour
 
     void Start()
     {
-		playerTransform= GameObject.FindGameObjectWithTag("Player").transform;
+		playerTransform= PlayerController.instance.player.transform;
 		if(gameObject.tag == "Horde")
         {
 			isBomber = false;
@@ -27,51 +27,54 @@ public class HordeSpawner : MonoBehaviour
 	}
 
     void Update()
-	{
-		if (!fire && !isBomber) {
-			fire = true;
-			isSpawning = true;
-		}
-		// true represent the pile bomb is attached to the player
-		if (isBomber && bomberSpawnFlag && !fire)
-		{
-			fire = true;
-			SetBomberHorde();
-			bomberSpawnFlag = false;
-		}
-
-		if (isSpawning)
+    {
+        if (!fire && !isBomber)
         {
-			isSpawning = false;
-			StartCoroutine(SpawnEnemy());
-		}
-		if (!isChasing&&!isBomber) {
-			for (int i = 0; i < transform.childCount; i++)
-			{
-				GameObject childObject = transform.GetChild(i).gameObject;
-				if (childObject.tag == "Enemy")
-				{
-					string childState = childObject.GetComponent<EnemyContoller>().getState();
-					if (childState == "chasing" || childState == "attack")
-					{
-						isChasing = true;
-						StartCoroutine(SetAllEnemiesToChase());
-						return;
-					}
-				}
-			}
-		}
-	}
-	IEnumerator SpawnEnemy()
+            fire = true;
+            isSpawning = true;
+        }
+        // true represent the pile bomb is attached to the player
+        if (isBomber && bomberSpawnFlag && !fire)
+        {
+            fire = true;
+            SetBomberHorde();
+            bomberSpawnFlag = false;
+        }
+
+        if (isSpawning)
+        {
+            isSpawning = false;
+            StartCoroutine(SpawnEnemy());
+        }
+        if (!isChasing && !isBomber)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                GameObject childObject = transform.GetChild(i).gameObject;
+                if (childObject.tag == "Enemy")
+                {
+                    string childState = childObject.GetComponent<EnemyContoller>().getState();
+                    if (childState == "chasing" || childState == "attack")
+                    {
+                        isChasing = true;
+                        StartCoroutine(SetAllEnemiesToChase());
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    IEnumerator SpawnEnemy()
 	{
 		for (int i = 0; i <hordeCount ; i++)
 		{
 			Vector3 position;
-			if(!isBomber)
-				position = new Vector3(transform.position.x+ Random.Range(-1, 2), transform.position.y,transform.position.z+Random.Range(-2, 1));
-			else
-				position = new Vector3(playerTransform.position.x + Random.Range(-1, 2), transform.position.y, playerTransform.position.z + Random.Range(-2, 1));
-			GameObject childObject = Instantiate(enemyObj, position, transform.rotation);
+            if (!isBomber)
+                position = new Vector3(transform.position.x + Random.Range(-1f, 1f), transform.position.y, transform.position.z + Random.Range(-1f, 1f));
+            else
+				// location is not on the nav mesh try another location 
+                position = new Vector3(transform.position.x + Random.Range(-0.5f, 0.5f), playerTransform.position.y, transform.position.z + Random.Range(-0.5f, 0.5f));
+            GameObject childObject = Instantiate(enemyObj, position, transform.rotation);
 			if(!isBomber)
 			childObject.transform.parent = gameObject.transform;
 			yield return new WaitForSeconds(1f / spawnRatePerSec);

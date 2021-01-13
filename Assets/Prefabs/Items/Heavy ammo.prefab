@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 6348884749158545256}
   - component: {fileID: 2141562686355256823}
   - component: {fileID: 3916448761543844593}
-  m_Layer: 0
-  m_Name: ammobox
+  m_Layer: 13
+  m_Name: Heavy ammo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,3 +109,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: fcbd53b6a6231634ea74f39c95b42ed2, type: 2}
+  gameObj: {fileID: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  amount: 2

@@ -2,21 +2,21 @@
 using UnityEngine.AI;
 using System.Collections;
 
-[RequireComponent(typeof (NavMeshAgent))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class CompanionController : MonoBehaviour
 {
+    public static CompanionController instance;
     public string weaponName;
     public int maxClips = 3;
     public GameObject muzzelSpawn;
 
     private GameObject[] muzzelFlash;
     private AudioClip shootSFX;
-    private GameObject bloodEffect;
     private GameObject wallDecalEffect;
     private GunStyles style;
     private int amountOfBulletsPerLoad;
-    private int bulletsIHave;
-    private int currentClips;
+    [HideInInspector] public int bulletsIHave;
+    [HideInInspector] public int currentClips;
     private float roundsPerSecond;
     private int damage;
     private float waitTillNextFire;
@@ -36,13 +36,22 @@ public class CompanionController : MonoBehaviour
     LayerMask enemyLayer;
     LayerMask shootingLayer;
     private float range;
+    private float runningSpeed;
+    private float walkingSpeed;
+    private bool inCoroutine;
+    private bool isJumping;
+    [HideInInspector] public int killCounter;
+    [HideInInspector] public bool canApplyAbility;
 
+    private void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         GunScript weapon = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + weaponName + ".prefab", typeof(GameObject))).GetComponent<GunScript>();
         muzzelFlash = weapon.muzzelFlash;
         shootSFX = weapon.shootSFX;
-        bloodEffect = weapon.bloodEffect;
         wallDecalEffect = weapon.wallDecalEffect;
         style = weapon.currentStyle;
         amountOfBulletsPerLoad = (int)weapon.amountOfBulletsPerLoad;
@@ -61,36 +70,86 @@ public class CompanionController : MonoBehaviour
         player = PlayerController.instance.player.transform;
         playerController = player.GetComponent<PlayerController>();
         range = 60f;
+        runningSpeed = agent.speed;
+        walkingSpeed = agent.speed / 2f;
+
+        agent.SetDestination(player.position);
     }
 
     void Update()
     {
-        Shooting();
-        Movement();
+        if (PlayerController.instance.health > 0)
+        {
+            Shooting();
+            Movement();
+
+            if (killCounter >= 10)
+            {
+                killCounter = 0;
+                AddClip();
+            }
+        }
     }
     private void Movement()
     {
-        if (Vector3.Distance(player.position, transform.position) > agent.stoppingDistance + agent.radius * 2)
+        float distance = Vector3.Distance(player.position, transform.position);
+
+        if (agent.isOnOffMeshLink && !isJumping)
         {
-            animator.SetBool("isMoving", true);
-            obstacle.enabled = false;
-            agent.enabled = true;
-            agent.SetDestination(player.position);
+            isJumping = true;
+            animator.SetTrigger("isJumping");
         }
+        else if (!agent.isOnOffMeshLink && isJumping)
+            isJumping = false;
+
+        if (distance > agent.stoppingDistance)
+        {
+            if (!inCoroutine)
+                StartCoroutine(GoToPlayer());
+        }
+
+        if (distance < agent.stoppingDistance + agent.radius * 2)
+            canApplyAbility = true;
+        else
+            canApplyAbility = false;
 
         if (!agent.pathPending && agent.enabled)
         {
-            if (agent.remainingDistance <= agent.stoppingDistance + agent.radius * 2)
+            if (agent.remainingDistance <= agent.stoppingDistance)
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude <= 1f)
                 {
-                    animator.SetBool("isMoving", false);
+                    animator.SetInteger("speed", 0);
                     agent.ResetPath();
                     agent.enabled = false;
                     obstacle.enabled = true;
                 }
             }
         }
+    }
+    IEnumerator GoToPlayer()
+    {
+        inCoroutine = true;
+        if (!agent.enabled)
+        {
+            obstacle.enabled = false;
+            yield return null;
+            agent.enabled = true;
+        }
+
+        agent.SetDestination(player.position);
+        if (agent.remainingDistance < agent.stoppingDistance * 1.8f)
+        {
+            animator.SetInteger("speed", 1);
+            agent.speed = walkingSpeed;
+        }
+        else
+        {
+            animator.SetInteger("speed", 2);
+            agent.speed = runningSpeed;
+        }
+        yield return new WaitForSeconds(0.2f);
+        inCoroutine = false;
     }
     private void Shooting()
     {
@@ -103,6 +162,8 @@ public class CompanionController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.Q))
                 ShootWeapon();
+            else
+                animator.SetBool("isShooting", false);
         }
         waitTillNextFire -= roundsPerSecond * Time.deltaTime;
     }
@@ -110,12 +171,19 @@ public class CompanionController : MonoBehaviour
     {
         if (waitTillNextFire <= 0 && bulletsIHave > 0)
         {
+            if (!agent.enabled)
+            {
+                if(style == GunStyles.automatic)
+                    animator.SetBool("isShooting", true);
+                else
+                    animator.SetTrigger("isShooting");
+            }
             int randomNumberForMuzzelFlash = Random.Range(0, 5);
             StartCoroutine(Bullet());
             Instantiate(muzzelFlash[randomNumberForMuzzelFlash], muzzelSpawn.transform.position, muzzelSpawn.transform.rotation * Quaternion.Euler(0, 0, 90), muzzelSpawn.transform);
             fireSource.Play();
             waitTillNextFire = 1;
-            if(!GameManager.instance.inRageMode)
+            if (!GameManager.instance.inRageMode)
                 bulletsIHave--;
             if (bulletsIHave == 0)
             {
@@ -127,6 +195,7 @@ public class CompanionController : MonoBehaviour
     }
     IEnumerator Bullet()
     {
+        bool isCriticalEnemy = false;
         if (playerController.criticalEnemy == null)
         {
             normalEnemy = null;
@@ -148,23 +217,36 @@ public class CompanionController : MonoBehaviour
                 chosenEnemy = normalEnemy;
         }
         else
+        {
             chosenEnemy = playerController.criticalEnemy;
+            isCriticalEnemy = true;
+        }
 
         Quaternion lookRotation = transform.rotation;
+        Vector3 direction = Vector3.zero;
         if (chosenEnemy)
         {
-            Vector3 direction = (chosenEnemy.transform.position - transform.position);
-            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+            direction = (chosenEnemy.hitPoint.position - transform.position);
+            lookRotation = Quaternion.LookRotation(direction);
         }
 
         float infrontOfWallDistance = 0.1f;
 
-        if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range*2, shootingLayer))
+        if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range * 2, shootingLayer))
         {
-            if (hitInfo.transform.tag == "Enemy" || hitInfo.transform.tag == "SpecialEnemy")
+            if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
             {
-                // Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(damage,hitInfo.point);
+                EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
+                enemy.TakeDamage(damage, hitInfo.point);
+                if (enemy.health <= 0)
+                {
+                    killCounter++;
+                    if(isCriticalEnemy && hitInfo.transform.CompareTag("SpecialEnemy"))
+                    {
+                        PlayerController.instance.criticalEnemy = null;
+                        PlayerController.instance.isPinned = false;
+                    }
+                }
             }
             else
             {
@@ -173,6 +255,8 @@ public class CompanionController : MonoBehaviour
         }
 
         Quaternion initialRotation = transform.rotation;
+        if(chosenEnemy)
+            lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         for (float t = 0f; t < 1f; t += 5f * Time.deltaTime)
         {
             transform.rotation = Quaternion.Slerp(initialRotation, lookRotation, t);
@@ -182,7 +266,7 @@ public class CompanionController : MonoBehaviour
     }
     public void AddClip()
     {
-        currentClips = Mathf.Clamp(currentClips++, 0, maxClips);
+        currentClips = Mathf.Clamp(++currentClips, 0, maxClips);
     }
 
     // GUI
@@ -196,7 +280,7 @@ public class CompanionController : MonoBehaviour
             }
             catch (System.Exception ex)
             {
-                print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
+                // print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
             }
         }
         if (HUD_companion)

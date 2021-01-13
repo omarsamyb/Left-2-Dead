@@ -14,61 +14,103 @@ public class BoomerGrenadeScript : MonoBehaviour
     private bool isSpawned = false;
     public float thrust = 20f;
     Rigidbody rb;
+    private bool hitGround;
+    public GameObject Explosion;
+    float explosionRadius = 3;
+    private LayerMask playerLayer;
 
     public GameObject thunder;
-    Transform parentTransform;
+    private bool gotEffected;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        startPoint = new Vector3(transform.position.x,transform.position.y,transform.position.z);
-        endPoint = new Vector3(playerTransform.position.x, transform.position.y , playerTransform.position.z);
+        playerTransform = PlayerController.instance.player.transform;
+        startPoint = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        endPoint = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
         direction = (endPoint - startPoint).normalized;
-        parentTransform = transform.parent.transform;
-
         rb = GetComponent<Rigidbody>();
-
-        rb.velocity = new Vector3(direction.x, 0f, direction.z)* thrust;
+        float dist = Vector3.Distance(playerTransform.position, transform.position);
+        rb.velocity = new Vector3(direction.x, 0f, direction.z) * thrust * (dist / 10.0f);
         rb.AddTorque(new Vector3(10, 0, 10));
-        Destroy(gameObject, 10.0f);
+        playerLayer = 1 << LayerMask.NameToLayer("Player");
 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player" && !isSpawned)
+        if (other.gameObject.tag == "Untagged" && !hitGround) //TODO: Fix layer
         {
-            HordeSpawner hordeSpawner = transform.parent.gameObject.GetComponent<HordeSpawner>();
-            hordeSpawner.bomberSpawnFlag = true;
-            Destroy(gameObject);
-            isSpawned = true;
-            GameObject thunderObject1= Instantiate(thunder, parentTransform.position, parentTransform.rotation);
-            thunderObject1.GetComponent<LightningBoltScript>().StartPosition= new Vector3(parentTransform.position.x, parentTransform.position.y -1f, parentTransform.position.z - 1f);
-            thunderObject1.GetComponent<LightningBoltScript>().EndPosition=new Vector3(parentTransform.position.x, parentTransform.position.y+10f, parentTransform.position.z - 1f);
-            GameObject thunderObject2 = Instantiate(thunder, parentTransform.position, parentTransform.rotation);
-            thunderObject2.GetComponent<LightningBoltScript>().StartPosition = new Vector3(parentTransform.position.x, parentTransform.position.y - 1f, parentTransform.position.z + 1f);
-            thunderObject2.GetComponent<LightningBoltScript>().EndPosition = new Vector3(parentTransform.position.x, parentTransform.position.y + 10f, parentTransform.position.z + 1f);
-            GameObject thunderObject3 = Instantiate(thunder, parentTransform.position, parentTransform.rotation);
-            thunderObject3.GetComponent<LightningBoltScript>().StartPosition = new Vector3(parentTransform.position.x + 1f, parentTransform.position.y - 1f, parentTransform.position.z);
-            thunderObject3.GetComponent<LightningBoltScript>().EndPosition = new Vector3(parentTransform.position.x + 1f, parentTransform.position.y + 10f, parentTransform.position.z);
-            GameObject thunderObject4 = Instantiate(thunder, parentTransform.position, parentTransform.rotation);
-            thunderObject4.GetComponent<LightningBoltScript>().StartPosition = new Vector3(parentTransform.position.x-1f, parentTransform.position.y - 1f, parentTransform.position.z);
-            thunderObject4.GetComponent<LightningBoltScript>().EndPosition = new Vector3(parentTransform.position.x-1f, parentTransform.position.y + 10f, parentTransform.position.z);
-            Destroy(thunderObject1, 4.0f);
-            Destroy(thunderObject2, 4.0f);
-            Destroy(thunderObject3, 4.0f);
-            Destroy(thunderObject4, 4.0f);
-
-            // need to call vision effect
-            //PlayerController.instance.EffectVision();
-
+            hitGround = true;
+            if (!gotEffected)
+            {
+                rb.velocity = new Vector3(0, 0, 0);
+                StartCoroutine(ExplodeBile());
+            }
+            else
+            {
+                GameObject boom = Instantiate(Explosion);
+                boom.transform.position = transform.position;
+            }
+        }
+        else if (other.gameObject.tag == "Player" && !hitGround)
+        {
+            rb.velocity = new Vector3(0, 0, 0);
+            rb.mass = 1000;
+            PlayerController.instance.BileVisionEffect();
+            EffectOfBile();
         }
     }
-    public Vector3 CalculateBezierCurve(float t , Vector3 p0, Vector3 p1, Vector3 p2)
+    IEnumerator ExplodeBile()
+    {
+        GameObject boom = Instantiate(Explosion);
+        boom.transform.position = transform.position;
+        for (int i = 0; i < 4; i++)
+        {
+            Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, playerLayer);
+            if (hits.Length > 0)
+            {
+                EffectOfBile();
+                yield break;
+            }
+            yield return new WaitForSeconds(1);
+        }
+        Destroy(this.gameObject);
+    }
+    private void EffectOfBile()
+    {
+        if (!gotEffected)
+        {
+            HordeSpawner hordeSpawner = transform.gameObject.GetComponent<HordeSpawner>();
+            hordeSpawner.bomberSpawnFlag = true;
+            gotEffected = true;
+            Thunder();
+            Destroy(this.gameObject, 6f);
+        }
+    }
+    public Vector3 CalculateBezierCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
     {
         float u = 1 - t;
         float tt = t * t;
         float uu = u * u;
-        return (uu * p0 )+ (2 * u*t* p1) +( tt * p2);
+        return (uu * p0) + (2 * u * t * p1) + (tt * p2);
+    }
+    public void Thunder()
+    {
+        GameObject thunderObject1 = Instantiate(thunder, transform.position, transform.rotation);
+        thunderObject1.GetComponent<LightningBoltScript>().StartPosition = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z - 1f);
+        thunderObject1.GetComponent<LightningBoltScript>().EndPosition = new Vector3(transform.position.x, transform.position.y + 10f, transform.position.z - 1f);
+        GameObject thunderObject2 = Instantiate(thunder, transform.position, transform.rotation);
+        thunderObject2.GetComponent<LightningBoltScript>().StartPosition = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z + 1f);
+        thunderObject2.GetComponent<LightningBoltScript>().EndPosition = new Vector3(transform.position.x, transform.position.y + 10f, transform.position.z + 1f);
+        GameObject thunderObject3 = Instantiate(thunder, transform.position, transform.rotation);
+        thunderObject3.GetComponent<LightningBoltScript>().StartPosition = new Vector3(transform.position.x + 1f, transform.position.y - 1f, transform.position.z);
+        thunderObject3.GetComponent<LightningBoltScript>().EndPosition = new Vector3(transform.position.x + 1f, transform.position.y + 10f, transform.position.z);
+        GameObject thunderObject4 = Instantiate(thunder, transform.position, transform.rotation);
+        thunderObject4.GetComponent<LightningBoltScript>().StartPosition = new Vector3(transform.position.x - 1f, transform.position.y - 1f, transform.position.z);
+        thunderObject4.GetComponent<LightningBoltScript>().EndPosition = new Vector3(transform.position.x - 1f, transform.position.y + 10f, transform.position.z);
+        Destroy(thunderObject1, 4.0f);
+        Destroy(thunderObject2, 4.0f);
+        Destroy(thunderObject3, 4.0f);
+        Destroy(thunderObject4, 4.0f);
     }
 }

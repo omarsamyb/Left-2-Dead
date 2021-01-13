@@ -35,14 +35,18 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
-        MouseInput();
+        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
+            MouseInput();
     }
     private void FixedUpdate()
     {
-        yRotation = Mathf.SmoothDamp(yRotation, wantedYRotation, ref rotationYVelocity, yRotationSpeed);
-        xRotation = Mathf.SmoothDamp(xRotation, wantedXRotation, ref rotationXVelocity, xRotationSpeed);
-        player.rotation = Quaternion.Euler(0f, yRotation, 0f);
-        transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
+        {
+            yRotation = Mathf.SmoothDamp(yRotation, wantedYRotation, ref rotationYVelocity, yRotationSpeed);
+            xRotation = Mathf.SmoothDamp(xRotation, wantedXRotation, ref rotationXVelocity, xRotationSpeed);
+            player.rotation = Quaternion.Euler(0f, yRotation, 0f);
+            transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        }
     }
 
     void MouseInput()
@@ -57,5 +61,14 @@ public class MouseLook : MonoBehaviour
         wantedYRotation += mouseX;
         wantedXRotation -= mouseY;
         wantedXRotation = Mathf.Clamp(wantedXRotation, bottomAngleView, topAngleView);
+    }
+
+    public void AdjustEulers(Quaternion newRotation)
+    {
+        yRotation = newRotation.eulerAngles.y;
+        wantedYRotation = yRotation;
+        xRotation = newRotation.eulerAngles.x;
+        wantedXRotation = xRotation;
+        wantedXRotation -= 360;
     }
 }

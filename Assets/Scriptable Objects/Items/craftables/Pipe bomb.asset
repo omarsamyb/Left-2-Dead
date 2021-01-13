@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ab9928e03080f479e2c55f047debd9, type: 3}
   m_Name: Pipe bomb
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4470013033428527490, guid: 540c5cdda33aad946a2ded7538f04f78, type: 3}
+  prefab: {fileID: 6463054390773945140, guid: 540c5cdda33aad946a2ded7538f04f78, type: 3}
   type: 1

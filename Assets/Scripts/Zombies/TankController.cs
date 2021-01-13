@@ -8,18 +8,17 @@ public class TankController : EnemyContoller
     private bool inAttackAnimation=false;
     public override IEnumerator applyDamage(PlayerController cont)
     {
-        float frames=50;
+        float frames=50/2.0f;
         yield return new WaitForSeconds(frames/30.0f);
         
-        if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
+        if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance+0.5f && isFacingEachOther())
             cont.TakeDamage(damagePerSec);
     }
     public override IEnumerator applyDamage(EnemyContoller cont)
     {
-        float frames=50;
+        float frames=50/2.0f;
         yield return new WaitForSeconds(frames/30.0f);
-        
-        if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance && isFacingEachOther())
+        if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance+0.5f && isFacingEachOther())
             cont.TakeDamage(damagePerSec);
     }
     private bool isFacingEachOther(){
@@ -28,34 +27,20 @@ public class TankController : EnemyContoller
     }
     public override IEnumerator resumeAttack()
     {
-        float animationTime=4.63f;
+        animator.speed = 2;
+        float animationTime=1.8f;
         inAttackAnimation=true;
         yield return new WaitForSeconds(animationTime);
+        animator.speed = 1;
         inAttackAnimation=false;
-        if(currentState==State.attack)
-            StartCoroutine(CoolDown());
-        else
-            canAttack=true;
-        
-        
-    }
-    public IEnumerator CoolDown()
-    {
-        FaceTarget(attackTarget.position);
-        currentState=State.coolDown;
-        animator.SetBool("isCoolingDown",true);
-        yield return new WaitForSeconds(attackCooldownTime);
-        canAttack = true;
-        animator.SetBool("isCoolingDown",false);
-        if(currentState==State.coolDown)
-            currentState=State.attack;
+        canAttack=true;
     }
     void Update()
     {
         childTransform.position = transform.position;
         if (pipeTimer < 4)
             pipeTimer = pipeTimer + Time.deltaTime;
-        if (currentState == State.dead)
+        if (currentState == State.dead || isPinned)
             return;
 
         if (isConfused)
@@ -88,14 +73,21 @@ public class TankController : EnemyContoller
             {
                 // keep chasing
                 if (isAlive(attackTarget))
-                    navMeshAgent.SetDestination(attackTarget.position);
+                {
+                    transform.LookAt(attackTarget);
+                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
+                    {
+                        curGoToDestination = attackTarget.position;
+                        navMeshAgent.SetDestination(curGoToDestination);
+                    }
+                }
                 else
                     backToDefault();
             }
         }
         else if (currentState == State.attack)
         {
-            if (!inAttackAnimation && !canSee(reachDistance, attackAngle, attackTarget))
+            if (!inAttackAnimation && !canSee(attackDistance, attackAngle, attackTarget))
             {
                 chase(attackTarget);
             }
