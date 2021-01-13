@@ -2504,7 +2504,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3876
+  m_Name: pb_Mesh-12212
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3117,6 +3117,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 83627213597018431, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -15.6203
+      objectReference: {fileID: 0}
+    - target: {fileID: 243486185886739848, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -15.6203
+      objectReference: {fileID: 0}
+    - target: {fileID: 243486185886739848, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -13.399994
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188717646642484648, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -15.6203
+      objectReference: {fileID: 0}
     - target: {fileID: 5069832656085467154, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
       propertyPath: m_Camera
       value: 
@@ -3229,6 +3245,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1101019325}
+    - target: {fileID: 5069832656262931458, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5069832656276314299, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -3237,6 +3257,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1101019325}
+    - target: {fileID: 5069832656630465175, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5069832656671734960, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
       propertyPath: flameParticles.Array.data[0]
       value: 
@@ -3293,6 +3317,10 @@ PrefabInstance:
       propertyPath: targets.Array.data[0]
       value: 
       objectReference: {fileID: 1340299695}
+    - target: {fileID: 5069832656945710478, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5069832656987078948, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
