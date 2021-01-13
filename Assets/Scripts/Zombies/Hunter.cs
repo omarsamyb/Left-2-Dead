@@ -6,8 +6,10 @@ using UnityEditor;
 
 public class Hunter : EnemyContoller
 {
+    Transform initialAttackTarget;
     Vector3 jumpPosition;
     bool jumpingAttack;
+    bool finishedJump;
     bool isKilling;
     Transform body;
     CapsuleCollider myCollider;
@@ -41,7 +43,6 @@ public class Hunter : EnemyContoller
             else
                 patrol();
         }
-
         else if (currentState == State.chasing)
         {
             if (!isAlive(attackTarget))
@@ -52,7 +53,7 @@ public class Hunter : EnemyContoller
                     attack();
                 else //Can Attack but im far
                 {
-                    transform.LookAt(attackTarget);
+                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
@@ -66,7 +67,7 @@ public class Hunter : EnemyContoller
             {
                 if (Vector3.Distance(transform.position, attackTarget.position) > 3) //Im still far
                 {
-                    transform.LookAt(attackTarget);
+                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
@@ -88,12 +89,12 @@ public class Hunter : EnemyContoller
         {
             if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && canAttackCheck(attackTarget))
                 attack();
-            else if (jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(attackTarget))
+            else if (finishedJump && jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(initialAttackTarget))
             {
                 jumpingAttack = false;
                 pinTarget();
             }
-            else if(!canAttackCheck(attackTarget))
+            else if(!canAttackCheck(initialAttackTarget))
             {
                 jumpingAttack = false;
                 navMeshAgent.ResetPath();
@@ -166,15 +167,17 @@ public class Hunter : EnemyContoller
             return;
         canAttack = false;
         currentState = State.attack;
-        transform.LookAt(attackTarget);
+        initialAttackTarget = attackTarget;
+        myLookAt(initialAttackTarget);
         animator.SetBool("isAttacking", true);
-        jumpPosition = attackTarget.position;
+        jumpPosition = initialAttackTarget.position;
         navMeshAgent.avoidancePriority = 0;
         StartCoroutine(jumpToTarget());
     }
     IEnumerator jumpToTarget()
     {
-        yield return new WaitForSeconds(0.73f);
+        finishedJump = false;
+        yield return new WaitForSeconds(0.5f);
         if(currentState == State.attack)
         {
             navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
@@ -183,26 +186,28 @@ public class Hunter : EnemyContoller
             jumpingAttack = true;
             ef.Attack(0);
         }
+        yield return new WaitForSeconds(1f);
+        finishedJump = true;
     }
     void pinTarget()
     {
         navMeshAgent.speed = chaseSpeed;
         navMeshAgent.ResetPath();
-        if (Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
+        if (Vector3.Distance(transform.position, initialAttackTarget.position) <= attackDistance) //And player is not pinned
         {
             animator.SetTrigger("pin");
             myCollider.center = new Vector3(myCollider.center.x, 0.45f, myCollider.center.z);
             myCollider.height = 1.25f;
             myCollider.direction = 0;
-            if (attackTarget.tag == "Player")
+            if (initialAttackTarget.tag == "Player")
             {
                 PlayerController cont = PlayerController.instance;
                 cont.GetPinned(gameObject);
                 StartCoroutine(attackAnyTarget(cont, null));
             }
-            else if (attackTarget.tag.EndsWith("Enemy"))
+            else if (initialAttackTarget.tag.EndsWith("Enemy"))
             {
-                EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
+                EnemyContoller cont = initialAttackTarget.gameObject.GetComponent<EnemyContoller>();
                 cont.getPinned(true);
                 StartCoroutine(attackAnyTarget(null, cont));
             }

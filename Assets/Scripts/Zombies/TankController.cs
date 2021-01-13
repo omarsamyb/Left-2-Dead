@@ -67,7 +67,7 @@ public class TankController : EnemyContoller
 
         else if (currentState == State.chasing)
         {
-            if (navMeshAgent.remainingDistance < attackDistance && canAttack)
+            if (navMeshAgent.remainingDistance < attackDistance && canAttack && canAttackCheck(attackTarget))
             {
                 attack();
             }
@@ -93,7 +93,7 @@ public class TankController : EnemyContoller
             {
                 chase(attackTarget);
             }
-            else if (canAttack && isAlive(attackTarget))
+            else if (canAttack && canAttackCheck(attackTarget))
             {
                 attack();
             }

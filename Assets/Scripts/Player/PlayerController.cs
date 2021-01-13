@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         groundMask = 1 << LayerMask.NameToLayer("World");
         isGrounded = true;
         isMoving = false;
-        health = 20;
+        health = 300;
         healthBar.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
