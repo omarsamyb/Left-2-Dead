@@ -142,7 +142,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
             return;
-        transform.LookAt(attackTarget);
+        myLookAt(attackTarget);
         canAttack = false;
         currentState = State.attack;
         animator.SetBool("isAttacking", true);
@@ -294,7 +294,7 @@ public class EnemyContoller : MonoBehaviour
                 // keep chasing
                 if (isAlive(attackTarget))
                 {
-                    transform.LookAt(attackTarget);
+                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         curGoToDestination = attackTarget.position;
@@ -478,5 +478,13 @@ public class EnemyContoller : MonoBehaviour
     {
         if (!isPinned && other.gameObject.tag == "Player" && PlayerController.instance.health > 0 && ((currentState == State.idle) || (currentState == State.chasing)))
             chase(other.transform);
+    }
+    public void myLookAt(Transform placeToLook)
+    {
+        float damping = 1.5f;
+        Vector3 lookPos = placeToLook.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * damping);
     }
 }

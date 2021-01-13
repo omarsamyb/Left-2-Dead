@@ -44,11 +44,10 @@ public class ParticleThrow : MonoBehaviour
 
     public void ReleaseMe()
     {
-        
         this.gameObject.SetActive(true);
         rb.useGravity = true;
         transform.rotation = head.transform.rotation;
-        Vector3 dir = player.position - transform.position;
+        Vector3 dir = Spitter.attackingPosition - transform.position;
         dir.y=0;         
         float distance = dir.magnitude;         
         rb.AddForce(dir*30,ForceMode.Impulse);

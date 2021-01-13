@@ -4,13 +4,15 @@ using UnityEngine;
 using UnityEngine.AI;
 public class Spitter : EnemyContoller
 {
+    public static Vector3 attackingPosition;
     bool isAttacking = false;
     public override void attack()
     {
         if (currentState == State.dead)
             return;
         navMeshAgent.ResetPath();
-        transform.LookAt(attackTarget);
+        myLookAt(attackTarget);
+        attackingPosition = attackTarget.position;
         canAttack = false;
         animator.SetBool("isIdle", false);
         animator.SetBool("isChasing", false);
@@ -58,7 +60,7 @@ public class Spitter : EnemyContoller
                     attack();
                 else //Can Attack but im far
                 {
-                    transform.LookAt(attackTarget);
+                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
@@ -72,7 +74,7 @@ public class Spitter : EnemyContoller
             {
                 if (Vector3.Distance(transform.position, attackTarget.position) > 3) //Im still far
                 {
-                    transform.LookAt(attackTarget);
+                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
