@@ -46,14 +46,12 @@ public class ParticleThrow : MonoBehaviour
     {
         
         this.gameObject.SetActive(true);
-        transform.parent = null;
-
         rb.useGravity = true;
         transform.rotation = head.transform.rotation;
-        Vector3 dir = player.position - transform.position;         
+        Vector3 dir = player.position - transform.position;
+        dir.y=0;         
         float distance = dir.magnitude;         
-        dir.Normalize();         
-        rb.AddForce(dir * distance * 20,ForceMode.Impulse);
-        rb.AddForce(transform.up*50, ForceMode.Impulse);
+        rb.AddForce(dir*30,ForceMode.Impulse);
+        rb.AddTorque(new Vector3(10, 0, 10));
     }
 }

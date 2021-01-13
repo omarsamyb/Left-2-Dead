@@ -12,6 +12,7 @@ TagManager:
   - Fire
   - Horde
   - Companion
+  - Others
   layers:
   - Default
   - TransparentFX
