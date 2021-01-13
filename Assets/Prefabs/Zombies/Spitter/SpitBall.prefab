@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 5758294243078946196}
   m_Layer: 0
   m_Name: SpitBall
-  m_TagString: Untagged
+  m_TagString: Others
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
