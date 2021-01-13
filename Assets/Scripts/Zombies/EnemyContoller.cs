@@ -6,8 +6,8 @@ using UnityEditor;
 public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown };
 public class EnemyContoller : MonoBehaviour
 {
-    public NavMeshAgent navMeshAgent;
-    public Transform playerTransform;
+    protected NavMeshAgent navMeshAgent;
+    protected Transform playerTransform;
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -41,7 +41,6 @@ public class EnemyContoller : MonoBehaviour
     protected PlayerVoiceOver pvo;
     protected bool isChasing;
     protected EnemyEffects ef;
-
     public virtual void Confuse()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, chaseDistance, enemyLayer);
@@ -286,44 +285,24 @@ public class EnemyContoller : MonoBehaviour
         }
         else if (currentState == State.chasing)
         {
-            if (!isAlive(attackTarget))
-                backToDefault();
-            else if (canAttack && canAttackCheck(attackTarget))
+            if (navMeshAgent.remainingDistance < attackDistance && canAttack)
             {
-                if (navMeshAgent.remainingDistance < reachDistance)
-                    attack();
-                else //Can Attack but im far
-                {
-                    transform.LookAt(attackTarget);
-                    if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
-                    {
-                        animator.SetBool("isChasing", true);
-                        animator.SetBool("isIdle", false);
-                        curGoToDestination = attackTarget.position;
-                        navMeshAgent.SetDestination(curGoToDestination);
-                    }
-                }
+                attack();
             }
-            else //Can't attack
+            else
             {
-                if (Vector3.Distance(transform.position, attackTarget.position) > 3) //Im still far
+                // keep chasing
+                if (isAlive(attackTarget))
                 {
                     transform.LookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
-                        animator.SetBool("isChasing", true);
-                        animator.SetBool("isIdle", false);
                         curGoToDestination = attackTarget.position;
                         navMeshAgent.SetDestination(curGoToDestination);
                     }
                 }
-                else //Im getting too close
-                {
-                    navMeshAgent.ResetPath();
-                    animator.SetBool("isIdle", true);
-                    animator.SetBool("isChasing", false);
-                }
-
+                else
+                    backToDefault();
             }
         }
         else if (currentState == State.attack)
