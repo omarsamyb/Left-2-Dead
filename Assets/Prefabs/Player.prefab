@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 469019212214358615}
   - component: {fileID: 5930430884219837051}
   - component: {fileID: -6448269759036601124}
+  - component: {fileID: 7095050751641286478}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -254,6 +255,26 @@ MonoBehaviour:
   inFight: 0
   requiredKills: 0
   fightKills: 0
+--- !u!114 &7095050751641286478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469019212214358608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 769e165eb04696d4383f052938efafd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ingredientInventory: {fileID: 11400000, guid: 32e3dc2c67934a541911154dc5bb7296, type: 2}
+  ammoInventory: {fileID: 11400000, guid: 617a4b077dfeba44cbf1f45c332fd96a, type: 2}
+  craftableInventory: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}
+  collectableItemsCount: 
+  distanceFromPlayer: 2
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &469019212861101020
 GameObject:
   m_ObjectHideFlags: 0
