@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEditor;
-public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown};
+public enum State { idle, chasing, attack, patrol, dead, stunned, pipe, hear, coolDown };
 public class EnemyContoller : MonoBehaviour
 {
-    public NavMeshAgent navMeshAgent;
-    public Transform playerTransform;
+    protected NavMeshAgent navMeshAgent;
+    protected Transform playerTransform;
     public State defaultState;
     [HideInInspector] public State currentState;
     public Animator animator;
@@ -18,7 +18,7 @@ public class EnemyContoller : MonoBehaviour
     public int health;
     [HideInInspector] public Transform attackTarget; // can be player of zombie (if confused)
     [HideInInspector] public float chaseSpeed = 2.0f;
-    [HideInInspector] public float patrolSpeed = 0.5f;
+    [HideInInspector] public float patrolSpeed = 0.2f;
     public Transform childTransform;
     protected float chaseAngle = 70.0f, attackAngle = 40.0f;
     public float attackCooldownTime = 1;
@@ -30,7 +30,7 @@ public class EnemyContoller : MonoBehaviour
     protected float stunTimer = 0, confusionTimer = 0, pipeTimer = 10;
     protected Vector3 hearedLocation;
     protected Transform pipePosition;
-    protected  Vector3 curGoToDestination;
+    protected Vector3 curGoToDestination;
     protected float distanceToUpdateDestination = 0.5f;
     public HealthBar healthBar;
     public GameObject healthBarUI;
@@ -41,11 +41,10 @@ public class EnemyContoller : MonoBehaviour
     protected PlayerVoiceOver pvo;
     protected bool isChasing;
     protected EnemyEffects ef;
-    
     public virtual void Confuse()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, chaseDistance, enemyLayer);
-        List <Transform> enemies = new List<Transform>();
+        List<Transform> enemies = new List<Transform>();
         foreach (Collider hit in hits)
         {
             if (hit.transform.gameObject != this.gameObject && hit.transform.gameObject.GetComponent<EnemyContoller>().health > 0)
@@ -53,7 +52,7 @@ public class EnemyContoller : MonoBehaviour
                 enemies.Add(hit.transform);
             }
         }
-        
+
         if (enemies.Count == 0)
             return;
         confusionTimer = 0;
@@ -65,7 +64,7 @@ public class EnemyContoller : MonoBehaviour
 
         }
         attackTarget = (Transform)enemies[min];
-        if(!isConfused)
+        if (!isConfused && currentState != State.attack)
             chase(attackTarget);
         isConfused = true;
     }
@@ -88,7 +87,7 @@ public class EnemyContoller : MonoBehaviour
         isPinned = true;
         navMeshAgent.ResetPath();
         clearAnimator();
-        if(isPerm)
+        if (isPerm)
         {
             animator.SetBool("hunterPin", true);
         }
@@ -143,7 +142,7 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isChasing", false);
         if (currentState == State.dead)
             return;
-        transform.LookAt(attackTarget);
+        myLookAt(attackTarget);
         canAttack = false;
         currentState = State.attack;
         animator.SetBool("isAttacking", true);
@@ -295,7 +294,7 @@ public class EnemyContoller : MonoBehaviour
                 // keep chasing
                 if (isAlive(attackTarget))
                 {
-                    transform.LookAt(attackTarget);
+                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         curGoToDestination = attackTarget.position;
@@ -375,7 +374,7 @@ public class EnemyContoller : MonoBehaviour
         //audioSource.PlayOneShot(hurtSFX);
         if (health <= 0)
             Die();
-        if(canHitReaction)
+        if (canHitReaction)
         {
             canHitReaction = false;
             animator.SetTrigger("gotHit");
@@ -423,33 +422,10 @@ public class EnemyContoller : MonoBehaviour
         return false;
     }
 
-    // public float CalculatePathLength(Vector3 targetPosition)
-    // {
-    //     NavMeshPath path = new NavMeshPath();
 
-    //     if (navMeshAgent.enabled)
-    //         navMeshAgent.CalculatePath(targetPosition, path);
-
-
-    //     float pathLength = 0f;
-
-    //     if (path.corners.Length == 0)
-    //         pathLength = Vector3.Distance(transform.position, targetPosition);
-    //     else
-    //     {
-    //         pathLength = Vector3.Distance(transform.position, path.corners[0]);
-    //         pathLength += Vector3.Distance(path.corners[path.corners.Length - 1], targetPosition);
-    //     }
-    //     for (int i = 0; i < path.corners.Length - 1; i++)
-    //     {
-    //         pathLength += Vector3.Distance(path.corners[i], path.corners[i + 1]);
-    //     }
-
-    //     return pathLength;
-    // }
     public void canHearPlayer(float radius)
     {
-        if (currentState == State.chasing || currentState == State.attack || currentState == State.dead || currentState == State.stunned) 
+        if (currentState == State.chasing || currentState == State.attack || currentState == State.dead || currentState == State.stunned)
             return;
         if (Vector3.Distance(transform.position, playerTransform.position) < radius)
             currentState = State.chasing;
@@ -475,7 +451,7 @@ public class EnemyContoller : MonoBehaviour
     }
     public virtual void hearFire()
     {
-        if ((currentState == State.idle || currentState == State.patrol || currentState == State.hear)&&!isPinned)
+        if ((currentState == State.idle || currentState == State.patrol || currentState == State.hear) && !isPinned)
         {
             hearedLocation = playerTransform.position;
             currentState = State.hear;
@@ -487,20 +463,28 @@ public class EnemyContoller : MonoBehaviour
     }
     protected bool canAttackCheck(Transform target)
     {
-        if(target.tag=="Player")
+        if (target.tag == "Player")
         {
             PlayerController cont = PlayerController.instance;
-            return !cont.isPinned && cont.health>0;
+            return !cont.isPinned && cont.health > 0;
         }
         else
         {
             EnemyContoller cont = target.GetComponent<EnemyContoller>();
-            return !cont.isPinned && cont.health>0;
+            return !cont.isPinned && cont.health > 0;
         }
     }
     void OnCollisionEnter(Collision other)
     {
         if (!isPinned && other.gameObject.tag == "Player" && PlayerController.instance.health > 0 && ((currentState == State.idle) || (currentState == State.chasing)))
             chase(other.transform);
+    }
+    public void myLookAt(Transform placeToLook)
+    {
+        float damping = 1.5f;
+        Vector3 lookPos = placeToLook.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * damping);
     }
 }
