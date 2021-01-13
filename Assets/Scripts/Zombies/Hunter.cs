@@ -6,6 +6,7 @@ using UnityEditor;
 
 public class Hunter : EnemyContoller
 {
+    Transform initialAttackTarget;
     Vector3 jumpPosition;
     bool jumpingAttack;
     bool finishedJump;
@@ -42,7 +43,6 @@ public class Hunter : EnemyContoller
             else
                 patrol();
         }
-
         else if (currentState == State.chasing)
         {
             if (!isAlive(attackTarget))
@@ -89,12 +89,12 @@ public class Hunter : EnemyContoller
         {
             if (canSee(reachDistance, attackAngle, attackTarget) && canAttack && canAttackCheck(attackTarget))
                 attack();
-            else if (finishedJump && jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(attackTarget))
+            else if (finishedJump && jumpingAttack && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && canAttackCheck(initialAttackTarget))
             {
                 jumpingAttack = false;
                 pinTarget();
             }
-            else if(!canAttackCheck(attackTarget))
+            else if(!canAttackCheck(initialAttackTarget))
             {
                 jumpingAttack = false;
                 navMeshAgent.ResetPath();
@@ -167,9 +167,10 @@ public class Hunter : EnemyContoller
             return;
         canAttack = false;
         currentState = State.attack;
-        transform.LookAt(attackTarget);
+        initialAttackTarget = attackTarget;
+        transform.LookAt(initialAttackTarget);
         animator.SetBool("isAttacking", true);
-        jumpPosition = attackTarget.position;
+        jumpPosition = initialAttackTarget.position;
         navMeshAgent.avoidancePriority = 0;
         StartCoroutine(jumpToTarget());
     }
@@ -192,21 +193,21 @@ public class Hunter : EnemyContoller
     {
         navMeshAgent.speed = chaseSpeed;
         navMeshAgent.ResetPath();
-        if (Vector3.Distance(transform.position, attackTarget.position) <= attackDistance) //And player is not pinned
+        if (Vector3.Distance(transform.position, initialAttackTarget.position) <= attackDistance) //And player is not pinned
         {
             animator.SetTrigger("pin");
             myCollider.center = new Vector3(myCollider.center.x, 0.45f, myCollider.center.z);
             myCollider.height = 1.25f;
             myCollider.direction = 0;
-            if (attackTarget.tag == "Player")
+            if (initialAttackTarget.tag == "Player")
             {
                 PlayerController cont = PlayerController.instance;
                 cont.GetPinned(gameObject);
                 StartCoroutine(attackAnyTarget(cont, null));
             }
-            else if (attackTarget.tag.EndsWith("Enemy"))
+            else if (initialAttackTarget.tag.EndsWith("Enemy"))
             {
-                EnemyContoller cont = attackTarget.gameObject.GetComponent<EnemyContoller>();
+                EnemyContoller cont = initialAttackTarget.gameObject.GetComponent<EnemyContoller>();
                 cont.getPinned(true);
                 StartCoroutine(attackAnyTarget(null, cont));
             }
