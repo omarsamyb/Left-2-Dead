@@ -228,6 +228,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5932741766629629024}
     m_Modifications:
+    - target: {fileID: 6167115875182963623, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
+      propertyPath: m_Name
+      value: Room A (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167115875578690008, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
+      propertyPath: m_Name
+      value: Room A (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167115875609044060, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
+      propertyPath: m_Name
+      value: Room A (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167115876218341445, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
+      propertyPath: m_Name
+      value: Room A (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6167115876329243373, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
+      propertyPath: m_Name
+      value: Room A (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8221496636275918611, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8221496637213033292, guid: c7e8b7e3609776241a2514052fc6708d, type: 3}
       propertyPath: m_Name
       value: Map-1-Floor
@@ -290,6 +314,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5932741766629629024}
     m_Modifications:
+    - target: {fileID: 2099262809079870050, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
+      propertyPath: m_Name
+      value: Room A (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2099262809118846950, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
+      propertyPath: m_Name
+      value: Room A (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2099262809849480191, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
+      propertyPath: m_Name
+      value: Room A (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2099262809939904855, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
+      propertyPath: m_Name
+      value: Room A (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2099262810819993629, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
+      propertyPath: m_Name
+      value: Room A (5)
+      objectReference: {fileID: 0}
     - target: {fileID: 4228727149580257526, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
       propertyPath: m_Name
       value: Map-1- Basement
@@ -336,6 +380,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4228727149580257527, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4228727150785940649, guid: 861eb05cea0657e4495acb8d91cf4513, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
