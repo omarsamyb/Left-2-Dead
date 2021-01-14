@@ -12,24 +12,28 @@ public class UIManager : MonoBehaviour
     public GameObject gameScreenCanvas;
     public GameObject pickUpCanvas;
     public GameObject gameOverScreen;
+    public GameObject toolTipCanvas;
 
     private bool craftingToggle = false;
     private bool inventoryPanelToggle = false;
     private bool gameScreenCanvasToggle = true;
     private bool pickUpCanvasToggle = false;
+    private bool toolTipCanvasToggle = false;
 
     void Update(){
         if (Input.GetKeyDown(KeyCode.E))
         {
             if(gameScreenCanvasToggle){
                 pickUpCanvasToggle = !pickUpCanvasToggle;
-                if(pickUpCanvasToggle == false )
+                if(pickUpCanvasToggle)
                 {
-                    lockCursor();
+                    unLockCursor();
+                    pickUpMenu(true);
                 }
                 else
                 {
-                    unLockCursor();
+                    lockCursor();
+                    pickUpMenu(false);
                 }
                 pickUpCanvas.SetActive(pickUpCanvasToggle);
             }
@@ -127,6 +131,16 @@ public class UIManager : MonoBehaviour
         gameScreenCanvasToggle = true;
         gameScreenCanvas.SetActive(gameScreenCanvasToggle);
     }
+    public void hideToolTipScreen()
+    {
+        toolTipCanvasToggle = false;
+        toolTipCanvas.SetActive(toolTipCanvasToggle);
+    }
+    public void showToolTipScreen()
+    {
+        toolTipCanvasToggle = true;
+        toolTipCanvas.SetActive(toolTipCanvasToggle);
+    }
 
     public void showGameOverScreen()
     {
@@ -138,5 +152,9 @@ public class UIManager : MonoBehaviour
     }
     public void QuitGame(){
         Application.Quit();
+    }
+
+    public void pickUpMenu(bool b){
+        GameManager.instance.inPickUp = b;
     }
 }

@@ -158,7 +158,7 @@ MonoBehaviour:
   - Stun Grenade
   grenadesCounter: 03000000010000000200000002000000
   isThrowing: 0
-  CraftableInventory: {fileID: 0}
+  CraftableInventory: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}
 --- !u!114 &5930430884219837051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -274,7 +274,7 @@ MonoBehaviour:
   distanceFromPlayer: 2
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8192
 --- !u!1 &469019212861101020
 GameObject:
   m_ObjectHideFlags: 0
