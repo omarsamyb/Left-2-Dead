@@ -34,10 +34,7 @@ public class UIparticleSystem : MonoBehaviour
             letPlay = !letPlay;
         }
         showOrHide();
-
         moveTo();
-
-        
     }
 
     public void playParticle(){
@@ -82,6 +79,15 @@ public class UIparticleSystem : MonoBehaviour
                 myParticleSystem.Stop();
             }
         }
+    }
+
+    public void hide(){
+        letPlay = false;
+        showFlame = false;
+        myParticleSystem.Stop();
+        this.transform.position = startPos;
+        targetIndex = 0;
+        GetComponent<TrailRenderer>().time = -1;
     }
 
     public void setTargets(List<GameObject> newTargets){

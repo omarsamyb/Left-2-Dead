@@ -54,8 +54,6 @@ public class Tooltip : MonoBehaviour
 
     private void Update()
     {
-        
-
         Vector2 pos = Input.mousePosition;
         float pivotX = 0f;
         if(pos.x > Screen.width/2){

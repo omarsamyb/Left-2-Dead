@@ -18,6 +18,11 @@ public class TooltipSystem : MonoBehaviour
         current.tooltip.gameObject.SetActive(true);
     }
 
+    public static void Reset(){
+        current.tooltip.SetText("","","");
+        current.tooltip.gameObject.SetActive(true);
+    }
+
     public static void Hide(){
         current.tooltip.gameObject.SetActive(false);
     }
