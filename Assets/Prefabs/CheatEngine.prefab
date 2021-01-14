@@ -47,4 +47,5 @@ MonoBehaviour:
   ammoPack: {fileID: 2554642822049653102, guid: 0e598389683f75e4c84aaa87ea3b16b8, type: 3}
   ammoPack2: {fileID: 5052987719261960285, guid: 313b525b1105c75489e5825d9eae5778, type: 3}
   ammoPack3: {fileID: 3818119856968677563, guid: c76b7add13b5f2145985c995f8f74b79, type: 3}
-  player: {fileID: 469019212214358612, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+  ingredientInventory: {fileID: 11400000, guid: 32e3dc2c67934a541911154dc5bb7296, type: 2}
+  CraftableInventory: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}

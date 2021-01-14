@@ -6,10 +6,10 @@ public class Rage : MonoBehaviour
 {
     private float rageResetRef = 3f;
     private float rageDurationRef = 10f;
-    private float rageReset;
+    public float rageReset;
     private float rageDuration;
     public int ragePoints;
-    private bool canActivate;
+    public bool canActivate;
     public GameObject character;
     private Animation characterAnimation;
     private GunInventory gunInventory;
@@ -89,7 +89,7 @@ public class Rage : MonoBehaviour
         OnRageChange((float)ragePoints / 100f);
     }
 
-    IEnumerator ActivateRageMode()
+    public IEnumerator ActivateRageMode()
     {
         AudioManager.instance.Stop("PlayerVoice");
         canBeDamaged = false;
@@ -117,6 +117,6 @@ public class Rage : MonoBehaviour
     }
     public void rageCheats()
     {
-        ragePoints+=10;
+        OnRageChange((float)ragePoints / 100f);
     }
 }

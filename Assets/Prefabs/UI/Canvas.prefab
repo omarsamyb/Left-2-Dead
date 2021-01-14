@@ -2960,6 +2960,7 @@ MonoBehaviour:
   gameScreenCanvas: {fileID: 5069832656262931458}
   pickUpCanvas: {fileID: 5069832658083403693}
   gameOverScreen: {fileID: 8118333982731080508}
+  toolTipCanvas: {fileID: 0}
 --- !u!1 &5069832656105670567
 GameObject:
   m_ObjectHideFlags: 0

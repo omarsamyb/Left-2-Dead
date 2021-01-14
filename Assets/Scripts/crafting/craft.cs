@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class craft : MonoBehaviour
 {
-    public static craft instance;
     public InventoryObject ingredientInventory;
     // alcohol  bile  canister  gunpowder  rag  sugar
     //    0      1       2         3        4     5
@@ -101,20 +100,5 @@ public class craft : MonoBehaviour
             p.Stop();
         }
     }
-    public void makeBileCheat(){
-        CraftableInventory.container[0].addAmount(1);
-        PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Bile Bomb");
-    }
-    public void makeMolotovCheat(){
-        CraftableInventory.container[1].addAmount(1);
-        PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Molotov Cocktail");
-    }
-    public void makePipeCheat(){
-        CraftableInventory.container[2].addAmount(1);
-        PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Pipe Bomb");
-    }
-    public void makeStunCheat(){
-        CraftableInventory.container[3].addAmount(1);
-        PlayerController.instance.player.GetComponent<GunInventory>().AddGrenade("Stun Grenade");
-    }
+
 }
