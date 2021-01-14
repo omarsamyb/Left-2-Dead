@@ -13,6 +13,8 @@ TagManager:
   - Horde
   - Companion
   - Grenade
+  - Others
+  - FinalBoss
   layers:
   - Default
   - TransparentFX

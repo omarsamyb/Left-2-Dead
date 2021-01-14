@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     private float groundDistance;
     private LayerMask groundMask;
-    public bool isGrounded;
+    [HideInInspector] public bool isGrounded;
     private float jumpHeight;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
@@ -55,6 +55,10 @@ public class PlayerController : MonoBehaviour
     private MouseLook mouseLook;
     [HideInInspector] public bool isGettingPinned;
     public AudioClip[] damagedSFX;
+    public AudioClip deathSFX;
+    private PlayerVoiceOver pvo;
+    private CompanionVoiceOver cvo;
+    private int damagedIndex;
     
     private void Awake()
     {
@@ -83,6 +87,8 @@ public class PlayerController : MonoBehaviour
         characterAnimation = character.GetComponent<Animation>();
         rage = GetComponent<Rage>();
         addHealthTime = 1;
+        pvo = GetComponent<PlayerVoiceOver>();
+        cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
     }
 
     void Update()
@@ -203,15 +209,23 @@ public class PlayerController : MonoBehaviour
     // Health
     private void Die()
     {
+        cvo.PlayerDeath();
+        AudioManager.instance.Stop("DamagedSFX");
+        AudioManager.instance.SetClip("DamagedSFX", deathSFX);
+        AudioManager.instance.Play("DamagedSFX");
         character.SetActive(true);
         if (isPinned || isPartiallyPinned)
             characterAnimation.Play("Die_Pinned");
         else
         {
             characterAnimation.Play("Die");
-            Camera.main.transform.position += Vector3.forward - Vector3.right - Vector3.up * 0.5f;
+            Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward * 2f;
+            camVector.y = 0f;
+            camVector += Vector3.up;
+            Camera.main.transform.position = camVector;
         }
         character.transform.parent = null;
+        GameManager.instance.isGameOver = true;
     }
     public void AddHealth(int points)
     {
@@ -225,19 +239,23 @@ public class PlayerController : MonoBehaviour
             healthBar.SetHealth(health);
             if (health <= 0)
                 Die();
-            else if(UnityEngine.Random.Range(0, 2) == 0)
+            else if(!AudioManager.instance.isPlaying("DamagedSFX"))
             {
-                AudioClip clip = damagedSFX[UnityEngine.Random.Range(0, damagedSFX.Length)];
+                AudioClip clip = damagedSFX[damagedIndex];
                 AudioManager.instance.SetClip("DamagedSFX", clip);
-                AudioManager.instance.PlayOneShot("DamagedSFX");
+                AudioManager.instance.Play("DamagedSFX");
+                damagedIndex = (damagedIndex + 1) % damagedSFX.Length;
             }
 
             if (damageFadeRoutine != null)
                 StopCoroutine(damageFadeRoutine);
             damageFadeRoutine = StartCoroutine(DamagedEffect());
 
-            if (health < 50 && !AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
-                StartCoroutine(CriticallyDamagedEffect());
+            if (health < 50) {
+                cvo.HealUp();
+                if(!AudioManager.instance.isPlaying("CriticallyDamagedSFX"))
+                    StartCoroutine(CriticallyDamagedEffect());
+            }
         }
     }
    
@@ -257,11 +275,15 @@ public class PlayerController : MonoBehaviour
         character.SetActive(true);
         characterAnimation.Play("Pinned");
         Vector3 origPos = Camera.main.transform.localPosition;
-        Camera.main.transform.position -= Vector3.forward - Vector3.right + Vector3.up;
+        Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward * 2f;
+        camVector.y = 0f;
+        camVector += Vector3.up;
+        Camera.main.transform.position = camVector;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         while (isPinned)
             yield return null;
+        pvo.StartCoroutine(pvo.Unpinned(1));
         characterAnimation.Stop("Pinned");
         character.SetActive(false);
         character.transform.SetParent(origParent);
@@ -281,6 +303,7 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator GetPartiallyPinnedHelper(VertexPath path, float speed, Vector3 poi)
     {
+        pvo.StartCoroutine(pvo.Pinned());
         weaponInventory.currentHandsAnimator.SetTrigger("reset");
         yield return new WaitForEndOfFrame();
         weaponInventory.currentGun.SetActive(false);
@@ -317,6 +340,7 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f;
         while (isPartiallyPinned)
             yield return null;
+        pvo.StartCoroutine(pvo.Unpinned(0));
         Vector3 resetY = transform.position;
         resetY.y += 2;
         transform.position = resetY;
@@ -389,26 +413,9 @@ public class PlayerController : MonoBehaviour
     }
     public void BileVisionEffect()
     {
-        AudioManager.instance.Play("BileEffectSFX");
+        pvo.StartCoroutine(pvo.Bile());
         bileEffect.SetActive(true);
         bileVisionTime = bileVisionTimeRef;
-    }
-    
-    // GUI
-    void OnGUI()
-    {
-        if (!HUD_health)
-        {
-            try
-            {
-                HUD_health = GameObject.Find("HUD_health").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                // print("Couldnt find the HUD_health ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_health)
-            HUD_health.text = health.ToString();
+        AudioManager.instance.Play("BileEffectSFX");
     }
 }

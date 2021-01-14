@@ -9,6 +9,7 @@ public class TankController : EnemyContoller
     public override IEnumerator applyDamage(PlayerController cont)
     {
         float frames=50/2.0f;
+        ef.Attack(0);
         yield return new WaitForSeconds(frames/30.0f);
         
         if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance+0.5f && isFacingEachOther())
@@ -18,6 +19,7 @@ public class TankController : EnemyContoller
     {
         float frames=50/2.0f;
         yield return new WaitForSeconds(frames/30.0f);
+        ef.Attack(0);
         if (cont.health > 0 && currentState == State.attack && Vector3.Distance(transform.position,attackTarget.position)<attackDistance+0.5f && isFacingEachOther())
             cont.TakeDamage(damagePerSec);
     }
@@ -65,7 +67,7 @@ public class TankController : EnemyContoller
 
         else if (currentState == State.chasing)
         {
-            if (navMeshAgent.remainingDistance < attackDistance && canAttack)
+            if (navMeshAgent.remainingDistance < attackDistance && canAttack && canAttackCheck(attackTarget))
             {
                 attack();
             }
@@ -91,7 +93,7 @@ public class TankController : EnemyContoller
             {
                 chase(attackTarget);
             }
-            else if (canAttack && isAlive(attackTarget))
+            else if (canAttack && canAttackCheck(attackTarget))
             {
                 attack();
             }

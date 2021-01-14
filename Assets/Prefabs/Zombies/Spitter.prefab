@@ -940,20 +940,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0fc297b84a5d67489299c7dbcc008ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  source: {fileID: 6308430963605989881}
   idleClips:
-  - {fileID: 8300000, guid: 90d342cf6f89440b9aa6c6ef4af6af88, type: 3}
-  - {fileID: 8300000, guid: 8c8b4012f639545b2a1f70a2082307b3, type: 3}
-  - {fileID: 8300000, guid: ad7b6eb3c723442b483e6b280fa02230, type: 3}
-  - {fileID: 8300000, guid: d254381ee39254b86b2ad79941106ced, type: 3}
-  - {fileID: 8300000, guid: 51481181258134093b3ac957766db260, type: 3}
-  - {fileID: 8300000, guid: c9bd2da8e9aef4886a02e17824e44eb1, type: 3}
-  attackAndChasingClips:
-  - {fileID: 8300000, guid: 2628db55e50fe41cc9879051d359847a, type: 3}
-  - {fileID: 8300000, guid: 94e452828af664292a97c95ec9452126, type: 3}
-  - {fileID: 8300000, guid: 2c706f39dc7b645e0a17766d7757d4c5, type: 3}
-  - {fileID: 8300000, guid: c5e72c14120434b7d8c3248afc4851b6, type: 3}
-  - {fileID: 8300000, guid: 2e0680160a6414c50821ce2b3586bedf, type: 3}
-  - {fileID: 8300000, guid: 7666bab29b4a04b149e8f5cefdf0c6e6, type: 3}
+  - {fileID: 8300000, guid: a4e78e13a853b994aa223e6f62a06f0a, type: 3}
+  - {fileID: 8300000, guid: e22938c79fddd6d4eb7b2332aafc8234, type: 3}
+  - {fileID: 8300000, guid: 72888973dfa50294897ec8231f97a42d, type: 3}
+  - {fileID: 8300000, guid: 27056815d6b18e64396c4c45d39a3416, type: 3}
+  - {fileID: 8300000, guid: fbcda7b8cb4d766439e9a641d52d9fbf, type: 3}
+  - {fileID: 8300000, guid: cb929779a29411a4db6aaa4533e46c33, type: 3}
+  - {fileID: 8300000, guid: ed726ec87ab62764fa2d496582c66b1d, type: 3}
+  - {fileID: 8300000, guid: 24eab8050320ff745a049799d25daaa0, type: 3}
+  - {fileID: 8300000, guid: a5976b4a684d8f640bdd82d831299b04, type: 3}
+  - {fileID: 8300000, guid: 5878d67a896c86c4486227456073bad6, type: 3}
+  - {fileID: 8300000, guid: 6fd5289788ca3664aa62114225d9237c, type: 3}
+  - {fileID: 8300000, guid: 6e63fa9606987224ba4ff038c3aed42a, type: 3}
+  - {fileID: 8300000, guid: e98e8dfba1601dd478799492139e0cc3, type: 3}
+  - {fileID: 8300000, guid: 8ad0d9962a7819844ab037488d3e7626, type: 3}
+  - {fileID: 8300000, guid: db2c79830d59dac40a56ff44ef7d49f5, type: 3}
+  - {fileID: 8300000, guid: 07c2b0e1cbabf8c4eb8800acc5146980, type: 3}
+  - {fileID: 8300000, guid: 8a13dcd724539704fa40dbef703dbbe8, type: 3}
+  - {fileID: 8300000, guid: 700745aa88a2a5749b35ae822b8680fa, type: 3}
+  - {fileID: 8300000, guid: 7c57e965f99d1b2438a19fbbd1cf1de0, type: 3}
+  chasingClips:
+  - {fileID: 8300000, guid: fba381f8e011d4f43bd59a2b6544ec6e, type: 3}
+  - {fileID: 8300000, guid: ed88b65cd8eaf8645b05d86a89efed3c, type: 3}
+  - {fileID: 8300000, guid: 32040979a46456243b2563ffc96aaf71, type: 3}
+  - {fileID: 8300000, guid: f68d7b3c0272d2b4f9bb6661165ddb6b, type: 3}
+  - {fileID: 8300000, guid: 76ed3f260aab91647ad2e9f1d3016c60, type: 3}
+  - {fileID: 8300000, guid: 9f007f5292a49bf42b4a67242f131d5b, type: 3}
+  - {fileID: 8300000, guid: 460d6c45e8ca0c34896d4556dde626ae, type: 3}
+  - {fileID: 8300000, guid: a961eb6d02941f54c9f82ccef18d0783, type: 3}
+  damagedClips:
+  - {fileID: 8300000, guid: 453ec2004ebbef9498e96e53d1ddf067, type: 3}
+  - {fileID: 8300000, guid: 6417ed54ac46a9d45834c523ae15b464, type: 3}
+  - {fileID: 8300000, guid: 1082f10d48e8a7845b851ee83e4b9041, type: 3}
+  deadClips:
+  - {fileID: 8300000, guid: c4ed347d592b8d243b3a2b7c03cfe76e, type: 3}
+  - {fileID: 8300000, guid: 99aa68d1d6d841547a8c2cb9a3c42e2e, type: 3}
+  attackClips:
+  - {fileID: 8300000, guid: fa0838617df039a40bfc740679041b8c, type: 3}
+  - {fileID: 8300000, guid: e67b9f10499a1344381208cd1bf526c5, type: 3}
 --- !u!82 &6308430963605989881
 AudioSource:
   m_ObjectHideFlags: 0
@@ -974,10 +1000,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 5
-  MaxDistance: 50
+  MinDistance: 2
+  MaxDistance: 15
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -985,23 +1011,41 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
+      time: 0.10663147
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -5.0019917
+      outSlope: -5.0019917
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.34526673
+      value: 0.35775757
+      inSlope: -1.2504979
+      outSlope: -1.2504979
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.7034424
+      value: 0.06982422
+      inSlope: -0.6282323
+      outSlope: -0.6282323
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.5071153
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0.20007975
+      outSlope: -0.20007975
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1084,9 +1128,8 @@ MonoBehaviour:
   healthBar: {fileID: 5325233032574439246}
   healthBarUI: {fileID: 7354511652689919010}
   bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
-  hurtSFX: {fileID: 8300000, guid: c920eba22a44b4f1b8d9aa13573104cb, type: 3}
   isPinned: 0
-  hitPoint: {fileID: 0}
+  hitPoint: {fileID: 8381429170843586958}
   walkPoint: {x: 0, y: 0, z: 0}
   walkPointRange: 0
   whatIsGround:

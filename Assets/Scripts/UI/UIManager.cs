@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -10,107 +11,151 @@ public class UIManager : MonoBehaviour
     public GameObject inventoryCanvas;
     public GameObject gameScreenCanvas;
     public GameObject pickUpCanvas;
+    public GameObject gameOverScreen;
+    public GameObject toolTipCanvas;
+
     private bool craftingToggle = false;
     private bool inventoryPanelToggle = false;
     private bool gameScreenCanvasToggle = true;
     private bool pickUpCanvasToggle = false;
-    private bool InGamePause = false;
+    private bool toolTipCanvasToggle = false;
 
     void Update(){
         if (Input.GetKeyDown(KeyCode.E))
         {
             if(gameScreenCanvasToggle){
                 pickUpCanvasToggle = !pickUpCanvasToggle;
-                if(pickUpCanvasToggle == false )
+                if(pickUpCanvasToggle)
                 {
-                    lockCursor();
+                    unLockCursor();
+                    pickUpMenu(true);
                 }
                 else
                 {
-                    unLockCursor();
+                    lockCursor();
+                    pickUpMenu(false);
                 }
                 pickUpCanvas.SetActive(pickUpCanvasToggle);
             }
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            inventoryPanelToggle = false;
-            inventoryCanvas.SetActive(inventoryPanelToggle);
-            gameScreenCanvasToggle = false;
-            gameScreenCanvas.SetActive(gameScreenCanvasToggle);
-
-            craftingToggle = !craftingToggle;
-            if(craftingToggle == false )
-            {
-                Resume();
-            }
-            else
-            {
-                PauseGame();
-                craftingCanvas.SetActive(craftingToggle);
-            }
+            LoadCrafting();
         }
         if (Input.GetKeyDown(KeyCode.I))
         {
-            craftingToggle = false;
-            craftingCanvas.SetActive(craftingToggle);
-            gameScreenCanvasToggle = false;
-            gameScreenCanvas.SetActive(gameScreenCanvasToggle);
-
-            inventoryPanelToggle = !inventoryPanelToggle;
-            if(inventoryPanelToggle == false )
-            {
-                Resume();
-            }
-            else
-            {
-                PauseGame();
-                inventoryCanvas.SetActive(inventoryPanelToggle);
-            }
+            LoadInventory();
         }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            LoadInventory();
+        }
+        if(GameManager.instance.isGameOver)
+        {
+
+            showGameOverScreen();
+        }
+
     }
     public void Resume()
     {
         GameManager.instance.inMenu = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        InGamePause = false;
-        inventoryPanelToggle = false;
-        inventoryCanvas.SetActive(inventoryPanelToggle);
-        craftingToggle = false;
-        craftingCanvas.SetActive(craftingToggle);
-        gameScreenCanvasToggle = true;
-        gameScreenCanvas.SetActive(gameScreenCanvasToggle);
-        Time.timeScale = 1f;
+        hideInventoryScreen();
+        hideCraftingScreen();
+        showGameScreen();
     }
     
-    public void onCanvasResume()
+    public void RestartLevel()
     {
-        Debug.Log("Hello");
-        GameManager.instance.inMenu = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        InGamePause = false;
-        inventoryPanelToggle = false;
-        inventoryCanvas.SetActive(inventoryPanelToggle);
-        craftingToggle = false;
-        craftingCanvas.SetActive(craftingToggle);
-        Time.timeScale = 1f;
+        SceneManager.LoadScene("CurrentLevel"); // ToDo Change the string with the actual level scene
     }
 
-
-    public void PauseGame(){
-        GameManager.instance.inMenu = true;
-        Cursor.lockState = CursorLockMode.None;
-        Time.timeScale = 0f;
-        InGamePause = true;
+    public void ToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenuScene"); // ToDo Change with actual main menu
     }
 
+    public void LoadCrafting(){
+        hideInventoryScreen();
+        hideGameScreen();
+        craftingToggle = !craftingToggle;
+        if(craftingToggle == false )
+        {
+            Resume();
+        }
+        else
+        {
+            GameManager.instance.inMenu = true;
+            craftingCanvas.SetActive(craftingToggle);
+        }
+    }
+    public void LoadInventory(){
+        hideCraftingScreen();
+        hideGameScreen();
+        inventoryPanelToggle = !inventoryPanelToggle;
+        if(inventoryPanelToggle == false )
+        {
+            Resume();
+        }
+        else
+        {
+            GameManager.instance.inMenu = true;
+            inventoryCanvas.SetActive(inventoryPanelToggle);
+        }
+    }
     public void unLockCursor(){
         GameManager.instance.inMenu = true;
         Cursor.lockState = CursorLockMode.None;
     }
-
     public void lockCursor(){
         GameManager.instance.inMenu = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void hideInventoryScreen()
+    {
+        inventoryPanelToggle = false;
+        inventoryCanvas.SetActive(inventoryPanelToggle);
+    }
+    public void hideCraftingScreen()
+    {
+        craftingToggle = false;
+        craftingCanvas.SetActive(craftingToggle);
+    }
+    public void hideGameScreen()
+    {
+        gameScreenCanvasToggle = false;
+        gameScreenCanvas.SetActive(gameScreenCanvasToggle);
+    }
+    public void showGameScreen()
+    {
+        gameScreenCanvasToggle = true;
+        gameScreenCanvas.SetActive(gameScreenCanvasToggle);
+    }
+    public void hideToolTipScreen()
+    {
+        toolTipCanvasToggle = false;
+        toolTipCanvas.SetActive(toolTipCanvasToggle);
+    }
+    public void showToolTipScreen()
+    {
+        toolTipCanvasToggle = true;
+        toolTipCanvas.SetActive(toolTipCanvasToggle);
+    }
+
+    public void showGameOverScreen()
+    {
+
+        hideCraftingScreen();
+        hideInventoryScreen();
+        hideGameScreen();
+        gameOverScreen.SetActive(true);
+    }
+    public void QuitGame(){
+        Application.Quit();
+    }
+
+    public void pickUpMenu(bool b){
+        GameManager.instance.inPickUp = b;
     }
 }

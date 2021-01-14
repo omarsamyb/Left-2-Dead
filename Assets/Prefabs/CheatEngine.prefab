@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &30344597749079297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 30344597749079327}
+  - component: {fileID: 30344597749079296}
+  m_Layer: 0
+  m_Name: CheatEngine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &30344597749079327
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30344597749079297}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 241.92625, y: 238.70786, z: 67.46174}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &30344597749079296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 30344597749079297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fdd015b3ddcc25ebd953a098433f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthPack: {fileID: 981184813157034947, guid: a94d53ddefe70fa4db13bd2b6c7084d9, type: 3}
+  ammoPack: {fileID: 2554642822049653102, guid: 0e598389683f75e4c84aaa87ea3b16b8, type: 3}
+  ammoPack2: {fileID: 5052987719261960285, guid: 313b525b1105c75489e5825d9eae5778, type: 3}
+  ammoPack3: {fileID: 3818119856968677563, guid: c76b7add13b5f2145985c995f8f74b79, type: 3}
+  zombiePrefabs:
+  - {fileID: 3029563786236463361, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
+  - {fileID: 3632078133279313771, guid: 2b6255ca266919e429f04cccd3f7855f, type: 3}
+  - {fileID: 4772046187931530648, guid: 4d535059b2be8e8409d47502c79c81cb, type: 3}
+  - {fileID: 5623222005766069842, guid: f58e0419841daad4283a7e676b5599d1, type: 3}
+  - {fileID: 2508290275182364338, guid: 1fb373c237d7e6849adfef77a9b567e4, type: 3}
+  - {fileID: 9101926080393255393, guid: 3fe6afccac5cb2544bb2b933ad2f7009, type: 3}
+  - {fileID: 8703813418788178550, guid: ab9f226c5fe3c3c49befb882b816466e, type: 3}
+  ingredientInventory: {fileID: 11400000, guid: 32e3dc2c67934a541911154dc5bb7296, type: 2}
+  CraftableInventory: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}

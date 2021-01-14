@@ -33,27 +33,20 @@ public class ParticleThrow : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (LayerMask.LayerToName(other.gameObject.layer) == "World" || LayerMask.LayerToName(other.gameObject.layer) == "Player")
-        {
-            if (LayerMask.LayerToName(other.gameObject.layer) == "World")
-                createPuddle();
-
-        }
-
+        if (LayerMask.LayerToName(other.gameObject.layer) == "World")
+            createPuddle();
     }
 
     public void ReleaseMe()
     {
-        
         this.gameObject.SetActive(true);
-        transform.parent = null;
-
         rb.useGravity = true;
         transform.rotation = head.transform.rotation;
-        Vector3 dir = player.position - transform.position;         
+        Vector3 dir = Spitter.attackingPosition - transform.position;
+        // dir.y=0;         
         float distance = dir.magnitude;         
-        dir.Normalize();         
-        rb.AddForce(dir * distance * 20,ForceMode.Impulse);
+        rb.AddForce(dir*25,ForceMode.Impulse);
         rb.AddForce(transform.up*50, ForceMode.Impulse);
+        rb.AddTorque(new Vector3(10, 0, 10));
     }
 }

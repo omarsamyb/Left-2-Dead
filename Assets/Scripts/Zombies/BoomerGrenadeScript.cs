@@ -11,12 +11,11 @@ public class BoomerGrenadeScript : MonoBehaviour
     Vector3 endPoint;
     public float timer = 0;
     private Vector3 direction;
-    private bool isSpawned = false;
     public float thrust = 20f;
     Rigidbody rb;
     private bool hitGround;
     public GameObject Explosion;
-    float explosionRadius = 3;
+    float explosionRadius = 2.5f;
     private LayerMask playerLayer;
 
     public GameObject thunder;
@@ -29,8 +28,9 @@ public class BoomerGrenadeScript : MonoBehaviour
         endPoint = new Vector3(playerTransform.position.x, transform.position.y, playerTransform.position.z);
         direction = (endPoint - startPoint).normalized;
         rb = GetComponent<Rigidbody>();
+  
         float dist = Vector3.Distance(playerTransform.position, transform.position);
-        rb.velocity = new Vector3(direction.x, 0f, direction.z) * thrust * (dist / 10.0f);
+        rb.velocity = new Vector3(direction.x, 0f, direction.z) * thrust * (Mathf.Min(dist,10.0f) / 10.0f);
         rb.AddTorque(new Vector3(10, 0, 10));
         playerLayer = 1 << LayerMask.NameToLayer("Player");
 
@@ -64,7 +64,7 @@ public class BoomerGrenadeScript : MonoBehaviour
     {
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 16; i++)
         {
             Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, playerLayer);
             if (hits.Length > 0)
@@ -72,7 +72,7 @@ public class BoomerGrenadeScript : MonoBehaviour
                 EffectOfBile();
                 yield break;
             }
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.25f);
         }
         Destroy(this.gameObject);
     }

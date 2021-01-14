@@ -6,11 +6,10 @@ public class Rage : MonoBehaviour
 {
     private float rageResetRef = 3f;
     private float rageDurationRef = 10f;
-    private float rageReset;
+    public float rageReset;
     private float rageDuration;
-    private int ragePoints;
-    private bool canActivate;
-    private TextMesh HUD_rage;
+    public int ragePoints;
+    public bool canActivate;
     public GameObject character;
     private Animation characterAnimation;
     private GunInventory gunInventory;
@@ -19,6 +18,7 @@ public class Rage : MonoBehaviour
     private int specialKillPointsRef = 50;
     private int normalKillPoints = 10;
     private int specialKillPoints = 50;
+    private PlayerVoiceOver pvo;
 
     public event Action<float> OnRageChange = delegate { };
 
@@ -30,6 +30,7 @@ public class Rage : MonoBehaviour
         characterAnimation = character.GetComponent<Animation>();
         gunInventory = GetComponent<GunInventory>();
         canBeDamaged = true;
+        pvo = GetComponent<PlayerVoiceOver>();
     }
 
     void Update()
@@ -80,13 +81,17 @@ public class Rage : MonoBehaviour
             ragePoints = Mathf.Clamp(ragePoints + specialKillPoints, 0, 100);
         else
             ragePoints = Mathf.Clamp(ragePoints + normalKillPoints, 0, 100);
-        if (ragePoints == 100)
+        if (ragePoints == 100 && !canActivate)
+        {
             canActivate = true;
+            pvo.StartCoroutine(pvo.Rage());
+        }
         OnRageChange((float)ragePoints / 100f);
     }
 
-    IEnumerator ActivateRageMode()
+    public IEnumerator ActivateRageMode()
     {
+        AudioManager.instance.Stop("PlayerVoice");
         canBeDamaged = false;
         AudioManager.instance.Play("RageModeMusic");
         GameManager.instance.inRageMode = true;
@@ -94,7 +99,10 @@ public class Rage : MonoBehaviour
         character.SetActive(true);
         characterAnimation.Play("Rage");
         Vector3 origPos = Camera.main.transform.localPosition;
-        Camera.main.transform.position -= Camera.main.transform.forward + Camera.main.transform.up * 0.5f;
+        Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward;
+        camVector.y = 0f;
+        camVector += Vector3.up * 1.2f;
+        Camera.main.transform.position = camVector;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         yield return new WaitForSeconds(0.1f);
@@ -107,21 +115,8 @@ public class Rage : MonoBehaviour
         Camera.main.transform.localPosition = origPos;
         canBeDamaged = true;
     }
-
-    void OnGUI()
+    public void rageCheats()
     {
-        if (!HUD_rage)
-        {
-            try
-            {
-                HUD_rage = GameObject.Find("HUD_rage").GetComponent<TextMesh>();
-            }
-            catch (System.Exception ex)
-            {
-                // print("Couldnt find the HUD_Bullets ->" + ex.StackTrace.ToString());
-            }
-        }
-        if (HUD_rage)
-            HUD_rage.text = ragePoints.ToString() + " - " + rageReset.ToString() + " - " + rageDuration.ToString();
+        OnRageChange((float)ragePoints / 100f);
     }
 }

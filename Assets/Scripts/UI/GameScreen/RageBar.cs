@@ -29,7 +29,7 @@ public class RageBar : MonoBehaviour
         StartCoroutine(ModifyBar(percentage));
     }
 
-    IEnumerator ModifyBar(float percentage)
+    public IEnumerator ModifyBar(float percentage)
     {
         coroutineRunning = true;
         yield return new WaitForEndOfFrame();
