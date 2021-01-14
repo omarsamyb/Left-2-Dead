@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Rage : MonoBehaviour
 {
+    public static Rage instance;
     private float rageResetRef = 3f;
     private float rageDurationRef = 10f;
     private float rageReset;
     private float rageDuration;
-    private int ragePoints;
+    public int ragePoints;
     private bool canActivate;
     public GameObject character;
     private Animation characterAnimation;

@@ -51,6 +51,7 @@ public class UIManager : MonoBehaviour
 
             showGameOverScreen();
         }
+
     }
     public void Resume()
     {
