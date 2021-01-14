@@ -5,14 +5,20 @@ using UnityEngine;
 public class MeteorScript : MonoBehaviour
 {
     Rigidbody rb;
+    public AudioSource source;
+    public AudioClip audioClip;
     public GameObject horde;
+    public GameObject dustExplosion;
+    bool canSpawnZombies;
     public void Start()
     {
         rb = GetComponent<Rigidbody>();
-        gameObject.SetActive(false);
+        source = GetComponent<AudioSource>();
+        transform.localScale = new Vector3(0,0,0);
     }
     public void ThrowMeteor()
     {
+        canSpawnZombies = true;
         rb.useGravity = true;
         Vector3 dir = PlayerController.instance.player.transform.position - transform.position;
         dir = Vector3.Normalize(dir);
@@ -22,18 +28,16 @@ public class MeteorScript : MonoBehaviour
     
     void OnTriggerEnter(Collider other)
     {
-        print(other.gameObject.name);
-        if(other.gameObject.tag!="FinalBoss")
-            gameObject.SetActive(false);
-        if(LayerMask.LayerToName(other.gameObject.layer) == "Player")
-        {
+        if(other.gameObject.tag=="FinalBoss" || !canSpawnZombies)
+            return;
+        transform.localScale = new Vector3(0,0,0);
+        if(Vector3.Distance(PlayerController.instance.player.transform.position, transform.position)<7)
             PlayerController.instance.TakeDamage(50);
-        }
-        else if (LayerMask.LayerToName(other.gameObject.layer) == "World")
-        {
-            GameObject myHorde = Instantiate(horde);
-            myHorde.transform.position = transform.position;
-            print(myHorde.transform.position);
-        }
+        else
+            Instantiate(horde, transform.position, Quaternion.identity);
+        source.clip = audioClip;
+        source.Play();
+        Instantiate(dustExplosion, transform.position, Quaternion.identity);
+        canSpawnZombies = false;
     }
 }

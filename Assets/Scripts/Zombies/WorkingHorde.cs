@@ -36,12 +36,15 @@ public class WorkingHorde : MonoBehaviour
             for(int j=-1;j<3;j++)
                 if(i!=0 || j!=0)
                     createZombie(normal, new Vector3(i, 0, j*0.5f) + transform.position);
+        Destroy(gameObject);
     }
     void createZombie(GameObject zombie, Vector3 location)
     {
         NavMeshHit myNavHit;
-        if(NavMesh.SamplePosition(location, out myNavHit, 2f , -1))
+        if(NavMesh.SamplePosition(location, out myNavHit, 6f , -1))
+        {
             Instantiate(zombie, myNavHit.position, Quaternion.identity);
+        }
     }
     GameObject pickRandomZombie()
     {

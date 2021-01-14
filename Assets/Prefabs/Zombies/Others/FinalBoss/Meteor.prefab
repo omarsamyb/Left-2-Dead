@@ -450,4 +450,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ebc7cbd5c47b0d4f99ebf0784e04181, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horde: {fileID: 6639763828832172116, guid: 84ec3bae6fe148243879be464f747e70, type: 3}
+  horde: {fileID: 8703813418788178550, guid: ab9f226c5fe3c3c49befb882b816466e, type: 3}
+  dustExplosion: {fileID: 3462934636064644948, guid: c5ec55171462dd24080aade3316d07d4, type: 3}
