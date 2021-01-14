@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool inRageMode;
     [HideInInspector] public int companionId; // 0 - Ellie, 1 - Zoey, 2 - Louis
     [HideInInspector] public bool inMenu; 
+    [HideInInspector] public bool inPickUp; 
     [HideInInspector] public bool isGameOver; 
 
     private void Awake()
@@ -18,12 +19,19 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
+
+    void Start(){
+        
+    }
+
     private void Update()
     {
         if(inMenu || isGameOver) // Pause
         {
             Cursor.lockState = CursorLockMode.None;
-            Time.timeScale = 0f;
+            if(!inPickUp || isGameOver){
+                Time.timeScale = 0f;
+            }
         }
         else // Resume
         {

@@ -27,7 +27,7 @@ public class craft : MonoBehaviour
     }
 
     public void makeBile(){
-        if(ingredientInventory.container[1].amount >= 1 && ingredientInventory.container[2].amount >= 1 && ingredientInventory.container[3].amount >= 1){
+        if(ingredientInventory.container[1].amount >= 1 && ingredientInventory.container[2].amount >= 1 && ingredientInventory.container[3].amount >= 1 && CraftableInventory.container[0].amount < 1){
             ingredientInventory.container[1].addAmount(-1);
             ingredientInventory.container[2].addAmount(-1);
             ingredientInventory.container[3].addAmount(-1);
@@ -40,7 +40,7 @@ public class craft : MonoBehaviour
         }
     }
     public void makeMolotov(){
-        if(ingredientInventory.container[0].amount >= 2 && ingredientInventory.container[4].amount >= 2){
+        if(ingredientInventory.container[0].amount >= 2 && ingredientInventory.container[4].amount >= 2 && CraftableInventory.container[1].amount < 3){
             ingredientInventory.container[0].addAmount(-2);
             ingredientInventory.container[5].addAmount(-2);
             StartCoroutine(succORfail(succParticle, molotovTarget));
@@ -52,7 +52,7 @@ public class craft : MonoBehaviour
         }
     }
     public void makePipe(){
-        if(ingredientInventory.container[0].amount >= 1 && ingredientInventory.container[2].amount >= 1 && ingredientInventory.container[3].amount >= 1){
+        if(ingredientInventory.container[0].amount >= 1 && ingredientInventory.container[2].amount >= 1 && ingredientInventory.container[3].amount >= 1 && CraftableInventory.container[2].amount < 2){
             ingredientInventory.container[0].addAmount(-1);
             ingredientInventory.container[2].addAmount(-1);
             ingredientInventory.container[3].addAmount(-1);
@@ -65,7 +65,7 @@ public class craft : MonoBehaviour
         }
     }
     public void makeStun(){
-        if(ingredientInventory.container[3].amount >= 2 && ingredientInventory.container[5].amount >= 1){
+        if(ingredientInventory.container[3].amount >= 2 && ingredientInventory.container[5].amount >= 1 && CraftableInventory.container[3].amount < 2){
             ingredientInventory.container[3].addAmount(-2);
             ingredientInventory.container[5].addAmount(-1);
             StartCoroutine(succORfail(succParticle, stunTarget));
