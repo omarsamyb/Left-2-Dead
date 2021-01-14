@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a87a1a3370d19454d826cdce50787a3b, type: 3}
+  m_Name: craftable inventory
+  m_EditorClassIdentifier: 
+  container:
+  - item: {fileID: 11400000, guid: 372c3867f71015f49a5e47e2ec154247, type: 2}
+    amount: 0
+  - item: {fileID: 11400000, guid: 8ce202baf290c8e419bff57b3a64c52a, type: 2}
+    amount: 0
+  - item: {fileID: 11400000, guid: ffa07c73041fcfc4a9cdb98cff5318a5, type: 2}
+    amount: 0
+  - item: {fileID: 11400000, guid: 8aede8535864cf043856a559a38a036e, type: 2}
+    amount: 0
+  - item: {fileID: 11400000, guid: 71d7742d306d65849b56e32bd1890d61, type: 2}
+    amount: 0

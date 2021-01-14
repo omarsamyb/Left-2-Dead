@@ -38,7 +38,7 @@ ModelImporter:
       name: leap
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 0
+      firstFrame: 30
       lastFrame: 77
       wrapMode: 0
       orientationOffsetY: 0
@@ -50,8 +50,8 @@ ModelImporter:
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
       heightFromFeet: 0

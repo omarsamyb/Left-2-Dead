@@ -20,39 +20,61 @@ public class GunInventory : MonoBehaviour
     [Tooltip("Size of icon in percetanges of screen.")]
     public Vector2 size;
 
-    private Animator currentHandsAnimator;
+    [HideInInspector] public Animator currentHandsAnimator;
     private int currentGunCounter = 0;
     public List<string> gunsIHave = new List<string>();
-    private Texture[] icons;
     private float switchWeaponCooldown;
     private List<GameObject> myWeapons = new List<GameObject>();
 
+    [HideInInspector] public int currentGrenadeCounter;
+    public List<string> grenadesIHave = new List<string>();
+    public List<int> grenadesCounter = new List<int>();
+    [HideInInspector] public bool isThrowing;
+    public InventoryObject CraftableInventory;
+    // bile  molotov  pipe  stun  healthpack
+    //  0       1      2     3        4
+
     void Awake()
     {
-        StartCoroutine(UpdateIconsFromResources());
         StartCoroutine(SpawnWeaponUponStart());
         PopulateWeapons();
+    }
+    private void Start()
+    {
         AudioManager.instance.Play("SwitchWeaponSFX");
     }
     void Update()
     {
-        Controls();
-        switchWeaponCooldown += 1 * Time.deltaTime;
+        if(GetComponent<PlayerController>().health>0)
+        {
+            if(!GameManager.instance.inMenu)
+                Controls();
+            switchWeaponCooldown += 1 * Time.deltaTime;
+        }
+        else
+        {
+            currentGun.SetActive(false);
+        }
     }
 
     // Controls
     private void Controls()
     {
-        if (switchWeaponCooldown > 1.2f && Input.GetKey(KeyCode.LeftShift) == false)
+        if (currentGun)
         {
-            WeaponSwitching();
+            GunScript gunState = currentGun.GetComponent<GunScript>();
+            if (switchWeaponCooldown > 1.2f && Input.GetKey(KeyCode.LeftShift) == false && !gunState.isReloading && !gunState.isMelee && !isThrowing && !gunState.isSwitching)
+            {
+                WeaponSwitching();
+                Grenade();
+            }
         }
     }
     private void WeaponSwitching()
     {
-        int prevWeaponCounter = currentGunCounter;
-        if (!myWeapons[prevWeaponCounter].GetComponent<GunScript>().isReloading)
+        if (currentGun.activeSelf)
         {
+            int prevWeaponCounter = currentGunCounter;
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
                 switchWeaponCooldown = 0;
@@ -83,6 +105,19 @@ public class GunInventory : MonoBehaviour
             }
         }
     }
+    private void Grenade()
+    {
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            StartCoroutine(InitiateThrow());
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            currentGrenadeCounter++;
+            if (currentGrenadeCounter > grenadesIHave.Count - 1)
+                currentGrenadeCounter = 0;
+        }
+    }
 
     // Weapons
     public bool AddWeapon(string weaponName)
@@ -95,11 +130,8 @@ public class GunInventory : MonoBehaviour
         {
             gunsIHave.Add(weaponName);
             PopulateWeapons();
-            StartCoroutine(UpdateIconsFromResources());
-            Debug.Log("Added Weapon " + weaponName);
             return true;
         }
-        Debug.Log("Already have weapon");
         return false;
     }
     public int AddAmmo(string weaponName, int amount)
@@ -116,7 +148,6 @@ public class GunInventory : MonoBehaviour
             float currentBulletCount = weapon.bulletsIHave;
             if (currentBulletCount == weapon.maxCapacity)
             {
-                Debug.Log("Max Ammo Capacity Reached");
                 return -1;
             }
             float newCount = currentBulletCount + amount;
@@ -125,7 +156,6 @@ public class GunInventory : MonoBehaviour
             weapon.bulletsIHave = newCount;
             return 1;
         }
-        Debug.Log("We don't have this Ammo's Weapon");
         return 0;
     }
     IEnumerator SpawnWeaponUponStart()
@@ -182,73 +212,78 @@ public class GunInventory : MonoBehaviour
         AudioManager.instance.SetClip("ReadySFX", currentGun.GetComponent<GunScript>().readySFX);
     }
 
-    // GUI
-    void OnGUI()
+    // Grenades
+    private IEnumerator InitiateThrow()
     {
-        if (currentGun)
+        if (grenadesIHave.Count > currentGrenadeCounter)
         {
-            for (int i = 0; i < gunsIHave.Count; i++)
+            AudioManager.instance.Play("ThrowSFX");
+            yield return new WaitForSeconds(0.05f);
+            isThrowing = true;
+            currentHandsAnimator.SetTrigger("isThrowing");
+            yield return new WaitForSeconds(0.07f);
+            StartCoroutine(Throw());
+            removeFromInvObj(grenadesIHave[currentGrenadeCounter]);
+            if(grenadesIHave.Count == 0)
+                print("wtf man");
+            if (grenadesCounter[currentGrenadeCounter] - 1 == 0)
             {
-                DrawCorrespondingImage(i);
-            }
-        }
-    }
-    void DrawCorrespondingImage(int _number)
-    {
-        string deleteCloneFromName = currentGun.name.Substring(0, currentGun.name.Length - 7);
-        if (icons.Length == gunsIHave.Count)
-        {
-            if (menuStyle == MenuStyle.horizontal)
-            {
-                if (deleteCloneFromName == gunsIHave[_number])
+                grenadesIHave.RemoveAt(currentGrenadeCounter);
+                grenadesCounter.RemoveAt(currentGrenadeCounter);
+                if (currentGrenadeCounter == grenadesIHave.Count)
                 {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x + (_number * position_x(spacing)), vec2(beginPosition).y,//position variables
-                        vec2(size).x, vec2(size).y),//size
-                        icons[_number]);
-                }
-                else
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x + (_number * position_x(spacing) + 10), vec2(beginPosition).y + 10,//position variables
-                        vec2(size).x - 20, vec2(size).y - 20),//size
-                        icons[_number]);
+                    currentGrenadeCounter--;
+                    if (currentGrenadeCounter < 0)
+                        currentGrenadeCounter = 0;
                 }
             }
-            else if (menuStyle == MenuStyle.vertical)
+            else
+                grenadesCounter[currentGrenadeCounter]--;
+        }
+    }
+    private IEnumerator Throw()
+    {
+        Vector3 position = currentGun.transform.GetChild(0).Find("L_arm").GetChild(0).GetChild(0).position;
+        GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Grenades/" + grenadesIHave[currentGrenadeCounter].ToString() + ".prefab", typeof(GameObject));
+        Instantiate(resource, position, Quaternion.identity);
+        yield return new WaitForSeconds(1f);
+        isThrowing = false;
+    }
+    public bool AddGrenade(string name)
+    {
+        /*
+         * Returns true if grenade capacity is not full
+         * Returns false otherwise.
+         */
+        int index = grenadesIHave.IndexOf(name);
+        if (index != -1)
+        {
+            int maxCapacity = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Grenades/" + name + ".prefab", typeof(GameObject))).GetComponent<GrenadeScript>().maxCapacity;
+            int value = grenadesCounter[index] + 1;
+            if (value > maxCapacity)
+                return false;
+            else
             {
-                if (deleteCloneFromName == gunsIHave[_number])
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x, vec2(beginPosition).y + (_number * position_y(spacing)),//position variables
-                        vec2(size).x, vec2(size).y),//size
-                        icons[_number]);
-                }
-                else
-                {
-                    GUI.DrawTexture(new Rect(vec2(beginPosition).x, vec2(beginPosition).y + 10 + (_number * position_y(spacing)),//position variables
-                        vec2(size).x - 20, vec2(size).y - 20),//size
-                        icons[_number]);
-                }
+                grenadesCounter[index] = value;
+                return true;
             }
         }
-    }
-    IEnumerator UpdateIconsFromResources()
-    {
-        yield return new WaitForEndOfFrame();
-        icons = new Texture[gunsIHave.Count];
-        for (int i = 0; i < gunsIHave.Count; i++)
+        else
         {
-            icons[i] = (Texture)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/Weapon Icons/" + gunsIHave[i].ToString() + "_img.png", typeof(Texture));
+            grenadesIHave.Add(name);
+            grenadesCounter.Add(1);
+            return true;
         }
     }
-    private float position_x(float var)
-    {
-        return Screen.width * var / 100;
-    }
-    private float position_y(float var)
-    {
-        return Screen.height * var / 100;
-    }
-    private Vector2 vec2(Vector2 _vec2)
-    {
-        return new Vector2(Screen.width * _vec2.x / 100, Screen.height * _vec2.y / 100);
+    
+    void removeFromInvObj(string grenade){
+        if(grenade == "Bile Bomb")
+            CraftableInventory.container[0].addAmount(-1);
+        else if(grenade == "Molotov Cocktail")
+            CraftableInventory.container[1].addAmount(-1);
+        else if(grenade == "Pipe Bomb")
+            CraftableInventory.container[2].addAmount(-1);
+        else
+            CraftableInventory.container[3].addAmount(-1);
     }
 }

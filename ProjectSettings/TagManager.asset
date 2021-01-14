@@ -8,7 +8,12 @@ TagManager:
   - SecondCamera
   - BulletSpawn
   - Enemy
+  - SpecialEnemy
   - Fire
+  - Horde
+  - Companion
+  - Others
+  - FinalBoss
   layers:
   - Default
   - TransparentFX
@@ -22,8 +27,8 @@ TagManager:
   - Weapon
   - World
   - FireLayer
-  - 
-  - 
+  - Enemy
+  - Item
   - 
   - 
   - 

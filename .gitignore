@@ -25,9 +25,13 @@ UnityVS.meta
 /*.unityproj
 /*.booproj
 .vs/
+settings.json
+Assets/Scenes/_Test
+_Test.unity
+_Test.unity.meta
 
 #UnityVS
-
+settings.json
 UnityVS.VersionSpecific.dll*
  
 # ============ #
@@ -52,5 +56,3 @@ ehthumbs.db
 # Other
 /Raw Assets/
 MaxScore.txt
-ProjectSettings/Packages/com.unity.probuilder/Settings.json
-ProjectSettings/Packages/com.unity.probuilder/Settings.json

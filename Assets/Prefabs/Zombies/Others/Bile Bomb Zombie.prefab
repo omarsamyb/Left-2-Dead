@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &1185470099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6914601646843120041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa057e1fab38fd4f98a784256f1b3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timer: 0
+  thrust: 20
+  Explosion: {fileID: 1807845155049051315, guid: fedeff51c2e19504fbb62cb583d66121, type: 3}
+  thunder: {fileID: 106988, guid: 15dec7b07032b2f4aa6f855bfbe120f7, type: 3}
+--- !u!114 &313288479058802196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6914601646843120041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e53541f446ad36e449224100a0c6d6f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hordeCount: 20
+  spawnRatePerSec: 4
+  enemyObj: {fileID: 3029563786236463361, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
+  bomberSpawnFlag: 0
+--- !u!1001 &2690661299736195210
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.761703
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.4590002
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 4.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8208213905343816601, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836836122681211171, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+      propertyPath: m_Name
+      value: Bile Bomb Zombie Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 3358227947600013600, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+--- !u!1 &6914601646843120041 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8836836122681211171, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+  m_PrefabInstance: {fileID: 2690661299736195210}
+  m_PrefabAsset: {fileID: 0}

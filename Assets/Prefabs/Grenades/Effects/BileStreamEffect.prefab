@@ -4675,7 +4675,7 @@ GameObject:
   - component: {fileID: 3598064621612980151}
   - component: {fileID: 272377150457956079}
   m_Layer: 0
-  m_Name: GoopStreamEffect
+  m_Name: BileStreamEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15032,23 +15032,14 @@ ParticleSystem:
           inWeight: 0.51941085
           outWeight: 0.14850122
         - serializedVersion: 3
-          time: 0.19755
-          value: 1
+          time: 0.50338745
+          value: 0
           inSlope: -0
           outSlope: -0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.16554245
           outWeight: 0.78213507
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 0
@@ -15103,23 +15094,14 @@ ParticleSystem:
           inWeight: 0.51941085
           outWeight: 0.14850122
         - serializedVersion: 3
-          time: 0.19755
-          value: 1
+          time: 0.50338745
+          value: 0
           inSlope: -0
           outSlope: -0
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.16554245
           outWeight: 0.78213507
-        - serializedVersion: 3
-          time: 1
-          value: 0
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 0

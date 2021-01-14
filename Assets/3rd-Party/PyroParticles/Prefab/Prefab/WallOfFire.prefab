@@ -4926,10 +4926,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 100
-  IntensityModifier: 2
+  IntensityModifier: 0.5
   IntensityMaxRange:
     Minimum: 0
-    Maximum: 8
+    Maximum: 3
 --- !u!114 &11456478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9608,7 +9608,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0
-  m_Range: 35
+  m_Range: 5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -9696,7 +9696,7 @@ AudioSource:
   m_GameObject: {fileID: 162628}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
   m_audioClip: {fileID: 8300000, guid: 5aadc4dc07dd8c0448550fc57a19a72c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
