@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5965321560055840199}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 6852103399663113184}
   - component: {fileID: 6628264797779563093}
   - component: {fileID: 5758294243078946196}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: SpitBall
   m_TagString: Others
   m_Icon: {fileID: 0}
@@ -4904,7 +4904,7 @@ GameObject:
   - component: {fileID: 1307578238736303937}
   - component: {fileID: 1191965500671160765}
   - component: {fileID: 1221392298873834611}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: FireDark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9716,7 +9716,7 @@ GameObject:
   - component: {fileID: 1307411436254962237}
   - component: {fileID: 1222717695583329697}
   - component: {fileID: 1221575434662755339}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Sparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14528,7 +14528,7 @@ GameObject:
   - component: {fileID: 1313868770882302927}
   - component: {fileID: 1192021136538757277}
   - component: {fileID: 1222434552206375287}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

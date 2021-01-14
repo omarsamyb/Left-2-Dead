@@ -87,7 +87,6 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", defaultState == State.idle);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
-        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         
         pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         ef = transform.GetComponent<EnemyEffects>();
