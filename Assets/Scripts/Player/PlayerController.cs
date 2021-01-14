@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     private float groundDistance;
     private LayerMask groundMask;
-    private bool isGrounded;
+    public bool isGrounded;
     private float jumpHeight;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
