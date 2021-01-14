@@ -1064,7 +1064,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   navMeshAgent: {fileID: 0}
   playerTransform: {fileID: 0}
-  defaultState: 0
+  defaultState: 3
   currentState: 0
   animator: {fileID: 2506284069892852989}
   attackDistance: 10
@@ -1078,6 +1078,8 @@ MonoBehaviour:
   childTransform: {fileID: 8369993515795666567}
   attackCooldownTime: 5
   canAttack: 1
+  canHitReaction: 1
+  hitReactionDelay: 5
   damagePerSec: 5
   healthBar: {fileID: 5325233032574439246}
   healthBarUI: {fileID: 7354511652689919010}
@@ -1085,6 +1087,12 @@ MonoBehaviour:
   hurtSFX: {fileID: 8300000, guid: c920eba22a44b4f1b8d9aa13573104cb, type: 3}
   isPinned: 0
   hitPoint: {fileID: 0}
+  walkPoint: {x: 0, y: 0, z: 0}
+  walkPointRange: 0
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 0
+  patrolRandom: 1
 --- !u!1 &3667437718968622345
 GameObject:
   m_ObjectHideFlags: 0

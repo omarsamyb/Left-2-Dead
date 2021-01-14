@@ -1,40 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &230270848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4772046187931530648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e7b231f55a958345846aeabdd11dde4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  navMeshAgent: {fileID: 0}
-  playerTransform: {fileID: 0}
-  defaultState: 0
-  currentState: 0
-  animator: {fileID: 5950963189534785934}
-  attackDistance: 2
-  chaseDistance: 8
-  reachDistance: 0
-  patrolling: []
-  health: 1000
-  attackTarget: {fileID: 0}
-  chaseSpeed: 2
-  patrolSpeed: 0.5
-  childTransform: {fileID: 321512220583812084}
-  attackCooldownTime: 1
-  canAttack: 1
-  damagePerSec: 30
-  healthBar: {fileID: 1495132095172787135}
-  healthBarUI: {fileID: 4271867533247908051}
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
-  hurtSFX: {fileID: 8300000, guid: 0e84038961d6c4b72af49c11e1553b9e, type: 3}
-  isPinned: 0
-  hitPoint: {fileID: 929884376440497770}
 --- !u!1 &634398760552467371
 GameObject:
   m_ObjectHideFlags: 0
@@ -65,6 +30,49 @@ Transform:
   m_Father: {fileID: 292412937672334589}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &230270848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4772046187931530648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e7b231f55a958345846aeabdd11dde4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  navMeshAgent: {fileID: 0}
+  playerTransform: {fileID: 0}
+  defaultState: 3
+  currentState: 0
+  animator: {fileID: 5950963189534785934}
+  attackDistance: 2
+  chaseDistance: 8
+  reachDistance: 0
+  patrolling: []
+  health: 1000
+  attackTarget: {fileID: 0}
+  chaseSpeed: 2
+  patrolSpeed: 0.5
+  childTransform: {fileID: 321512220583812084}
+  attackCooldownTime: 1
+  canAttack: 1
+  canHitReaction: 1
+  hitReactionDelay: 5
+  damagePerSec: 30
+  healthBar: {fileID: 1495132095172787135}
+  healthBarUI: {fileID: 4271867533247908051}
+  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  hurtSFX: {fileID: 8300000, guid: 0e84038961d6c4b72af49c11e1553b9e, type: 3}
+  isPinned: 0
+  hitPoint: {fileID: 929884376440497770}
+  walkPoint: {x: 0, y: 0, z: 0}
+  walkPointRange: 0
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 0
+  patrolRandom: 1
 --- !u!1001 &287250523326069791
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -158,15 +166,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -3.9
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -11.1
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 8.700001
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalRotation.x
