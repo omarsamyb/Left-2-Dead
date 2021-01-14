@@ -9,8 +9,10 @@ public class FinalBoss : MonoBehaviour
     bool canAttack;
     public int health = 10000;
     float coolDownTime = 5f;
+    Transform handTransform;
     void Start()
     {
+        handTransform = transform.GetChild(1).GetChild(0).GetChild(2).GetChild(0).GetChild(0).GetChild(3).GetChild(0).GetChild(0).GetChild(0).GetChild(0);
         StartCoroutine(coolDown());
     }
     void Update()
@@ -28,7 +30,22 @@ public class FinalBoss : MonoBehaviour
     {
         canAttack = false;
         animator.SetTrigger("Throw");
-        yield return new WaitForSeconds(160.0f/30.0f);
+        yield return new WaitForSeconds(50.0f/30.0f);
+        meteor.gameObject.transform.localScale = new Vector3(0,0,0);
+        meteor.gameObject.SetActive(true);
+        while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime<0.58)
+        {
+            if(meteor.gameObject.transform.localScale.x<10)
+                meteor.gameObject.transform.localScale += new Vector3(1.0f/15.0f,1.0f/15.0f,1.0f/15.0f);
+            meteor.transform.Rotate(1,1,1);
+            meteor.transform.position = handTransform.position;
+            yield return null;
+        }
+        while(animator.GetCurrentAnimatorStateInfo(0).normalizedTime<0.7)
+        {
+            meteor.transform.position = handTransform.position;
+            yield return null;
+        }
         meteor.GetComponent<MeteorScript>().ThrowMeteor();
         StartCoroutine(coolDown());
     }

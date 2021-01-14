@@ -13,18 +13,18 @@ public class MeteorScript : MonoBehaviour
     }
     public void ThrowMeteor()
     {
-        gameObject.SetActive(true);
         rb.useGravity = true;
         Vector3 dir = PlayerController.instance.player.transform.position - transform.position;
-        // dir.y=0;
-        float distance = dir.magnitude;
-        rb.AddForce(dir,ForceMode.Impulse);
-        // rb.AddTorque(new Vector3(10, 0, 10));
+        dir = Vector3.Normalize(dir);
+        float dist = Vector3.Distance(PlayerController.instance.player.transform.position, transform.position);
+        rb.velocity = new Vector3(dir.x, 0f, dir.z) * dist/2.7f;
     }
     
     void OnTriggerEnter(Collider other)
     {
-        gameObject.SetActive(false);
+        print(other.gameObject.name);
+        if(other.gameObject.tag!="FinalBoss")
+            gameObject.SetActive(false);
         if(LayerMask.LayerToName(other.gameObject.layer) == "Player")
         {
             PlayerController.instance.TakeDamage(50);
@@ -33,6 +33,7 @@ public class MeteorScript : MonoBehaviour
         {
             GameObject myHorde = Instantiate(horde);
             myHorde.transform.position = transform.position;
+            print(myHorde.transform.position);
         }
     }
 }
