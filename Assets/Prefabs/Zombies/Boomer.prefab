@@ -83,6 +83,12 @@ MonoBehaviour:
   hurtSFX: {fileID: 8300000, guid: 0e84038961d6c4b72af49c11e1553b9e, type: 3}
   isPinned: 0
   hitPoint: {fileID: 375165809016676877}
+  walkPoint: {x: 0, y: 0, z: 0}
+  walkPointRange: 0
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 0
+  patrolRandom: 0
   bomb: {fileID: 6914601646843120041, guid: 178fbd42ece787a43998da6e38837379, type: 3}
   chasesDistance: 3
   boomerAttackDistance: 10
@@ -408,15 +414,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -27.600002
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -10.793
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.39999962
       objectReference: {fileID: 0}
     - target: {fileID: 4739249626848226084, guid: f54e1c929b91a004f83b70babd87c3b3, type: 3}
       propertyPath: m_LocalRotation.x

@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
         gravity = -9.81f * 2f;
         groundDistance = 0.4f;
         jumpHeight = 1f;
-        groundMask = 1 << LayerMask.NameToLayer("World");
+        groundMask = 1 << LayerMask.NameToLayer("Ground");
         isGrounded = true;
         isMoving = false;
         health = 300;

@@ -38,6 +38,14 @@ public class EnemyContoller : MonoBehaviour
     [HideInInspector] public bool isPinned;
     public Transform hitPoint;
     protected LayerMask enemyLayer;
+    //Patroling     
+    [HideInInspector]public Vector3 walkPoint;    
+    bool walkPointSet;     
+    [HideInInspector]public float walkPointRange;     
+    [HideInInspector]public LayerMask whatIsGround;      
+    public bool patrolRandom;
+
+
     protected PlayerVoiceOver pvo;
     protected bool isChasing;
     protected EnemyEffects ef;
@@ -79,9 +87,25 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isIdle", defaultState == State.idle);
         reachDistance = attackDistance + 0.5f;
         healthBar.SetMaxHealth(health);
+        
         pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         ef = transform.GetComponent<EnemyEffects>();
+
+        walkPointRange = 5.0f; 
+        whatIsGround = 1 << LayerMask.NameToLayer("Ground");
     }
+    private void SearchWalkPoint()
+    {
+        //Calculate random point in range
+        float randomZ = Random.Range(-walkPointRange, walkPointRange);
+        float randomX = Random.Range(-walkPointRange, walkPointRange);
+
+        walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
+
+        if (Physics.Raycast(walkPoint, -transform.up, 2f, whatIsGround))
+            walkPointSet = true;
+    }
+    
     public void getPinned(bool isPerm)
     {
         isPinned = true;
@@ -172,12 +196,25 @@ public class EnemyContoller : MonoBehaviour
         animator.SetBool("isAttacking", false);
         animator.SetBool("isChasing", false);
 
-        if (navMeshAgent.remainingDistance <= 1f)
+       /*6 if (navMeshAgent.remainingDistance <= 1f)
         {
             patrollingIdx++;
             if (patrollingIdx >= patrolling.Length)
                 patrollingIdx = 0;
             navMeshAgent.SetDestination(patrolling[patrollingIdx]);
+        }*/
+        if (patrolRandom)
+        {
+            if (!walkPointSet) SearchWalkPoint();
+
+            if (walkPointSet)
+                navMeshAgent.SetDestination(walkPoint);
+
+            Vector3 distanceToWalkPoint = transform.position - walkPoint;
+
+            //Walkpoint reached
+            if (distanceToWalkPoint.magnitude < 1f)
+                walkPointSet = false;
         }
     }
     void clearAnimator()
