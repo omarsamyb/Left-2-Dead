@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class Rage : MonoBehaviour
 {
-    public static Rage instance;
     private float rageResetRef = 3f;
     private float rageDurationRef = 10f;
-    private float rageReset;
+    public float rageReset;
     private float rageDuration;
     public int ragePoints;
-    private bool canActivate;
+    public bool canActivate;
     public GameObject character;
     private Animation characterAnimation;
     private GunInventory gunInventory;
@@ -90,7 +89,7 @@ public class Rage : MonoBehaviour
         OnRageChange((float)ragePoints / 100f);
     }
 
-    IEnumerator ActivateRageMode()
+    public IEnumerator ActivateRageMode()
     {
         AudioManager.instance.Stop("PlayerVoice");
         canBeDamaged = false;
@@ -115,5 +114,9 @@ public class Rage : MonoBehaviour
         gunInventory.currentGun.SetActive(true);
         Camera.main.transform.localPosition = origPos;
         canBeDamaged = true;
+    }
+    public void rageCheats()
+    {
+        OnRageChange((float)ragePoints / 100f);
     }
 }
