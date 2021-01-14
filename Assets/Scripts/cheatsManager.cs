@@ -9,6 +9,7 @@ public class cheatsManager : MonoBehaviour
     public GameObject ammoPack;
     public GameObject ammoPack2;
     public GameObject ammoPack3;
+    public GameObject[] zombiePrefabs;
     public InventoryObject ingredientInventory;
     // alcohol  bile  canister  gunpowder  rag  sugar
     //    0      1       2         3        4     5
@@ -20,6 +21,8 @@ public class cheatsManager : MonoBehaviour
     private GameObject[] normalEnemy;
     private GameObject[] specialEnemy;
     private bool toggleRage = false;
+
+
 
     void Update()
     {
@@ -143,11 +146,15 @@ public class cheatsManager : MonoBehaviour
     }
     public void SpawnDifferentInfected()
     {
-
+        player =  PlayerController.instance.player.transform;
+        for(int i=0;i<6;i++){
+            Instantiate(zombiePrefabs[i] , player.forward + new Vector3(i-2,0f ,0f), Quaternion.identity);
+        }
     }
     public void SpawnHorde()
     {
-
+        player =  PlayerController.instance.player.transform;
+        Instantiate(zombiePrefabs[6] , player.forward, Quaternion.identity);
     }
     public void IncreaseRageMeter()
     {

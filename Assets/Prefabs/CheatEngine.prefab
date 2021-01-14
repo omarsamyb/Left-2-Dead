@@ -47,5 +47,13 @@ MonoBehaviour:
   ammoPack: {fileID: 2554642822049653102, guid: 0e598389683f75e4c84aaa87ea3b16b8, type: 3}
   ammoPack2: {fileID: 5052987719261960285, guid: 313b525b1105c75489e5825d9eae5778, type: 3}
   ammoPack3: {fileID: 3818119856968677563, guid: c76b7add13b5f2145985c995f8f74b79, type: 3}
+  zombiePrefabs:
+  - {fileID: 3029563786236463361, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
+  - {fileID: 3632078133279313771, guid: 2b6255ca266919e429f04cccd3f7855f, type: 3}
+  - {fileID: 4772046187931530648, guid: 4d535059b2be8e8409d47502c79c81cb, type: 3}
+  - {fileID: 5623222005766069842, guid: f58e0419841daad4283a7e676b5599d1, type: 3}
+  - {fileID: 2508290275182364338, guid: 1fb373c237d7e6849adfef77a9b567e4, type: 3}
+  - {fileID: 9101926080393255393, guid: 3fe6afccac5cb2544bb2b933ad2f7009, type: 3}
+  - {fileID: 8703813418788178550, guid: ab9f226c5fe3c3c49befb882b816466e, type: 3}
   ingredientInventory: {fileID: 11400000, guid: 32e3dc2c67934a541911154dc5bb7296, type: 2}
   CraftableInventory: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}
