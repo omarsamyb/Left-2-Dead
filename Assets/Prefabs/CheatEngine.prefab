@@ -43,3 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7fdd015b3ddcc25ebd953a098433f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthPack: {fileID: 981184813157034947, guid: a94d53ddefe70fa4db13bd2b6c7084d9, type: 3}
+  ammoPack: {fileID: 2554642822049653102, guid: 0e598389683f75e4c84aaa87ea3b16b8, type: 3}
+  ammoPack2: {fileID: 5052987719261960285, guid: 313b525b1105c75489e5825d9eae5778, type: 3}
+  ammoPack3: {fileID: 3818119856968677563, guid: c76b7add13b5f2145985c995f8f74b79, type: 3}
+  player: {fileID: 469019212214358612, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}

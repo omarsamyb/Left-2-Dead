@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Rage : MonoBehaviour
 {
-    public static Rage instance;
     private float rageResetRef = 3f;
     private float rageDurationRef = 10f;
     private float rageReset;
@@ -115,5 +114,9 @@ public class Rage : MonoBehaviour
         gunInventory.currentGun.SetActive(true);
         Camera.main.transform.localPosition = origPos;
         canBeDamaged = true;
+    }
+    public void rageCheats()
+    {
+        ragePoints+=10;
     }
 }

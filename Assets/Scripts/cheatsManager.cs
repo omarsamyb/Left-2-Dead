@@ -5,6 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class cheatsManager : MonoBehaviour
 {
+    public GameObject healthPack;
+    public GameObject ammoPack;
+    public GameObject ammoPack2;
+    public GameObject ammoPack3;
+
+    public Transform player;
+    private GameObject[] normalEnemy;
+    private GameObject[] specialEnemy;
+
 
     void Update()
     {
@@ -73,15 +82,34 @@ public class cheatsManager : MonoBehaviour
     }
     public void KillAllInfected()
     {
+        normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+        specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
+        foreach(GameObject enemy in normalEnemy) 
+        {
+            enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
+        }
+        foreach(GameObject enemy in specialEnemy) 
+        {
+            enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
+        }
 
     }
     public void DamageAllInfected()
     {
-        
+        normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+        specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
+        foreach(GameObject enemy in normalEnemy) 
+        {
+            enemy.GetComponent<EnemyContoller>().TakeDamage(10);
+        }
+        foreach(GameObject enemy in specialEnemy) 
+        {
+            enemy.GetComponent<EnemyContoller>().TakeDamage(10);
+        }
     }
     public void FillWeaponsAmmo()
     {
-
+        PlayerController.instance.GetComponent<PlayerInventory>().pickUpAmmoCheat();
     }
     public void AddGrenadesToPlayer()
     {
@@ -92,11 +120,14 @@ public class cheatsManager : MonoBehaviour
     }
     public void GenerateAmmoPack()
     {
+        Instantiate(ammoPack, new Vector3(player.transform.position.x+2, player.transform.position.y+1, player.transform.position.z + 3), Quaternion.identity);
+        Instantiate(ammoPack2, new Vector3(player.transform.position.x -2, player.transform.position.y+1, player.transform.position.z + 3), Quaternion.identity);
+        Instantiate(ammoPack3, new Vector3(player.transform.position.x + 1, player.transform.position.y+1, player.transform.position.z + 3), Quaternion.identity);
 
     }
     public void GenerateHealthPack()
     {
-
+        Instantiate(healthPack, new Vector3(player.transform.position.x+4, player.transform.position.y+1, player.transform.position.z + 4), Quaternion.identity);
     }
     public void AddAmmoClipCompanion()
     {
@@ -112,7 +143,7 @@ public class cheatsManager : MonoBehaviour
     }
     public void IncreaseRageMeter()
     {
-        // Rage.instance.ragePoints =  Rage.instance.ragePoints + 10;
+        PlayerController.instance.GetComponent<Rage>().rageCheats();
     }
     public void ToggleRageMeter()
     {
