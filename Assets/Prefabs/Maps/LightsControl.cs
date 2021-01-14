@@ -35,7 +35,7 @@ public class LightsControl : MonoBehaviour
         int a = new System.Random().Next(0, 10);
         if (a < 3)
         {
-            Debug.Log(a);
+
             for (int i = 0; i < parent.transform.childCount; i++)
             {
                 var child = parent.transform.GetChild(i).gameObject;
