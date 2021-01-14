@@ -23,6 +23,10 @@ public class Spitter : EnemyContoller
         StartCoroutine(resumeAttack());
         StartCoroutine(SFX());
     }
+     private bool isFacingEachOther(){
+        float dot=Vector3.Dot(transform.forward, (attackTarget.position - transform.position).normalized);
+        return dot>=0.7f;
+    }
     void stopAttacking(){isAttacking = false;}
     void Update()
     {
@@ -56,7 +60,7 @@ public class Spitter : EnemyContoller
                 backToDefault();
             else if (canAttack && canAttackCheck(attackTarget))
             {
-                if (navMeshAgent.remainingDistance < reachDistance)
+                if (navMeshAgent.remainingDistance < reachDistance && isFacingEachOther())
                     attack();
                 else //Can Attack but im far
                 {

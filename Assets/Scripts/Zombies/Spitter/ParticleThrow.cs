@@ -48,9 +48,10 @@ public class ParticleThrow : MonoBehaviour
         rb.useGravity = true;
         transform.rotation = head.transform.rotation;
         Vector3 dir = Spitter.attackingPosition - transform.position;
-        dir.y=0;         
+        // dir.y=0;         
         float distance = dir.magnitude;         
-        rb.AddForce(dir*30,ForceMode.Impulse);
+        rb.AddForce(dir*25,ForceMode.Impulse);
+        rb.AddForce(transform.up*50, ForceMode.Impulse);
         rb.AddTorque(new Vector3(10, 0, 10));
     }
 }
