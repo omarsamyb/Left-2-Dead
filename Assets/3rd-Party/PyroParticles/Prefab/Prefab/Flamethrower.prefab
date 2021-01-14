@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 464710}
   - component: {fileID: 19891030}
   - component: {fileID: 19923492}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlamethrowerSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4697,7 +4697,7 @@ GameObject:
   - component: {fileID: 412958}
   - component: {fileID: 11498850}
   - component: {fileID: 8256470}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Flamethrower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4901,7 +4901,7 @@ GameObject:
   - component: {fileID: 437028}
   - component: {fileID: 19810244}
   - component: {fileID: 19900262}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlamethrowerFire
   m_TagString: Untagged
   m_Icon: {fileID: 0}

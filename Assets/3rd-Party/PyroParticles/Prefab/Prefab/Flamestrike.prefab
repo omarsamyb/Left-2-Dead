@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5413020}
   - component: {fileID: 13544914}
   - component: {fileID: 11483642}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlameStrikeCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,7 +84,7 @@ GameObject:
   m_Component:
   - component: {fileID: 494790}
   - component: {fileID: 10819714}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlameStrikeLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 410400}
   - component: {fileID: 19861272}
   - component: {fileID: 19975054}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlameStrikeMainColumn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4863,7 +4863,7 @@ GameObject:
   - component: {fileID: 413250}
   - component: {fileID: 19822170}
   - component: {fileID: 19904568}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlameStrikeExplosion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9663,7 +9663,7 @@ GameObject:
   - component: {fileID: 8256478}
   - component: {fileID: 8249964}
   - component: {fileID: 11456544}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Flamestrike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10024,7 +10024,7 @@ GameObject:
   - component: {fileID: 478636}
   - component: {fileID: 19859588}
   - component: {fileID: 19911960}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlameStrikeOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14782,7 +14782,7 @@ GameObject:
   - component: {fileID: 455542}
   - component: {fileID: 19861748}
   - component: {fileID: 19937226}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: FlameStrikeLightColumn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
