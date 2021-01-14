@@ -4882,7 +4882,7 @@ OffMeshLink:
   m_Start: {fileID: 1683827242}
   m_End: {fileID: 2062129186}
   m_CostOverride: -1
-  m_BiDirectional: 1
+  m_BiDirectional: 0
   m_Activated: 1
   m_AutoUpdatePositions: 0
 --- !u!4 &1135471986 stripped
