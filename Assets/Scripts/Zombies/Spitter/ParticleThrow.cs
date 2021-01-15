@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class ParticleThrow : MonoBehaviour
 {
-    public GameObject head;
     public Rigidbody rb;
     public GameObject acidPuddle;
     Transform player;
     // Start is called before the first frame update
     void Start()
     {
-        transform.parent = head.transform;
         rb = this.gameObject.GetComponent<Rigidbody>();
-        rb.useGravity = false;
-        this.gameObject.SetActive(false);
-        player = PlayerController.instance.player.transform;
+        rb.useGravity = true;
+        Vector3 dir = Spitter.attackingPosition - transform.position;        
+        float distance = dir.magnitude;         
+        rb.AddForce(dir*25,ForceMode.Impulse);
+        rb.AddForce(transform.up*50, ForceMode.Impulse);
+        rb.AddTorque(new Vector3(10, 0, 10));
     }
     public void createPuddle()
     {
@@ -24,9 +25,7 @@ public class ParticleThrow : MonoBehaviour
         rb.angularVelocity = Vector3.zero;
         GameObject acidPuddleSpare = Instantiate(acidPuddle, acidPuddlePos, Quaternion.Euler(90, 0, 0));
 
-        this.gameObject.transform.position = head.transform.position;
-        this.gameObject.SetActive(false);
-
+        Destroy(gameObject);
         Destroy(acidPuddleSpare, 10f);
     }
 
@@ -35,18 +34,5 @@ public class ParticleThrow : MonoBehaviour
     {
         if (LayerMask.LayerToName(other.gameObject.layer) == "World")
             createPuddle();
-    }
-
-    public void ReleaseMe()
-    {
-        this.gameObject.SetActive(true);
-        rb.useGravity = true;
-        transform.rotation = head.transform.rotation;
-        Vector3 dir = Spitter.attackingPosition - transform.position;
-        // dir.y=0;         
-        float distance = dir.magnitude;         
-        rb.AddForce(dir*25,ForceMode.Impulse);
-        rb.AddForce(transform.up*50, ForceMode.Impulse);
-        rb.AddTorque(new Vector3(10, 0, 10));
     }
 }

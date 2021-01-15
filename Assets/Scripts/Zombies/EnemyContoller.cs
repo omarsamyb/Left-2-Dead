@@ -331,7 +331,6 @@ public class EnemyContoller : MonoBehaviour
                 // keep chasing
                 if (isAlive(attackTarget))
                 {
-                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         curGoToDestination = attackTarget.position;
@@ -514,7 +513,10 @@ public class EnemyContoller : MonoBehaviour
     void OnCollisionEnter(Collision other)
     {
         if (!isPinned && other.gameObject.tag == "Player" && PlayerController.instance.health > 0 && ((currentState == State.idle) || (currentState == State.chasing)))
+        {
+            myLookAt(other.transform);
             chase(other.transform);
+        }
     }
     public void myLookAt(Transform placeToLook)
     {

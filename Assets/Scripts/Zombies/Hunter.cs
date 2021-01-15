@@ -53,7 +53,6 @@ public class Hunter : EnemyContoller
                     attack();
                 else //Can Attack but im far
                 {
-                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);
@@ -67,7 +66,6 @@ public class Hunter : EnemyContoller
             {
                 if (Vector3.Distance(transform.position, attackTarget.position) > 3) //Im still far
                 {
-                    myLookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         animator.SetBool("isChasing", true);

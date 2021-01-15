@@ -84,7 +84,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
-  prewarm: 0
+  prewarm: 1
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
@@ -4890,9 +4890,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4c925aa421fca64aaf2fac748e6ae50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  head: {fileID: 0}
-  rb: {fileID: 0}
-  acidPuddle: {fileID: 0}
+  rb: {fileID: 6852103399663113184}
+  acidPuddle: {fileID: 4663527740721390144, guid: f89262087bf6b01439afc558791612c2, type: 3}
 --- !u!1 &1310601351178341687
 GameObject:
   m_ObjectHideFlags: 0
