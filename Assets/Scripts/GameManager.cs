@@ -49,10 +49,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(inMenu || isGameOver) // Pause
+        if(inMenu || isGameOver || SceneManager.GetActiveScene().buildIndex==0) // Pause
         {
             Cursor.lockState = CursorLockMode.None;
-            if(!inPickUp || isGameOver){
+            if((!inPickUp || isGameOver)&&SceneManager.GetActiveScene().buildIndex!=0){
                 Time.timeScale = 0f;
             }
         }
