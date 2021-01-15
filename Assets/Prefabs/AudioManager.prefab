@@ -181,3 +181,43 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
+  - name: RainSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 6fcbaa1609120024da22c9ec4ed26976, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 1
+    volume: 1
+    pitch: 1
+  - name: ThunderSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: ce5b83e6049ce6e4fb858faa4dc10a70, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: RattleSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: da24e095fcd8c4a40816d0c04528c263, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 1
+    volume: 1
+    pitch: 1
+  - name: ClickSFX
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 312493b06c8d8f448bdc8b11c97cff5a, type: 3}
+    mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 0
+    volume: 1
+    pitch: 1
+  - name: BackgroundMusic
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 268ff2c83405ed441bb4b43d3b151c80, type: 3}
+    mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 1
+    loop: 1
+    volume: 1
+    pitch: 1
