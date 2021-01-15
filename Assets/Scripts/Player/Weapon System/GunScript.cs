@@ -418,6 +418,11 @@ public class GunScript : MonoBehaviour
                 cvo.FriendlyFire();
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
             }
+            else if (hitInfo.transform.CompareTag("FinalBoss"))
+            {
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                hitInfo.collider.gameObject.GetComponent<FinalBoss>().TakeDamage((int)damage);
+            }
         }
     }
     private IEnumerator Reload()
