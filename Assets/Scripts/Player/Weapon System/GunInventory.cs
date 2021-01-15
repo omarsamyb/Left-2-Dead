@@ -33,7 +33,8 @@ public class GunInventory : MonoBehaviour
     public InventoryObject CraftableInventory;
     // bile  molotov  pipe  stun  healthpack
     //  0       1      2     3        4
-
+    public GameObject[] grenadePrefabs;
+    public GameObject[] weaponPrefabs;
     void Awake()
     {
         StartCoroutine(SpawnWeaponUponStart());
@@ -168,11 +169,38 @@ public class GunInventory : MonoBehaviour
         int index = myWeapons.Count;
         for (int i = index; i < gunsIHave.Count; i++)
         {
-            GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + gunsIHave[i].ToString() + ".prefab", typeof(GameObject));
+            GameObject resource = getWeapon(gunsIHave[i].ToString());
             GameObject weapon = (GameObject)Instantiate(resource, transform.position, Quaternion.identity);
             weapon.SetActive(false);
             myWeapons.Add(weapon);
         }
+    }
+    GameObject getWeapon(string name)
+    {
+        string weaponName = name;
+        if(weaponName == "Assault Rifle")
+            return weaponPrefabs[0];
+        else if(weaponName == "Hunting Rifle")
+            return weaponPrefabs[1];
+        else if(weaponName == "Pistol")
+            return weaponPrefabs[2];
+        else if(weaponName == "Submachine Gun")
+            return weaponPrefabs[3];
+        else if(weaponName == "Tactical Shotgun")
+            return weaponPrefabs[4];
+        return null;
+    }
+    GameObject getGrenade(string name)
+    {
+        if(name=="Bile Bomb")
+            return grenadePrefabs[0];
+        else if(name=="Molotov Cocktail")
+            return grenadePrefabs[1];
+        else if(name=="Pipe Bomb")
+            return grenadePrefabs[2];
+        else if(name == "Stun Grenade")
+            return grenadePrefabs[3];
+        return null;
     }
     IEnumerator ActivateWeapon(int prevIndex, int currIndex)
     {
@@ -194,7 +222,7 @@ public class GunInventory : MonoBehaviour
             }
             catch
             {
-                GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + gunsIHave[currIndex].ToString() + ".prefab", typeof(GameObject));
+                GameObject resource = getWeapon(gunsIHave[currIndex].ToString());
                 currentGun = (GameObject)Instantiate(resource, transform.position, Quaternion.identity);
                 currentHandsAnimator = currentGun.GetComponent<GunScript>().handsAnimator;
                 myWeapons.Add(currentGun);
@@ -244,7 +272,7 @@ public class GunInventory : MonoBehaviour
     private IEnumerator Throw()
     {
         Vector3 position = currentGun.transform.GetChild(0).Find("L_arm").GetChild(0).GetChild(0).position;
-        GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Grenades/" + grenadesIHave[currentGrenadeCounter].ToString() + ".prefab", typeof(GameObject));
+        GameObject resource = getGrenade(grenadesIHave[currentGrenadeCounter].ToString());
         Instantiate(resource, position, Quaternion.identity);
         yield return new WaitForSeconds(1f);
         isThrowing = false;
@@ -258,7 +286,7 @@ public class GunInventory : MonoBehaviour
         int index = grenadesIHave.IndexOf(name);
         if (index != -1)
         {
-            int maxCapacity = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Grenades/" + name + ".prefab", typeof(GameObject))).GetComponent<GrenadeScript>().maxCapacity;
+            int maxCapacity = getGrenade(name).GetComponent<GrenadeScript>().maxCapacity;
             int value = grenadesCounter[index] + 1;
             if (value > maxCapacity)
                 return false;

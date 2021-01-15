@@ -60,7 +60,7 @@ MonoBehaviour:
   wallDecalEffect: {fileID: 179232, guid: b2ac1383a96f94a50b7ed458be173bbd, type: 3}
   bulletSpawnPlace: {fileID: 0}
   currentStyle: 2
-  bulletsIHave: 20
+  bulletsIHave: 0
   bulletsInTheGun: 10
   amountOfBulletsPerLoad: 10
   maxCapacity: 130

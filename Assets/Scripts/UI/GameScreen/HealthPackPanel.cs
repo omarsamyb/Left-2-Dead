@@ -28,10 +28,19 @@ public class HealthPackPanel : MonoBehaviour
         if(numOfPacks > 0){
             if(!packSet){
                 HealthPackImage.SetActive(true);
+                packCount.SetActive(true);
                 packSet = true;
             }
             if(int.Parse(packCount.GetComponent<TextMeshProUGUI>().text) != numOfPacks){
                 packCount.GetComponent<TextMeshProUGUI>().SetText(numOfPacks+"");
+            }
+        }
+        else
+        {
+            if (gameObject.activeSelf)
+            {
+                HealthPackImage.SetActive(false);
+                packCount.SetActive(false);
             }
         }
     }

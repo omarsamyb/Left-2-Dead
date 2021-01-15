@@ -45,3 +45,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inRageMode: 0
   companionId: 0
+  inMenu: 0
+  inPickUp: 0
+  isGameOver: 0
+  level: 0
+  sceneNames: []
+  playerStartingPos: []
+  compStartingPos: []
+  rescueMissionTime: 0
+  timeRemaining: 0
+  timerIsRunning: 0
+  failedRescue: 0
+  craftable: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}
+  ammo: {fileID: 11400000, guid: 617a4b077dfeba44cbf1f45c332fd96a, type: 2}
+  ingredient: {fileID: 11400000, guid: 32e3dc2c67934a541911154dc5bb7296, type: 2}
+  finalBossDead: 0

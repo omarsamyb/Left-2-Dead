@@ -6,7 +6,8 @@ using System.Collections;
 public class CompanionController : MonoBehaviour
 {
     public static CompanionController instance;
-    public string weaponName;
+    // public string weaponName;
+    public GameObject weaponPrefab;
     public int maxClips = 3;
     public GameObject muzzelSpawn;
 
@@ -55,7 +56,7 @@ public class CompanionController : MonoBehaviour
     }
     void Start()
     {
-        GunScript weapon = ((GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Weapons/" + weaponName + ".prefab", typeof(GameObject))).GetComponent<GunScript>();
+        GunScript weapon = weaponPrefab.GetComponent<GunScript>();
         muzzelFlash = weapon.muzzelFlash;
         shootSFX = weapon.shootSFX;
         wallDecalEffect = weapon.wallDecalEffect;

@@ -1288,4 +1288,4 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 3530395ac297aec468ebcb908fb9818e, type: 2}
   gameObj: {fileID: 0}
   itemPos: {x: 0, y: 0, z: 0}
-  amount: 2
+  amount: 1

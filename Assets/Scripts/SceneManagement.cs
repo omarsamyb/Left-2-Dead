@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class SceneManagement : MonoBehaviour
 {
-
+    public GameObject elliePrefab;
+    public GameObject zoeyPrefab;
+    public GameObject louisPrefab;
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnLevelFinishedLoading;
@@ -18,17 +20,17 @@ public class SceneManagement : MonoBehaviour
     {
         if (GameManager.instance.companionId == 0)
         {
-            GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Companions/Ellie.prefab", typeof(GameObject));
+            GameObject resource = elliePrefab;
             Instantiate(resource, transform.position, Quaternion.identity);
         }
         else if(GameManager.instance.companionId == 1)
         {
-            GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Companions/Zoey.prefab", typeof(GameObject));
+            GameObject resource = zoeyPrefab;
             Instantiate(resource, transform.position, Quaternion.identity);
         }
         else if (GameManager.instance.companionId == 2)
         {
-            GameObject resource = (GameObject)UnityEditor.AssetDatabase.LoadAssetAtPath("Assets/Prefabs/Companions/Louis.prefab", typeof(GameObject));
+            GameObject resource = louisPrefab;
             Instantiate(resource, transform.position, Quaternion.identity);
         }
     }

@@ -15,11 +15,11 @@ public class PlayerInventory : MonoBehaviour
     int compMult = 1;
     void Start(){
         player = PlayerController.instance.player;
-        if(GameManager.instance.companionId == 1)
-            compMult = 2;
     }
 
     void FixedUpdate(){
+        if(GameManager.instance.companionId == 1 && CompanionController.instance.canApplyAbility)
+            compMult = 2;
         GetCollectables();
     }
 
@@ -118,15 +118,19 @@ public class PlayerInventory : MonoBehaviour
         }
         else if(itemName == "Assault Rifle"){
             PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Assault Rifle");
+            PlayerController.instance.player.GetComponent<GunInventory>().AddAmmo("Assault Rifle", ammoInventory.container[0].amount / 2);
         }
         else if(itemName == "Hunting Rifle"){
             PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Hunting Rifle");
+            PlayerController.instance.player.GetComponent<GunInventory>().AddAmmo("Hunting Rifle", ammoInventory.container[0].amount / 2);
         }
         else if(itemName == "Submachine Gun"){
             PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Submachine Gun");
+            PlayerController.instance.player.GetComponent<GunInventory>().AddAmmo("Submachine Gun", ammoInventory.container[1].amount);
         }
         else if(itemName == "Tactical Shotgun"){
             PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Tactical Shotgun");
+            PlayerController.instance.player.GetComponent<GunInventory>().AddAmmo("Tactical Shotgun", ammoInventory.container[2].amount);
         }
     }
 

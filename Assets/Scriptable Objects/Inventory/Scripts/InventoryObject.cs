@@ -21,6 +21,13 @@ public class InventoryObject : ScriptableObject
             container.Add(new InventorySlot(obj, num));
         }
     }
+    public void resetInventory()
+    {
+        for (int i = 0; i < container.Count; i++)
+        {
+            container[i].resetAmount();
+        }
+    }
 
     public void addItem(string obj, int num){
         for(int i =0; i < container.Count; i++){

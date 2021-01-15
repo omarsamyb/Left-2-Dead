@@ -657,7 +657,7 @@ Animator:
   m_GameObject: {fileID: 2231470540158694768}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9c48932f26af5f944b4fa378f3342214, type: 3}
-  m_Controller: {fileID: 9100000, guid: 3c66673d9e657374390c4fe8b6606793, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9357dd6bf1a5b9946ba3920b412a4735, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -712,7 +712,7 @@ NavMeshObstacle:
   m_Enabled: 0
   serializedVersion: 3
   m_Shape: 0
-  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_Extents: {x: 0.2, y: 1, z: 0.2}
   m_MoveThreshold: 0
   m_Carve: 1
   m_CarveOnlyStationary: 1
@@ -730,7 +730,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 406164ea38d5a1a43b99433f48ea1af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Assault Rifle
+  weaponPrefab: {fileID: 167390, guid: 4017d41fe2a1cbc46a524dcd6852bbd8, type: 3}
   maxClips: 4
   muzzelSpawn: {fileID: 6464681266711815095}
   bulletsIHave: 0
