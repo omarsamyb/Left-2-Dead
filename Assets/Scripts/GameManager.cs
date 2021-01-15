@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     public InventoryObject ingredient;
 
     [HideInInspector] public bool finalBossDead = false;
+    [SerializeField] public AudioClip bossDeadVOClip;
+    public AudioClip[] backgroundMusic;
 
     private void Awake()
     {
@@ -122,5 +124,13 @@ public class GameManager : MonoBehaviour
             enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
         }
 
+        StartCoroutine(FinalBossRoutine());
+    }
+    IEnumerator FinalBossRoutine()
+    {
+        AudioManager.instance.SetClip("PlayerVoice", bossDeadVOClip);
+        AudioManager.instance.Play("PlayerVoice");
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

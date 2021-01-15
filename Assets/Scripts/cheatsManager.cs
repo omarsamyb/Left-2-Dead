@@ -75,7 +75,7 @@ public class cheatsManager : MonoBehaviour
         {
             ToggleRageMeter();
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             GoToNextLevel();
         }

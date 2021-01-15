@@ -3730,7 +3730,7 @@ MonoBehaviour:
     +F7+ Spawn Health Pack\n  +F8+ Add Ammo Clip Companion\n\n  [Spawn Zombies]\n 
     +F9+ Spawn different infected\n  +F10+ Spawn entire horde infected\n \n  [RageMeter]\n 
     +F11+ Add 10 points Rage Meter\n  +F12+ Toggle Rage (On/Off)\n\n  [HotKeys]\n 
-    +P+ Go To Next Level\n  +L+ Freeze Timer in Rescue\n"
+    +I+ Go To Next Level\n  +L+ Freeze Timer in Rescue\n"
 --- !u!1 &3785046247537681090
 GameObject:
   m_ObjectHideFlags: 0
@@ -8270,8 +8270,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3785046249177489108}
   m_HandleRect: {fileID: 3785046249177489109}
   m_Direction: 2
-  m_Value: 0.9999973
-  m_Size: 0.36020848
+  m_Value: 0.9999976
+  m_Size: 0.3602084
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -22500,6 +22500,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameOverScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 1170120335063933694, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1170120335063933695, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -22590,12 +22594,20 @@ PrefabInstance:
       objectReference: {fileID: 5069832656085467152, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
     - target: {fileID: 7825970860000587355, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -174
+      value: -174.00003
+      objectReference: {fileID: 0}
+    - target: {fileID: 7825970860776848953, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
+      propertyPath: m_text
+      value: Main Menu
       objectReference: {fileID: 0}
     - target: {fileID: 7825970861627091500, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 5069832656085467152, guid: 0cab2a3f89cb346b5a6e2849a13b3ca5, type: 3}
+    - target: {fileID: 7825970861627091500, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToMainMenu
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6ec8ca486d0dd628a47f60ccecbfcb7, type: 3}
 --- !u!224 &2646486816540049871 stripped

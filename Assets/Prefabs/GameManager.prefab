@@ -60,3 +60,7 @@ MonoBehaviour:
   ammo: {fileID: 11400000, guid: 617a4b077dfeba44cbf1f45c332fd96a, type: 2}
   ingredient: {fileID: 11400000, guid: 32e3dc2c67934a541911154dc5bb7296, type: 2}
   finalBossDead: 0
+  bossDeadVOClip: {fileID: 8300000, guid: c4d91411ce933ac4cb3156f786572f36, type: 3}
+  backgroundMusic:
+  - {fileID: 8300000, guid: 9aea6970e6694a24ab87f0fda29b6745, type: 3}
+  - {fileID: 8300000, guid: b2177d13baae7b6478907696b86e3499, type: 3}

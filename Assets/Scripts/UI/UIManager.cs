@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
         {
             LoadCrafting();
         }
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             LoadInventory();
         }
@@ -72,12 +72,14 @@ public class UIManager : MonoBehaviour
     
     public void RestartLevel()
     {
+        GameManager.instance.inMenu = false;
+        GameManager.instance.isGameOver = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void ToMainMenu()
     {
-        SceneManager.LoadScene("MainMenuScene"); // ToDo Change with actual main menu
+        SceneManager.LoadScene(0);
     }
 
     public void LoadCrafting(){
