@@ -859,7 +859,7 @@ MonoBehaviour:
     +F7+ Spawn Health Pack\n  +F8+ Add Ammo Clip Companion\n\n  [Spawn Zombies]\n 
     +F9+ Spawn different infected\n  +F10+ Spawn entire horde infected\n \n  [RageMeter]\n 
     +F11+ Add 10 points Rage Meter\n  +F12+ Toggle Rage (On/Off)\n\n  [HotKeys]\n 
-    +P+ Go To Next Level\n  +L+ Freeze Timer in Rescue\n"
+    +I+ Go To Next Level\n  +L+ Freeze Timer in Rescue\n"
 --- !u!1 &2131928393611311947
 GameObject:
   m_ObjectHideFlags: 0

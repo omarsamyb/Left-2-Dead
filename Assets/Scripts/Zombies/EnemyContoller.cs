@@ -292,7 +292,12 @@ public class EnemyContoller : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         ef.Attack(-1);
         if (cont.health > 0 && currentState == State.attack)
+        {
             cont.TakeDamage(damagePerSec, attackTarget.position + new Vector3(0, 1.5f, 0));
+            if(cont.health <= 0f)
+                pvo.fightKills++;
+            
+        }
     }
     void Update()
     {

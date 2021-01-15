@@ -237,3 +237,11 @@ MonoBehaviour:
     loop: 0
     volume: 1
     pitch: 1
+  - name: BackgroundMusic
+    source: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 9aea6970e6694a24ab87f0fda29b6745, type: 3}
+    mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
+    playOnAwake: 0
+    loop: 1
+    volume: 0.5
+    pitch: 1

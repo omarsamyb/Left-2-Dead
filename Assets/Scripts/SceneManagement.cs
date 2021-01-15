@@ -18,6 +18,8 @@ public class SceneManagement : MonoBehaviour
 
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
+        AudioManager.instance.SetClip("BackgroundMusic", GameManager.instance.backgroundMusic[0]);
+        AudioManager.instance.Play("BackgroundMusic");
         if (GameManager.instance.companionId == 0)
         {
             GameObject resource = elliePrefab;

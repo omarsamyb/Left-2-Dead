@@ -18,6 +18,7 @@ public class GrenadeScript : MonoBehaviour
     public int maxCapacity;
     private bool hitGround;
     private LayerMask enemyLayer;
+    private PlayerVoiceOver pvo;
 
     void Start()
     {
@@ -29,6 +30,7 @@ public class GrenadeScript : MonoBehaviour
         rb.AddTorque(new Vector3(10, 0, 10));
 
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
+        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
     }
 
     void ExplodeMolotov()
@@ -50,6 +52,11 @@ public class GrenadeScript : MonoBehaviour
             foreach (Collider cur in hits)
             {
                 cur.GetComponent<EnemyContoller>().TakeDamage(25);
+                if (cur.GetComponent<EnemyContoller>().health <= 0)
+                {
+                    CompanionController.instance.killCounter++;
+                    pvo.fightKills++;
+                }
             }
             yield return new WaitForSeconds(1);
         }
@@ -75,6 +82,11 @@ public class GrenadeScript : MonoBehaviour
         foreach (Collider cur in hits)
         {
             cur.GetComponent<EnemyContoller>().TakeDamage(100);
+            if(cur.GetComponent<EnemyContoller>().health <= 0)
+            {
+                CompanionController.instance.killCounter++;
+                pvo.fightKills++;
+            }
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 4);
