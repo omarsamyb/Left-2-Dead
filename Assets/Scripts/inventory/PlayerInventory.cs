@@ -25,7 +25,7 @@ public class PlayerInventory : MonoBehaviour
 
     void GetCollectables(){
         Collider[] hitColliders = Physics.OverlapBox(gameObject.transform.position, size, Quaternion.identity, m_LayerMask);
-        collectableItemsCount = new int[9];
+        collectableItemsCount = new int[13];
         if(hitColliders.Length > 0){
             foreach (Collider col in hitColliders){
                 Item itemScript = col.gameObject.GetComponent<Item>();
@@ -55,6 +55,18 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else if(itemScript.item.name == "Health pack"){
                     collectableItemsCount[8] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Assault Rifle"){
+                    collectableItemsCount[9] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Hunting Rifle"){
+                    collectableItemsCount[10] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Submachine Gun"){
+                    collectableItemsCount[11] += itemScript.amount;
+                }
+                else if(itemScript.item.name == "Tactical Shotgun"){
+                    collectableItemsCount[12] += itemScript.amount;
                 }
             }
         }
@@ -103,6 +115,19 @@ public class PlayerInventory : MonoBehaviour
         }
         else if(itemName == "Health pack"){
             craftableInventory.addItem(itemName, collectableItemsCount[8]);
+        }
+        else if(itemName == "Assault Rifle"){
+            PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Assault Rifle");
+            print(itemName);
+        }
+        else if(itemName == "Hunting Rifle"){
+            PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Hunting Rifle");
+        }
+        else if(itemName == "Submachine Gun"){
+            PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Submachine Gun");
+        }
+        else if(itemName == "Tactical Shotgun"){
+            PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Tactical Shotgun");
         }
     }
 

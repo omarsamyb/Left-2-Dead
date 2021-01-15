@@ -22,4 +22,4 @@ MonoBehaviour:
   - item: {fileID: 11400000, guid: 8aede8535864cf043856a559a38a036e, type: 2}
     amount: 0
   - item: {fileID: 11400000, guid: 71d7742d306d65849b56e32bd1890d61, type: 2}
-    amount: 0
+    amount: 2
