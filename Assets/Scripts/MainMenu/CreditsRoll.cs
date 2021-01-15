@@ -14,6 +14,7 @@ public class CreditsRoll : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AudioManager.instance.Stop("BackgroundMusic");
         louisAnimator.SetTrigger("dance");
         ellieAnimator.SetTrigger("dance");
         creditsAnimator = GetComponent<Animator>();

@@ -10866,52 +10866,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3029563786236463362, guid: 9878c99c1f8f307499c8b07cd42d41eb, type: 3}
   m_PrefabInstance: {fileID: 665821040}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &681585838
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 681585840}
-  - component: {fileID: 681585839}
-  m_Layer: 0
-  m_Name: SceneMang
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &681585839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 681585838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4a7473f9db475d4c822edbbfe5fc115, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  elliePrefab: {fileID: 1347727167159527546, guid: 3eddfd2f3d1bfae49b78deab39016104, type: 3}
-  zoeyPrefab: {fileID: 2917571053234061240, guid: c1634c41c4fafb74a9491fb43287ca09, type: 3}
-  louisPrefab: {fileID: 2231470540158694768, guid: 17cf326210929b34d876175b56cee0bd, type: 3}
---- !u!4 &681585840
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 681585838}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.36, y: 0.572, z: 20.4}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &686455932 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 458676, guid: 18faec2a14493684d905501076799765, type: 3}
@@ -18071,6 +18025,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 948674190}
+  - component: {fileID: 948674191}
   m_Layer: 0
   m_Name: companion location
   m_TagString: Untagged
@@ -18092,6 +18047,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &948674191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948674189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4a7473f9db475d4c822edbbfe5fc115, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elliePrefab: {fileID: 1347727167159527546, guid: 3eddfd2f3d1bfae49b78deab39016104, type: 3}
+  zoeyPrefab: {fileID: 2917571053234061240, guid: c1634c41c4fafb74a9491fb43287ca09, type: 3}
+  louisPrefab: {fileID: 2231470540158694768, guid: 17cf326210929b34d876175b56cee0bd, type: 3}
 --- !u!1001 &957620350
 PrefabInstance:
   m_ObjectHideFlags: 0
