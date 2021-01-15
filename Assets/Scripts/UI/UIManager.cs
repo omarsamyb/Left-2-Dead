@@ -79,6 +79,7 @@ public class UIManager : MonoBehaviour
 
     public void ToMainMenu()
     {
+        GameManager.instance.inMenu = false;
         SceneManager.LoadScene(0);
     }
 
