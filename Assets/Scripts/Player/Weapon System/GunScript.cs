@@ -520,7 +520,8 @@ public class GunScript : MonoBehaviour
     // GUI
     void OnGUI()
     {
-        DrawCrosshair();
+        if (!GameManager.instance.inMenu)
+            DrawCrosshair();
     }
     private void DrawCrosshair()
     {

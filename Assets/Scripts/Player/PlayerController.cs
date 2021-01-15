@@ -37,7 +37,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isPartiallyPinned;
     [HideInInspector] public EnemyContoller criticalEnemy;
     private Animation characterAnimation;
-    private TextMesh HUD_health;
     private Rage rage;
     private float addHealthTime;
     public GameObject bileEffect;
@@ -59,6 +58,8 @@ public class PlayerController : MonoBehaviour
     private PlayerVoiceOver pvo;
     private CompanionVoiceOver cvo;
     private int damagedIndex;
+    [SerializeField] private AudioClip[] steppingSFX;
+    private float previousSpeed;
     
     private void Awake()
     {
@@ -93,31 +94,30 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!GameManager.instance.inMenu)
+        if (health > 0)
         {
-            if (health > 0)
-            {
-                if (!isPinned && !isPartiallyPinned)
-                    PlayerMovement();
+            if (!isPinned && !isPartiallyPinned)
+                PlayerMovement();
 
-                if (GameManager.instance.companionId == 2)
+            if (GameManager.instance.companionId == 2)
+            {
+                addHealthTime -= Time.deltaTime;
+                if (addHealthTime <= 0)
                 {
-                    addHealthTime -= Time.deltaTime;
-                    if (addHealthTime <= 0)
-                    {
-                        addHealthTime = 1f;
-                        if (CompanionController.instance.canApplyAbility)
-                            AddHealth(1);
-                    }
+                    addHealthTime = 1f;
+                    if (CompanionController.instance.canApplyAbility)
+                        AddHealth(1);
                 }
             }
 
-            if (bileEffect.activeSelf)
-            {
-                bileVisionTime -= Time.deltaTime;
-                if (bileVisionTime <= 0)
-                    bileEffect.SetActive(false);
-            }
+            SteppingSFX();
+        }
+
+        if (bileEffect.activeSelf)
+        {
+            bileVisionTime -= Time.deltaTime;
+            if (bileVisionTime <= 0)
+                bileEffect.SetActive(false);
         }
     }
 
@@ -410,6 +410,28 @@ public class PlayerController : MonoBehaviour
         AudioManager.instance.Stop("CriticallyDamagedSFX");
         color.a = 0f;
         criticallyDamagedEffect.color = color;
+    }
+    private void SteppingSFX()
+    {
+        if (currentSpeed == 0f)
+        {
+            AudioManager.instance.Stop("SteppingSFX");
+            return;
+        }
+        if (!AudioManager.instance.isPlaying("SteppingSFX") || previousSpeed != currentSpeed)
+        {
+            if (currentSpeed == 5f)
+            {
+                AudioManager.instance.SetClip("SteppingSFX", steppingSFX[1]);
+                AudioManager.instance.Play("SteppingSFX");
+            }
+            else if (currentSpeed == 3f)
+            {
+                AudioManager.instance.SetClip("SteppingSFX", steppingSFX[0]);
+                AudioManager.instance.Play("SteppingSFX");
+            }
+        }
+        previousSpeed = currentSpeed;
     }
     public void BileVisionEffect()
     {
