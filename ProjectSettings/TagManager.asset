@@ -12,6 +12,7 @@ TagManager:
   - Fire
   - Horde
   - Companion
+  - Grenade
   - Others
   - FinalBoss
   layers:
@@ -29,9 +30,9 @@ TagManager:
   - FireLayer
   - Enemy
   - Item
-  - 
-  - 
-  - 
+  - Ground
+  - other
+  - finalBoss
   - 
   - 
   - 

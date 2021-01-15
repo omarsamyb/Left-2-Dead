@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 414434}
   - component: {fileID: 19873038}
   - component: {fileID: 19929662}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: MeteorShrapnelParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4772,7 +4772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 424980}
   - component: {fileID: 11447354}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: MeteorSwarm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4868,7 +4868,7 @@ GameObject:
   - component: {fileID: 466070}
   - component: {fileID: 19841648}
   - component: {fileID: 19912860}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: MeteorExplosionParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}

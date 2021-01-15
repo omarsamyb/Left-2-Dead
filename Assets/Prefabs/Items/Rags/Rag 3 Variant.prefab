@@ -29,7 +29,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 71c2e2a572c088c48a73fedff7f882de, type: 2}
   gameObj: {fileID: 0}
   itemPos: {x: 0, y: 0, z: 0}
-  amount: 2
+  amount: 1
 --- !u!1001 &2729130432125793585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80,6 +80,18 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 4ca7f4983921fd74d986728e2330ff25, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4ca7f4983921fd74d986728e2330ff25, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4ca7f4983921fd74d986728e2330ff25, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 4ca7f4983921fd74d986728e2330ff25, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4ca7f4983921fd74d986728e2330ff25, type: 3}
       propertyPath: m_Name

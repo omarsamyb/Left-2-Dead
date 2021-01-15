@@ -56,7 +56,7 @@ MonoBehaviour:
   shootSFX: {fileID: 8300000, guid: dac03dcf9770c334f82ab112a1dcff77, type: 3}
   reloadSFX: {fileID: 8300000, guid: 43c23b929a24cef4487a7c3bf5429109, type: 3}
   readySFX: {fileID: 8300000, guid: 63917eec5fde1bb449443cb738be7b01, type: 3}
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  bloodEffect: {fileID: 1000012909287652, guid: abb9f519b142e304d9c45b56afa768bc, type: 3}
   wallDecalEffect: {fileID: 179232, guid: b2ac1383a96f94a50b7ed458be173bbd, type: 3}
   bulletSpawnPlace: {fileID: 0}
   currentStyle: 0
@@ -375,6 +375,10 @@ PrefabInstance:
     - target: {fileID: -1162906490942568507, guid: f6719097313fc2d49a8e91657799b539, type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -753581636499053101, guid: f6719097313fc2d49a8e91657799b539, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -621274760311828773, guid: f6719097313fc2d49a8e91657799b539, type: 3}
       propertyPath: m_Layer

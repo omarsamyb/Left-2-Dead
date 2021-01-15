@@ -56,11 +56,11 @@ MonoBehaviour:
   shootSFX: {fileID: 8300000, guid: 0aaf223fc317ee649b501a0e68a87a43, type: 3}
   reloadSFX: {fileID: 8300000, guid: 2c6f533cc3a1ca64e835cf17a48961ac, type: 3}
   readySFX: {fileID: 8300000, guid: bc54d9721c5108741923cfdc79b021ba, type: 3}
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  bloodEffect: {fileID: 1000012909287652, guid: abb9f519b142e304d9c45b56afa768bc, type: 3}
   wallDecalEffect: {fileID: 179232, guid: b2ac1383a96f94a50b7ed458be173bbd, type: 3}
   bulletSpawnPlace: {fileID: 0}
   currentStyle: 0
-  bulletsIHave: 20
+  bulletsIHave: 0
   bulletsInTheGun: 15
   amountOfBulletsPerLoad: 15
   maxCapacity: 165

@@ -43,7 +43,7 @@ public class WorkingHorde : MonoBehaviour
         NavMeshHit myNavHit;
         if(NavMesh.SamplePosition(location, out myNavHit, 6f , -1))
         {
-            Instantiate(zombie, myNavHit.position, Quaternion.identity);
+            Instantiate(zombie, myNavHit.position, transform.rotation);
         }
     }
     GameObject pickRandomZombie()

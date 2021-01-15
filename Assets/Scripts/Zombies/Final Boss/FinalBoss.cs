@@ -34,7 +34,7 @@ public class FinalBoss : MonoBehaviour
                 StartCoroutine(spawnZombies());
             // StartCoroutine(spawnZombies());
         }
-        if(canPlayIdleSound)
+        if(canPlayIdleSound && health>0)
         {
             source.clip = audioClips[Random.Range(5, 8)];
             source.Play();
@@ -110,16 +110,21 @@ public class FinalBoss : MonoBehaviour
         source.clip = audioClips[4];
         source.Play();
         animator.SetTrigger("Dead");
+        GameManager.instance.FinalBossDead();
     }
     IEnumerator PlayWakeUpSound()
     {
         yield return new WaitForSeconds(1.1f);
-        source.clip = audioClips[0];
-        source.Play();
+        if(health>0)
+        {
+            source.clip = audioClips[0];
+            source.Play();
+        }
     }
     IEnumerator canPlayIdle()
     {
         yield return new WaitForSeconds(5f);
-        canPlayIdleSound = true;
+        if(health>0)
+            canPlayIdleSound = true;
     }
 }

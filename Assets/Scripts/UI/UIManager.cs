@@ -13,12 +13,15 @@ public class UIManager : MonoBehaviour
     public GameObject pickUpCanvas;
     public GameObject gameOverScreen;
     public GameObject toolTipCanvas;
+    public GameObject UICamera;
+    public GameObject[] fireParticles;
 
     private bool craftingToggle = false;
     private bool inventoryPanelToggle = false;
     private bool gameScreenCanvasToggle = true;
     private bool pickUpCanvasToggle = false;
     private bool toolTipCanvasToggle = false;
+    private bool UICameraToggle = false;
 
     void Update(){
         if (Input.GetKeyDown(KeyCode.E))
@@ -42,7 +45,7 @@ public class UIManager : MonoBehaviour
         {
             LoadCrafting();
         }
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             LoadInventory();
         }
@@ -52,7 +55,6 @@ public class UIManager : MonoBehaviour
         }
         if(GameManager.instance.isGameOver)
         {
-
             showGameOverScreen();
         }
 
@@ -63,16 +65,21 @@ public class UIManager : MonoBehaviour
         hideInventoryScreen();
         hideCraftingScreen();
         showGameScreen();
+        TooltipSystem.Hide();
     }
+
+
     
     public void RestartLevel()
     {
-        SceneManager.LoadScene("CurrentLevel"); // ToDo Change the string with the actual level scene
+        GameManager.instance.inMenu = false;
+        GameManager.instance.isGameOver = false;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void ToMainMenu()
     {
-        SceneManager.LoadScene("MainMenuScene"); // ToDo Change with actual main menu
+        SceneManager.LoadScene(0);
     }
 
     public void LoadCrafting(){
@@ -82,11 +89,13 @@ public class UIManager : MonoBehaviour
         if(craftingToggle == false )
         {
             Resume();
+            hideUICameraScreen();
         }
         else
         {
             GameManager.instance.inMenu = true;
             craftingCanvas.SetActive(craftingToggle);
+            showUICameraScreen();
         }
     }
     public void LoadInventory(){
@@ -96,11 +105,13 @@ public class UIManager : MonoBehaviour
         if(inventoryPanelToggle == false )
         {
             Resume();
+            hideUICameraScreen();
         }
         else
         {
             GameManager.instance.inMenu = true;
             inventoryCanvas.SetActive(inventoryPanelToggle);
+            showUICameraScreen();
         }
     }
     public void unLockCursor(){
@@ -142,10 +153,24 @@ public class UIManager : MonoBehaviour
         toolTipCanvasToggle = true;
         toolTipCanvas.SetActive(toolTipCanvasToggle);
     }
+    public void hideUICameraScreen()
+    {
+        foreach(GameObject i in fireParticles){
+            i.GetComponent<UIparticleSystem>().hide();
+            i.SetActive(false);
+        }
+    }
+    public void showUICameraScreen()
+    {
+        foreach(GameObject i in fireParticles){
+            i.SetActive(true);
+        }
+        // UICameraToggle = true;
+        // UICamera.SetActive(UICameraToggle);
+    }
 
     public void showGameOverScreen()
     {
-
         hideCraftingScreen();
         hideInventoryScreen();
         hideGameScreen();

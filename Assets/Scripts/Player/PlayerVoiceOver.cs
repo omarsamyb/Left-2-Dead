@@ -21,7 +21,7 @@ public class PlayerVoiceOver : MonoBehaviour
     RaycastHit hitinfo;
     private LayerMask enemyLayer;
     private LayerMask detectionLayer;
-    private float detectionRange = 40f;
+    private float detectionRange = 60f;
     private float detectionRateRef = 0.5f;
     private float detectionTime;
     private bool isDetecting;
@@ -135,6 +135,8 @@ public class PlayerVoiceOver : MonoBehaviour
     }
     IEnumerator Spotted()
     {
+        AudioManager.instance.SetClip("BackgroundMusic", GameManager.instance.backgroundMusic[1]);
+        AudioManager.instance.Play("BackgroundMusic");
         yield return new WaitForSeconds(0.3f);
         if (!AudioManager.instance.isPlaying("PlayerVoice"))
         {
@@ -145,6 +147,8 @@ public class PlayerVoiceOver : MonoBehaviour
     }
     private void FightFinished()
     {
+        AudioManager.instance.SetClip("BackgroundMusic", GameManager.instance.backgroundMusic[0]);
+        AudioManager.instance.Play("BackgroundMusic");
         AudioManager.instance.SetClip("PlayerVoice", fightFinishedClips[fightFinishedIndex]);
         AudioManager.instance.Play("PlayerVoice");
         fightFinishedIndex = (fightFinishedIndex + 1) % fightFinishedClips.Length;

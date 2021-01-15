@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 487278}
   - component: {fileID: 19822242}
   - component: {fileID: 19964982}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFireSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4886,7 +4886,7 @@ GameObject:
   - component: {fileID: 494314}
   - component: {fileID: 11496392}
   - component: {fileID: 11456478}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4926,10 +4926,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Seed: 100
-  IntensityModifier: 0.5
+  IntensityModifier: 5
   IntensityMaxRange:
     Minimum: 0
-    Maximum: 3
+    Maximum: 5
 --- !u!114 &11456478
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4961,7 +4961,7 @@ GameObject:
   - component: {fileID: 467586}
   - component: {fileID: 19824636}
   - component: {fileID: 19951540}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFireSecondaryFlame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9574,7 +9574,7 @@ GameObject:
   m_Component:
   - component: {fileID: 438974}
   - component: {fileID: 10876068}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFireLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9608,7 +9608,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 0
-  m_Range: 5
+  m_Range: 30
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -9666,7 +9666,7 @@ GameObject:
   m_Component:
   - component: {fileID: 471684}
   - component: {fileID: 8215432}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFireSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9848,7 +9848,7 @@ GameObject:
   - component: {fileID: 434192}
   - component: {fileID: 19883490}
   - component: {fileID: 19931762}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFireSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14507,7 +14507,7 @@ GameObject:
   - component: {fileID: 437362}
   - component: {fileID: 19861520}
   - component: {fileID: 19960416}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: WallOfFireFlame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
