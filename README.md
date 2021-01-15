@@ -13,5 +13,5 @@
 
 ### Notes
 - Glitch returning back to MainMenu in Game (Forgot to set Timescale to 1 instead of 0 on button click before building) **Fixed after building**
-- [a link] [https://github.com/guc-met/final-project-right2live/tree/2325ae72c19a5370a9f782c203bf9e73e81e033c]
+- [a link](https://github.com/guc-met/final-project-right2live/tree/2325ae72c19a5370a9f782c203bf9e73e81e033c)
 ![Game](./Assets/Textures/UI/MainMenu/logoFull.png)
