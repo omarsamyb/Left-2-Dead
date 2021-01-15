@@ -156,6 +156,17 @@ MonoBehaviour:
   grenadesCounter: 
   isThrowing: 0
   CraftableInventory: {fileID: 11400000, guid: 4969c2ca5db722f4abef96fbe571fad4, type: 2}
+  grenadePrefabs:
+  - {fileID: 8836836122681211171, guid: 5d3b56f33df73ad48a486e83af242ffb, type: 3}
+  - {fileID: 997332167840958877, guid: 685fe072aaf1a8945b417a86e7d5adb0, type: 3}
+  - {fileID: 3896900010384208507, guid: 4f0c9ce687c5374419c5f355ba472a5c, type: 3}
+  - {fileID: 3947912359391936534, guid: 25d9a7052968d5c4cab2c1dd508fb826, type: 3}
+  weaponPrefabs:
+  - {fileID: 167390, guid: 4017d41fe2a1cbc46a524dcd6852bbd8, type: 3}
+  - {fileID: 142272, guid: b061bec00e78a634d83d643780ff6015, type: 3}
+  - {fileID: 142272, guid: 84e58941619a9a04fb77e15f4956f37f, type: 3}
+  - {fileID: 142272, guid: 9990ed33f5e279e498f4e5ac88be0da5, type: 3}
+  - {fileID: 142272, guid: cb79d8b46c9ebc64ca695b165ac48295, type: 3}
 --- !u!114 &5930430884219837051
 MonoBehaviour:
   m_ObjectHideFlags: 0

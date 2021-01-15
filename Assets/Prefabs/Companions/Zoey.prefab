@@ -939,7 +939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 406164ea38d5a1a43b99433f48ea1af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponName: Hunting Rifle
+  weaponPrefab: {fileID: 142272, guid: b061bec00e78a634d83d643780ff6015, type: 3}
   maxClips: 5
   muzzelSpawn: {fileID: 5531442307510897906}
   bulletsIHave: 0
