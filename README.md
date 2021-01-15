@@ -1,7 +1,7 @@
 # Right 2 live
 ### A zombie survival game in which the player chooses one of 3 companions to fight along with
 * Ellie
-* Zoie
+* Zoey
 * louis
 # The game consists of 3 levels 
 * level 1 : a Normal level in which the player has to kill all zombies and reach the end point.
