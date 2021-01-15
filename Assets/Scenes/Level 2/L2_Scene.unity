@@ -5582,6 +5582,18 @@ PrefabInstance:
       propertyPath: m_CullingMask.m_Bits
       value: 31799
       objectReference: {fileID: 0}
+    - target: {fileID: 469019212873550814, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: far clip plane
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019212873550814, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 469019213367723030, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
+      propertyPath: far clip plane
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 769756183739038932, guid: 982c71dc563a83644ae983c1646b8fe2, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -7911,7 +7923,7 @@ PrefabInstance:
       objectReference: {fileID: 1399497309}
     - target: {fileID: 6349020538912443755, guid: a5de09ad60474eb45b5ede01aefb9906, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -174
+      value: -174.00002
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5de09ad60474eb45b5ede01aefb9906, type: 3}
