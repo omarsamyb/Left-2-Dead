@@ -127,6 +127,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f9144faefa67581418ff9023f624b596, type: 3}
   - {fileID: 8300000, guid: cfc338f04aa4da443a393bda0bf64723, type: 3}
   deathSFX: {fileID: 8300000, guid: 52c3dbf37e95a76418688d4df22049de, type: 3}
+  steppingSFX:
+  - {fileID: 8300000, guid: 3da45507957d2414ca79f514320eec56, type: 3}
+  - {fileID: 8300000, guid: 295fd00a0b915984491a6e17aefd893b, type: 3}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0
