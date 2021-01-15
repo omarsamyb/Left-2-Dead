@@ -32,7 +32,7 @@ public class ParticleThrow : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (LayerMask.LayerToName(other.gameObject.layer) == "World")
+        if (LayerMask.LayerToName(other.gameObject.layer) == "World" || LayerMask.LayerToName(other.gameObject.layer) == "Ground")
             createPuddle();
     }
 }
