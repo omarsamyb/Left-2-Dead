@@ -27,7 +27,9 @@ public class pickUpPanel : MonoBehaviour
         int[] itemCount = PlayerController.instance.player.GetComponent<PlayerInventory>().collectableItemsCount;
         for(int i = 0; i < buttons.Length; i++){
             if(itemCount[i] > 0){
-                buttons[i].GetComponentsInChildren<TextMeshProUGUI>()[0].SetText(itemCount[i]+"");
+                if(buttons[i].GetComponentsInChildren<TextMeshProUGUI>().Length > 0){
+                    buttons[i].GetComponentsInChildren<TextMeshProUGUI>()[0].SetText(itemCount[i]+"");
+                }
                 if(!buttons[i].gameObject.activeSelf){
                     buttons[i].gameObject.SetActive(true);
                 }

@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponObject : MonoBehaviour
+[CreateAssetMenu(fileName = "New Weapon Object", menuName = "Iventory/Items/Weapon")]
+public class WeaponObject : ItemObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void Awake(){
+        type = ItemType.Weapon;
     }
 }
