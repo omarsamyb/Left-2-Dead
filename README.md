@@ -12,5 +12,5 @@
 * meteor attack : the final boss charges a super strong meteor after that he throws it at the player if he managed to hit the player, he player takes damage. If the boss missed the meteor smashes the ground causing a spawn of a horde of zombies.
 
 ### Notes
-- Glitch returning back to MainMenu in Game (Forgot to set Timescale to 1 instead of 0 on button click before building)!! --Fixed after building
+- Glitch returning back to MainMenu in Game (Forgot to set Timescale to 1 instead of 0 on button click before building) **Fixed after building**
 ![Game](./Assets/Textures/UI/MainMenu/logoFull.png)
