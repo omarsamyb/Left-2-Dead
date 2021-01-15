@@ -107,9 +107,9 @@ NavMeshSettings:
     serializedVersion: 2
     agentTypeID: 0
     agentRadius: 0.25
-    agentHeight: 2
-    agentSlope: 45
-    agentClimb: 0.4
+    agentHeight: 1
+    agentSlope: 60
+    agentClimb: 1
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -769,6 +769,101 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2508290275182364337, guid: 1fb373c237d7e6849adfef77a9b567e4, type: 3}
   m_PrefabInstance: {fileID: 1663876721}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &77527041
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77527042}
+  - component: {fileID: 77527045}
+  - component: {fileID: 77527044}
+  - component: {fileID: 77527043}
+  m_Layer: 14
+  m_Name: Stair Ground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &77527042
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77527041}
+  m_LocalRotation: {x: 0.67582566, y: 0.20798972, z: 0.67582566, w: 0.20798971}
+  m_LocalPosition: {x: 26.7, y: -8.25, z: 19.96}
+  m_LocalScale: {x: 0.2, y: 13.134704, z: 1.000001}
+  m_Children: []
+  m_Father: {fileID: 4597545646744287183}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 145.788}
+--- !u!65 &77527043
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77527041}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &77527044
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77527041}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &77527045
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77527041}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &79955162 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4000010940606070, guid: fcbcdad4411dafb489c6994b483d02a6, type: 3}
@@ -4312,7 +4407,7 @@ GameObject:
   m_Component:
   - component: {fileID: 553127320}
   - component: {fileID: 553127319}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: StairHalo (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8201,7 +8296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000011765245650, guid: 9732a241b7bd0fa4a8e59553d6d8a2b0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 24.783192
+      value: 28.01
       objectReference: {fileID: 0}
     - target: {fileID: 4000011765245650, guid: 9732a241b7bd0fa4a8e59553d6d8a2b0, type: 3}
       propertyPath: m_LocalRotation.x
@@ -14141,7 +14236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1506063135}
   - component: {fileID: 1506063134}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: StairHalo (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14735,7 +14830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1632970525}
   - component: {fileID: 1632970524}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: StairHalo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18032,7 +18127,7 @@ PrefabInstance:
       objectReference: {fileID: 1399497309}
     - target: {fileID: 6349020538912443755, guid: a5de09ad60474eb45b5ede01aefb9906, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -174.00003
+      value: -174.00006
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5de09ad60474eb45b5ede01aefb9906, type: 3}
@@ -29026,6 +29121,7 @@ Transform:
   - {fileID: 974095253}
   - {fileID: 511242782}
   - {fileID: 821281494}
+  - {fileID: 77527042}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
