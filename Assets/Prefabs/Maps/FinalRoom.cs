@@ -14,6 +14,8 @@ public class FinalRoom : MonoBehaviour
             spawned = true;
             Destroy(barrier);
             Instantiate(finalBoss);
+            GameManager.instance.timerIsRunning = false;
+            GameManager.instance.failedRescue = false;
         }
     }
 }

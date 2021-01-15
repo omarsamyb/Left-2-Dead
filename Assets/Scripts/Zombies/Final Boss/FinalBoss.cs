@@ -110,6 +110,7 @@ public class FinalBoss : MonoBehaviour
         source.clip = audioClips[4];
         source.Play();
         animator.SetTrigger("Dead");
+        GameManager.instance.FinalBossDead();
     }
     IEnumerator PlayWakeUpSound()
     {

@@ -4379,7 +4379,7 @@ GameObject:
   m_Component:
   - component: {fileID: 549571208}
   - component: {fileID: 549571207}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Halo (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15365,7 +15365,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1784742181}
   - component: {fileID: 1784742182}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Halo
   m_TagString: Untagged
   m_Icon: {fileID: 0}

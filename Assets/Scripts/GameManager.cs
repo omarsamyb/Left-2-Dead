@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public InventoryObject ammo;
     public InventoryObject ingredient;
 
+    [HideInInspector] public bool finalBossDead = false;
+
     private void Awake()
     {
         if (instance != null)
@@ -70,7 +72,6 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Time has run out!");
                 timeRemaining = rescueMissionTime;
                 timerIsRunning = false;
                 if(failedRescue){
@@ -104,5 +105,22 @@ public class GameManager : MonoBehaviour
         if (level == 3)
             timerIsRunning = !timerIsRunning;
        
+    }
+    public void FinalBossDead()
+    {
+        GameObject[] normalEnemy;
+        GameObject[] specialEnemy;
+        finalBossDead = true;
+        normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in normalEnemy)
+        {
+            enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
+        }
+        specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
+        foreach (GameObject enemy in specialEnemy)
+        {
+            enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
+        }
+
     }
 }

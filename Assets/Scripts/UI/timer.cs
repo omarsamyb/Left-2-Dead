@@ -19,7 +19,6 @@ public class timer : MonoBehaviour
             if(GameManager.instance.timeRemaining - 10 <= 0.5){
                 text.GetComponent<TextMeshProUGUI>().color = new Color32(255, 0, 0, 255);
             }
-            print(GameManager.instance.DisplayTime());
         }
         else{
             if(gameObject.activeSelf){
