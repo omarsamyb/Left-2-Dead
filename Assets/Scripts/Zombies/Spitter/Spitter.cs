@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 public class Spitter : EnemyContoller
 {
+    public GameObject spitBallPrefab;
+    public Transform headTransform;
     public static Vector3 attackingPosition;
     bool isAttacking = false;
     public override void attack()
@@ -20,10 +22,20 @@ public class Spitter : EnemyContoller
         currentState = State.attack;
         isAttacking = true;
         Invoke("stopAttacking", 2.8f);
+        StartCoroutine(spitAfterTime());
         StartCoroutine(resumeAttack());
         StartCoroutine(SFX());
     }
-     private bool isFacingEachOther(){
+    IEnumerator spitAfterTime()
+    {
+        yield return new WaitForSeconds(1);
+        if(health>0)
+        {
+            myLookAt(attackTarget);
+            Instantiate(spitBallPrefab, headTransform.position, Quaternion.identity);
+        }
+    }
+    private bool isFacingEachOther(){
         float dot=Vector3.Dot(transform.forward, (attackTarget.position - transform.position).normalized);
         return dot>=0.7f;
     }

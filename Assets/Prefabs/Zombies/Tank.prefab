@@ -42,8 +42,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e7b231f55a958345846aeabdd11dde4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  navMeshAgent: {fileID: 0}
-  playerTransform: {fileID: 0}
   defaultState: 3
   currentState: 0
   animator: {fileID: 5950963189534785934}
@@ -63,7 +61,7 @@ MonoBehaviour:
   damagePerSec: 30
   healthBar: {fileID: 1495132095172787135}
   healthBarUI: {fileID: 4271867533247908051}
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  bloodEffect: {fileID: 1000012909287652, guid: abb9f519b142e304d9c45b56afa768bc, type: 3}
   isPinned: 0
   hitPoint: {fileID: 929884376440497770}
   walkPoint: {x: 0, y: 0, z: 0}

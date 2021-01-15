@@ -118,7 +118,6 @@ public class PlayerInventory : MonoBehaviour
         }
         else if(itemName == "Assault Rifle"){
             PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Assault Rifle");
-            print(itemName);
         }
         else if(itemName == "Hunting Rifle"){
             PlayerController.instance.player.GetComponent<GunInventory>().AddWeapon("Hunting Rifle");

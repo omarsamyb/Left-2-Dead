@@ -127,7 +127,7 @@ MonoBehaviour:
   damagePerSec: 5
   healthBar: {fileID: 7224312856926515964}
   healthBarUI: {fileID: 5455710860019188112}
-  bloodEffect: {fileID: 1013274939826982, guid: ffbf169ab9dcfdc45ae14010bc82a6b2, type: 3}
+  bloodEffect: {fileID: 1000012909287652, guid: abb9f519b142e304d9c45b56afa768bc, type: 3}
   isPinned: 0
   hitPoint: {fileID: 969234044670102257}
   walkPoint: {x: 0, y: 0, z: 0}
