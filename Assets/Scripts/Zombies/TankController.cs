@@ -76,7 +76,6 @@ public class TankController : EnemyContoller
                 // keep chasing
                 if (isAlive(attackTarget))
                 {
-                    transform.LookAt(attackTarget);
                     if (Vector3.Distance(curGoToDestination, attackTarget.position) > distanceToUpdateDestination)//Don't update if unecessary
                     {
                         curGoToDestination = attackTarget.position;
