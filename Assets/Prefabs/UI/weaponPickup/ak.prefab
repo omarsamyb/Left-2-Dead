@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6578303823198015726}
   - component: {fileID: 1101161973993926712}
   - component: {fileID: 1264647166117745771}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 2828955866620018104}
   - component: {fileID: 8646706534061897488}
   - component: {fileID: 8193696082017593455}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2187555936892398091}
-  m_Layer: 9
+  - component: {fileID: 4042903090225517964}
+  - component: {fileID: 3758114993828469329}
+  m_Layer: 13
   m_Name: ak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,6 +201,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4042903090225517964
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841007827647957460}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.14148211, y: 0.37224436, z: 1.191651}
+  m_Center: {x: 0.00165236, y: 0.0031187534, z: 0.20646363}
+--- !u!114 &3758114993828469329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841007827647957460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b805442ba79fb43ac9dd69cd43b963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: 1c5eb34ce467a6e40968b41057d4b87e, type: 2}
+  gameObj: {fileID: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  amount: 1
 --- !u!1 &3108297300544975270
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,7 +241,7 @@ GameObject:
   - component: {fileID: 843912736149238142}
   - component: {fileID: 4671288311437966559}
   - component: {fileID: 3138256455541885312}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,7 +322,7 @@ GameObject:
   - component: {fileID: 2480208175740750112}
   - component: {fileID: 2750101036970857187}
   - component: {fileID: 1063157609036556385}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: release
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +403,7 @@ GameObject:
   - component: {fileID: 1130375455076095841}
   - component: {fileID: 4431735776497149492}
   - component: {fileID: 1052463184267994282}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: mag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -452,7 +483,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1461754704902058623}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: MuzzleSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -484,7 +515,7 @@ GameObject:
   - component: {fileID: 5180223413768989791}
   - component: {fileID: 2053862721966784121}
   - component: {fileID: 3661861523712784802}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: bolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -608,6 +639,14 @@ PrefabInstance:
     - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
       propertyPath: m_Name
       value: Flashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170165658710806223, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9622116faffe12442a5d48b263e17da8, type: 3}

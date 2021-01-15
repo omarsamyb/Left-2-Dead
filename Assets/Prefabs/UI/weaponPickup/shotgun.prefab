@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 156607989652731054}
   - component: {fileID: 5122992694846965436}
   - component: {fileID: 6634152572865282376}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 6344607859551317096}
   - component: {fileID: 4551020992309671093}
   - component: {fileID: 7647908905694173016}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: pump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 6258334877422783566}
   - component: {fileID: 6634197136525575104}
   - component: {fileID: 7675619125845348292}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 875616772800391633}
-  m_Layer: 9
+  - component: {fileID: 222388293858759274}
+  - component: {fileID: 6669935178313578969}
+  m_Layer: 13
   m_Name: shotgun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -280,6 +282,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &222388293858759274
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2937634554580173087}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.12138963, y: 0.23801899, z: 0.97054005}
+  m_Center: {x: -0.0009020567, y: 0.04133606, z: 0.3697374}
+--- !u!114 &6669935178313578969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2937634554580173087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b805442ba79fb43ac9dd69cd43b963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: bc195d3b9a5ee924484584c395200d03, type: 2}
+  gameObj: {fileID: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  amount: 1
 --- !u!1 &3709669727735584585
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,7 +320,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 820502524772800712}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: MuzzleSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +352,7 @@ GameObject:
   - component: {fileID: 569386614336441562}
   - component: {fileID: 3781725843663125837}
   - component: {fileID: 1079575145950885904}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: slug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -402,7 +433,7 @@ GameObject:
   - component: {fileID: 3232954551006224906}
   - component: {fileID: 3618088530358994064}
   - component: {fileID: 863734266804089525}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: lid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -526,6 +557,14 @@ PrefabInstance:
     - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
       propertyPath: m_Name
       value: Flashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170165658710806223, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9622116faffe12442a5d48b263e17da8, type: 3}

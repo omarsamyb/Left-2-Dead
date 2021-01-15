@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3013904781432065216}
   - component: {fileID: 8707690906989288893}
   - component: {fileID: 9109526157163829146}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: boltrear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 704988515995781039}
   - component: {fileID: 8292815710156881177}
   - component: {fileID: 3372802378750337220}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 6628638297162862478}
   - component: {fileID: 6321373374936995222}
   - component: {fileID: 5463215233418261348}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: glass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +253,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4762087669037094849}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: MuzzleSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -285,7 +285,7 @@ GameObject:
   - component: {fileID: 7741866870971137596}
   - component: {fileID: 5221548660934975445}
   - component: {fileID: 8856910072171137569}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: scope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 2918118964613172041}
   - component: {fileID: 6974264535456540499}
   - component: {fileID: 4461607513892089195}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: silencer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -448,7 +448,7 @@ GameObject:
   - component: {fileID: 6742562972200345836}
   - component: {fileID: 3185974957387617272}
   - component: {fileID: 77443490925170265}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: clip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -530,7 +530,7 @@ GameObject:
   - component: {fileID: 4091959678578698434}
   - component: {fileID: 6621405214115968823}
   - component: {fileID: 770937588591034957}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: bolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -609,7 +609,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5503389213194446694}
-  m_Layer: 9
+  - component: {fileID: 3623767225534165604}
+  - component: {fileID: -2603516287246727901}
+  m_Layer: 13
   m_Name: sniper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -639,6 +641,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &3623767225534165604
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8508487296504132000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.17364216, y: 0.26948738, z: 1.635056}
+  m_Center: {x: 0.006099224, y: 0.025468469, z: 0.317528}
+--- !u!114 &-2603516287246727901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8508487296504132000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b805442ba79fb43ac9dd69cd43b963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 11400000, guid: edb087f89c16f834bb615e1505c34e20, type: 2}
+  gameObj: {fileID: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  amount: 1
 --- !u!1 &8873588880545896464
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,7 +681,7 @@ GameObject:
   - component: {fileID: 6326728220174655825}
   - component: {fileID: 4483991207657074449}
   - component: {fileID: 2587869823544748625}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: cheekrest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -731,7 +762,7 @@ GameObject:
   - component: {fileID: 4045276283354150959}
   - component: {fileID: 7942297449345228563}
   - component: {fileID: 2416875425833029743}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -812,7 +843,7 @@ GameObject:
   - component: {fileID: 8524118592186893834}
   - component: {fileID: 1012241396471713285}
   - component: {fileID: 1496631428178974352}
-  m_Layer: 9
+  m_Layer: 13
   m_Name: trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -936,6 +967,14 @@ PrefabInstance:
     - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
       propertyPath: m_Name
       value: Flashlight
+      objectReference: {fileID: 0}
+    - target: {fileID: 3280504892801805829, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5170165658710806223, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9622116faffe12442a5d48b263e17da8, type: 3}
