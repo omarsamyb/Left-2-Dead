@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -29,7 +28,7 @@ public class MainMenu : MonoBehaviour
         if (fadeImg.color.a != 0)
         {
             color = fadeImg.color;
-            color.a -= 0.4f * Time.deltaTime;
+            color.a -= 0.2f * Time.deltaTime;
             fadeImg.color = color;
         }
     }
