@@ -12,6 +12,5 @@
 * meteor attack : the final boss charges a super strong meteor after that he throws it at the player if he managed to hit the player, he player takes damage. If the boss missed the meteor smashes the ground causing a spawn of a horde of zombies.
 
 ### Notes
-- Glitch returning back to MainMenu in Game (Forgot to set Timescale to 1 instead of 0 on button click before building) **Fixed after building**
-- [Commit](https://github.com/guc-met/final-project-right2live/commit/2325ae72c19a5370a9f782c203bf9e73e81e033c#diff-bd12731d7bc9b843d8523e654ae92abe735ee95f0777e46e77ee286b17833acd)
+- Glitch returning back to MainMenu in Game (Forgot to set Timescale to 1 instead of 0 on button click before building) **Fixed after building** [Commit](https://github.com/guc-met/final-project-right2live/commit/2325ae72c19a5370a9f782c203bf9e73e81e033c#diff-bd12731d7bc9b843d8523e654ae92abe735ee95f0777e46e77ee286b17833acd)
 ![Game](./Assets/Textures/UI/MainMenu/logoFull.png)
