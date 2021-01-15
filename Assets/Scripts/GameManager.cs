@@ -42,10 +42,10 @@ public class GameManager : MonoBehaviour
         ammo.resetInventory();
         ingredient.resetInventory();
 
-        level = 3;
+        level = 1;
         rescueMissionTime = 60;
         timeRemaining = rescueMissionTime;
-        timerIsRunning = true;
+        timerIsRunning = false;
         failedRescue = true;
     }
 
