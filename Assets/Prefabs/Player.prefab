@@ -130,6 +130,7 @@ MonoBehaviour:
   steppingSFX:
   - {fileID: 8300000, guid: 3da45507957d2414ca79f514320eec56, type: 3}
   - {fileID: 8300000, guid: 295fd00a0b915984491a6e17aefd893b, type: 3}
+  craftableInventory: {fileID: 0}
 --- !u!114 &469019212214358615
 MonoBehaviour:
   m_ObjectHideFlags: 0

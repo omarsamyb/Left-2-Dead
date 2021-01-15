@@ -33,10 +33,10 @@ public class GameManager : MonoBehaviour
     }
 
     void Start(){
-        level = 1;
+        level = 3;
         rescueMissionTime = 30;
         timeRemaining = rescueMissionTime;
-        timerIsRunning = false;
+        timerIsRunning = true;
         failedRescue = true;
     }
 
@@ -86,5 +86,11 @@ public class GameManager : MonoBehaviour
         float minutes = Mathf.FloorToInt(timeRemaining / 60);  
         float seconds = Mathf.FloorToInt(timeRemaining % 60);
         return string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+    public void StopTimer()
+    {
+        if (level == 3)
+            timerIsRunning = !timerIsRunning;
+       
     }
 }

@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     private int damagedIndex;
     [SerializeField] private AudioClip[] steppingSFX;
     private float previousSpeed;
+    public InventoryObject craftableInventory;
     
     private void Awake()
     {
@@ -118,6 +119,11 @@ public class PlayerController : MonoBehaviour
             bileVisionTime -= Time.deltaTime;
             if (bileVisionTime <= 0)
                 bileEffect.SetActive(false);
+        }
+        if (Input.GetKeyDown(KeyCode.H)&& craftableInventory.container[4].amount>0)
+        {
+            craftableInventory.container[4].addAmount(-1);
+            AddHealth(50);
         }
     }
 
@@ -230,6 +236,7 @@ public class PlayerController : MonoBehaviour
     public void AddHealth(int points)
     {
         health = Mathf.Clamp(health + points, 0, 300);
+        healthBar.SetHealth(PlayerController.instance.health);
     }
     public void TakeDamage(int points)
     {

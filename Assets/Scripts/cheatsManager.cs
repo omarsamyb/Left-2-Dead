@@ -86,8 +86,7 @@ public class cheatsManager : MonoBehaviour
     }
     public void IncreasePlayerHealth()
     {
-        PlayerController.instance.health = PlayerController.instance.health + 30;
-        PlayerController.instance.healthBar.SetHealth(PlayerController.instance.health);
+        PlayerController.instance.AddHealth(30);
     }
     public void KillAllInfected()
     {
@@ -185,11 +184,11 @@ public class cheatsManager : MonoBehaviour
     }
     public void GoToNextLevel()
     {
-
+        GameManager.instance.LoadNextLevel();
     }
     public void FreezeTime()
     {
-
+        GameManager.instance.StopTimer();
     }
     public void makeBileCheat(){
         CraftableInventory.container[0].addAmount(1);

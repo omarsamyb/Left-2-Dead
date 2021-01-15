@@ -29,7 +29,7 @@ MonoBehaviour:
   item: {fileID: 11400000, guid: 71c2e2a572c088c48a73fedff7f882de, type: 2}
   gameObj: {fileID: 0}
   itemPos: {x: 0, y: 0, z: 0}
-  amount: 2
+  amount: 1
 --- !u!1001 &2729130432125793585
 PrefabInstance:
   m_ObjectHideFlags: 0
