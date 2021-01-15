@@ -92,11 +92,11 @@ public class cheatsManager : MonoBehaviour
     public void KillAllInfected()
     {
         normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
-        specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
         foreach(GameObject enemy in normalEnemy) 
         {
             enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
         }
+        specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
         foreach(GameObject enemy in specialEnemy) 
         {
             enemy.GetComponent<EnemyContoller>().TakeDamage(1000);

@@ -72,7 +72,7 @@ public class UIManager : MonoBehaviour
     
     public void RestartLevel()
     {
-        SceneManager.LoadScene("CurrentLevel"); // ToDo Change the string with the actual level scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void ToMainMenu()

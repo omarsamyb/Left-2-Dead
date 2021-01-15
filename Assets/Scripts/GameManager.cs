@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +11,15 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool inMenu; 
     [HideInInspector] public bool inPickUp; 
     [HideInInspector] public bool isGameOver; 
+
+    public int level;
+    public string[] sceneNames;
+    public GameObject[] playerStartingPos;
+    public GameObject[] compStartingPos;
+    public float rescueMissionTime;
+    public float timeRemaining;
+    public bool timerIsRunning;
+    public bool failedRescue;
 
     private void Awake()
     {
@@ -21,7 +33,11 @@ public class GameManager : MonoBehaviour
     }
 
     void Start(){
-        
+        level = 1;
+        rescueMissionTime = 30;
+        timeRemaining = rescueMissionTime;
+        timerIsRunning = false;
+        failedRescue = true;
     }
 
     private void Update()
@@ -38,5 +54,37 @@ public class GameManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Time.timeScale = 1f;
         }
+
+        if (timerIsRunning)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+            }
+            else
+            {
+                Debug.Log("Time has run out!");
+                timeRemaining = rescueMissionTime;
+                timerIsRunning = false;
+                if(failedRescue){
+                    isGameOver = true;
+                }
+            }
+        }
+    }
+
+    public void LoadNextLevel(){
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); 
+        level += 1;    
+        if(level == 2){
+            timerIsRunning = true;
+        }
+    }
+
+    public string DisplayTime()
+    {
+        float minutes = Mathf.FloorToInt(timeRemaining / 60);  
+        float seconds = Mathf.FloorToInt(timeRemaining % 60);
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
