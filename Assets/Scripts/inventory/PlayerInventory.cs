@@ -15,11 +15,11 @@ public class PlayerInventory : MonoBehaviour
     int compMult = 1;
     void Start(){
         player = PlayerController.instance.player;
-        if(GameManager.instance.companionId == 1)
-            compMult = 2;
     }
 
     void FixedUpdate(){
+        if(GameManager.instance.companionId == 1 && CompanionController.instance.canApplyAbility)
+            compMult = 2;
         GetCollectables();
     }
 
