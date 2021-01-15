@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
     public void LoadNextLevel(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); 
         level += 1;    
-        if(level == 2){
+        if(level == 3){
             timerIsRunning = true;
         }
     }
