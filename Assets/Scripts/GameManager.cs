@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
     public float timeRemaining;
     public bool timerIsRunning;
     public bool failedRescue;
+    public InventoryObject craftable;
+    public InventoryObject ammo;
+    public InventoryObject ingredient;
 
     private void Awake()
     {
@@ -33,8 +36,12 @@ public class GameManager : MonoBehaviour
     }
 
     void Start(){
+        craftable.resetInventory();
+        ammo.resetInventory();
+        ingredient.resetInventory();
+
         level = 3;
-        rescueMissionTime = 30;
+        rescueMissionTime = 60;
         timeRemaining = rescueMissionTime;
         timerIsRunning = true;
         failedRescue = true;
@@ -74,7 +81,12 @@ public class GameManager : MonoBehaviour
     }
 
     public void LoadNextLevel(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+        craftable.resetInventory();
+        ammo.resetInventory();
+        ingredient.resetInventory();
+
         level += 1;    
         if(level == 3){
             timerIsRunning = true;
