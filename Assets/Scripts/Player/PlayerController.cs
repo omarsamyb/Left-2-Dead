@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
     private float criticallyDamagedFadeDuration = 0.4f;
     private float criticallyDamagedFadeTime;
     private Coroutine damageFadeRoutine;
-    public HealthBar healthBar;
     private MouseLook mouseLook;
     [HideInInspector] public bool isGettingPinned;
     public AudioClip[] damagedSFX;
@@ -79,7 +78,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
-        healthBar.SetMaxHealth(health);
+        HealthBar.instance.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
         dashLength = 0.08f;
@@ -236,14 +235,14 @@ public class PlayerController : MonoBehaviour
     public void AddHealth(int points)
     {
         health = Mathf.Clamp(health + points, 0, 300);
-        healthBar.SetHealth(PlayerController.instance.health);
+        HealthBar.instance.SetHealth(PlayerController.instance.health);
     }
     public void TakeDamage(int points)
     {
         if (rage.canBeDamaged && health > 0)
         {
             health -= points;
-            healthBar.SetHealth(health);
+            HealthBar.instance.SetHealth(health);
             if (health <= 0)
                 Die();
             else if(!AudioManager.instance.isPlaying("DamagedSFX"))

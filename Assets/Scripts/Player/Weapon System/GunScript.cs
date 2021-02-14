@@ -371,7 +371,7 @@ public class GunScript : MonoBehaviour
                     hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
                     foreach (Collider collider in hits)
                     {
-                        collider.GetComponent<EnemyContoller>().hearFire();
+                        collider.GetComponent<InfectedController>().Noise(PlayerController.instance.transform.position);
                     }
                 }
 
@@ -392,26 +392,27 @@ public class GunScript : MonoBehaviour
         float infrontOfWallDistance = 0.1f; // Good values is between 0.01 to 0.1
         float maxDistance = 1000000;
 
-        if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer))
+        if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer, QueryTriggerInteraction.Ignore))
         {
-            if (hitInfo.transform.CompareTag("Untagged"))
+            if (hitInfo.transform.root.CompareTag("Enemy") || hitInfo.transform.root.CompareTag("SpecialEnemy"))
             {
-                Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
-            }
-            else if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
-            {
-                EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
-                enemy.TakeDamage((int)damage, hitInfo.point);
+                InfectedController enemy = hitInfo.transform.root.GetComponent<InfectedController>();
+                enemy.TakeDamage((int)damage, 0);
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 if (enemy.health <= 0)
                 {
                     rage.UpdateRage(hitInfo.transform.tag);
                     CompanionController.instance.killCounter++;
                     pvo.fightKills++;
-                    if(hitInfo.transform.tag[0] == 'S')
+                    if (hitInfo.transform.tag[0] == 'S')
                     {
                         ingredientInventory.container[1].addAmount(1);
                     }
                 }
+            }
+            else if (hitInfo.transform.CompareTag("Untagged"))
+            {
+                Instantiate(wallDecalEffect, hitInfo.point + hitInfo.normal * infrontOfWallDistance, Quaternion.LookRotation(hitInfo.normal));
             }
             else if (hitInfo.transform.CompareTag("Companion"))
             {

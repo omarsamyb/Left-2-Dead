@@ -48,11 +48,11 @@ public class GrenadeScript : MonoBehaviour
         Vector3 position = transform.position;
         for (int i = 0; i < 5; i++)
         {
-            Collider[] hits = Physics.OverlapBox(position, new Vector3(radius, 0.2f, radius), Quaternion.identity, enemyLayer);
+            Collider[] hits = Physics.OverlapBox(position, new Vector3(radius, 0.4f, radius), Quaternion.identity, enemyLayer);
             foreach (Collider cur in hits)
             {
-                cur.GetComponent<EnemyContoller>().TakeDamage(25);
-                if (cur.GetComponent<EnemyContoller>().health <= 0)
+                cur.GetComponent<InfectedController>().TakeDamage(25, 2);
+                if (cur.GetComponent<InfectedController>().health <= 0)
                 {
                     CompanionController.instance.killCounter++;
                     pvo.fightKills++;
@@ -68,7 +68,7 @@ public class GrenadeScript : MonoBehaviour
         Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(attractRadius, 0.2f, attractRadius), Quaternion.identity, enemyLayer);
         foreach (Collider cur in hits)
         {
-            cur.GetComponent<EnemyContoller>().pipeGrenade(transform);
+            cur.GetComponent<InfectedController>().Pipe(transform);
         }
         StartCoroutine(ExplodePipe());
     }
@@ -81,8 +81,8 @@ public class GrenadeScript : MonoBehaviour
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
-            cur.GetComponent<EnemyContoller>().TakeDamage(100);
-            if(cur.GetComponent<EnemyContoller>().health <= 0)
+            cur.GetComponent<InfectedController>().TakeDamage(100, 1);
+            if(cur.GetComponent<InfectedController>().health <= 0)
             {
                 CompanionController.instance.killCounter++;
                 pvo.fightKills++;
@@ -95,30 +95,26 @@ public class GrenadeScript : MonoBehaviour
     {
         Vector3 position = transform.position;
         yield return new WaitForSeconds(0.2f);
-        Collider[] hits = Physics.OverlapBox(position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
+        Collider[] hits = Physics.OverlapBox(position, new Vector3(explosionRadius, 0.4f, explosionRadius), Quaternion.identity, enemyLayer);
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
         foreach (Collider cur in hits)
         {
-            cur.GetComponent<EnemyContoller>().stun();
+            cur.GetComponent<InfectedController>().Stun();
         }
         transform.localScale = Vector3.zero;
         Destroy(this.gameObject, 5);
     }
-    IEnumerator ExplodeBile()
+    private void ExplodeBile()
     {
         GameObject boom = Instantiate(Explosion);
         boom.transform.position = transform.position;
-        for(int i=0;i<5;i++)
+        Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
+        foreach (Collider cur in hits)
         {
-            Collider[] hits = Physics.OverlapBox(transform.position, new Vector3(explosionRadius, 0.2f, explosionRadius), Quaternion.identity, enemyLayer);
-            foreach (Collider cur in hits)
-            {
-                cur.GetComponent<EnemyContoller>().Confuse();
-            }
-            yield return new WaitForSeconds(1);
+            cur.GetComponent<InfectedController>().Bile();
         }
-        Destroy(this.gameObject);
+        Destroy(gameObject, 5f);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -128,7 +124,7 @@ public class GrenadeScript : MonoBehaviour
             AudioManager.instance.PlayOneShot("GrenadesSFX");
             rb.velocity = new Vector3(0, 0, 0);
             if (curNadeType == GrenadeType.bile)
-                StartCoroutine(ExplodeBile());
+                ExplodeBile();
             else if (curNadeType == GrenadeType.molotov)
                 ExplodeMolotov();
             else if (curNadeType == GrenadeType.pipe)

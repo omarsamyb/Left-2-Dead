@@ -285,7 +285,7 @@ public class CompanionController : MonoBehaviour
             hits = Physics.OverlapBox(transform.position, new Vector3(noiseRange, 1f, noiseRange), Quaternion.identity, enemyLayer);
             foreach (Collider collider in hits)
             {
-                collider.GetComponent<EnemyContoller>().hearFire();
+                collider.GetComponent<InfectedController>().Noise(transform.position);
             }
         }
 
