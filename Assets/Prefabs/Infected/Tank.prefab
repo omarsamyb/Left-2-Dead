@@ -1171,7 +1171,7 @@ GameObject:
   - component: {fileID: 8253285736874433368}
   - component: {fileID: 8361998230996759322}
   - component: {fileID: -6392138134376531958}
-  - component: {fileID: -4618898963406620691}
+  - component: {fileID: -2773708977454464307}
   m_Layer: 12
   m_Name: Tank
   m_TagString: Enemy
@@ -1205,10 +1205,10 @@ Animator:
   m_GameObject: {fileID: 3396404468458150808}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: af215c462a508184fb19eec13f39b672, type: 3}
-  m_Controller: {fileID: 9100000, guid: c665e3db365331141b0c59d97b559dae, type: 2}
+  m_Controller: {fileID: 9100000, guid: 07e35c5ef3413bf4cb5ceb493c065ae0, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
@@ -1224,7 +1224,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.3
+  m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -1250,7 +1250,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &-4618898963406620691
+--- !u!114 &-2773708977454464307
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1259,10 +1259,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3396404468458150808}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c156923703a5d30419e6cab5eefa056d, type: 3}
+  m_Script: {fileID: 11500000, guid: fa389cf5cd31f2e4fbe74ff951dd7cb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 50
+  health: 0
   meshColliders:
   - {fileID: 978454764686713011}
   - {fileID: 1121639646544519513}

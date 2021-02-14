@@ -36,12 +36,6 @@ public class Zombie : InfectedController
         animator.SetTrigger("isAttacking");
         while (true)
         {
-            if (!target)
-            {
-                print(gameObject.name + " Stopping Attack Routine - target died");
-                inAttackRoutine = false;
-                yield break;
-            }
             FaceTarget();
             yield return null;
         }

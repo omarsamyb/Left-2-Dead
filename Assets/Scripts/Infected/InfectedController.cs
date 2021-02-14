@@ -22,8 +22,9 @@ public class InfectedController : MonoBehaviour
     [SerializeField] private float patrolDelayTime;
     protected float patrolSpeed;
     protected float chaseSpeed;
-    private float suspiciousWalkSpeed;
+    private const float suspiciousWalkSpeed = 1.5f;
     protected int dps;
+    protected int dph;
     protected float attackTime;
     protected float attackDelayTime;
     protected float attackRange;
@@ -104,7 +105,6 @@ public class InfectedController : MonoBehaviour
 
         visionAngle = visionAngleRef;
         visionRange = 180f;
-        suspiciousWalkSpeed = 1.5f;
 
         target = PlayerController.instance.transform;
         targetType = true;
@@ -119,7 +119,6 @@ public class InfectedController : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        print(other.name);
         if (ConditionsCheck(7))
         {
             if (other.CompareTag("Player"))
@@ -293,6 +292,12 @@ public class InfectedController : MonoBehaviour
             target = null;
         if (target)
             distanceToTarget = Vector3.SqrMagnitude(target.position - transform.position);
+        else if(inAttackRoutine)
+        {
+            print(gameObject.name + " Stopping Attack Routine - target died");
+            inAttackRoutine = false;
+            StopCoroutine(attackRoutine);
+        }
     }
 
     // Distraction
@@ -510,20 +515,20 @@ public class InfectedController : MonoBehaviour
     }
 
     // Health
-    public void ApplyDamage()
+    public void ApplyDamage(int mode=0)
     {
         if (target && state == InfectedState.attack)
         {
             bool targetDied = false;
             if (targetType)
             {
-                PlayerController.instance.TakeDamage(Mathf.CeilToInt(dps * attackTime));
+                PlayerController.instance.TakeDamage(mode == 0? Mathf.CeilToInt(dps * attackTime) : dph);
                 if (PlayerController.instance.health <= 0)
                     targetDied = true;
             }
             else
             {
-                attackedInfected.TakeDamage(Mathf.CeilToInt(dps * attackTime), -1);
+                attackedInfected.TakeDamage(mode == 0? Mathf.CeilToInt(dps * attackTime) : dph, -1);
                 if (attackedInfected.health <= 0)
                     targetDied = true;
                 else
