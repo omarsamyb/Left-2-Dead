@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using PathCreation;
+using UnityEngine.Video;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -19,7 +20,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     private float groundDistance;
     private LayerMask groundMask;
-    [HideInInspector] public bool isGrounded;
+    public bool isGrounded;
     private float jumpHeight;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public int health;
@@ -33,13 +34,14 @@ public class PlayerController : MonoBehaviour
     private float dashTime;
     [HideInInspector] public bool isDashing;
     private GunInventory weaponInventory;
-    [HideInInspector] public bool isPinned;
-    [HideInInspector] public bool isPartiallyPinned;
-    [HideInInspector] public EnemyContoller criticalEnemy;
+    public bool isPinned;
+    public bool isPartiallyPinned;
+    [HideInInspector] public InfectedController criticalEnemy;
     private Animation characterAnimation;
     private Rage rage;
     private float addHealthTime;
-    public GameObject bileEffect;
+    public VideoPlayer bileEffect;
+    public VideoPlayer rageEffect;
     private float bileVisionTimeRef = 4f;
     private float bileVisionTime = 4f;
     public Image damagedEffect;
@@ -60,7 +62,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip[] steppingSFX;
     private float previousSpeed;
     public InventoryObject craftableInventory;
-    
+    private Vector3 secondaryCamView;
+    [SerializeField] private HealthBar healthBar;
+    private Light camLight;
+    private RawImage bileEffectTexture;
+    private RawImage rageEffectTexture;
+
     private void Awake()
     {
         instance = this;
@@ -78,7 +85,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = true;
         isMoving = false;
         health = 300;
-        HealthBar.instance.SetMaxHealth(health);
+        healthBar.SetMaxHealth(health);
         dashSpeed = 25f;
         dashResetSpeed = 3f;
         dashLength = 0.08f;
@@ -90,8 +97,13 @@ public class PlayerController : MonoBehaviour
         addHealthTime = 1;
         pvo = GetComponent<PlayerVoiceOver>();
         cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
+        secondaryCamView = new Vector3(0f, 1f, -2f);
+        camLight = Camera.main.GetComponent<Light>();
+        bileEffect.Prepare();
+        rageEffect.Prepare();
+        bileEffectTexture = bileEffect.transform.parent.GetComponent<RawImage>();
+        rageEffectTexture = rageEffect.transform.parent.GetComponent<RawImage>();
     }
-
     void Update()
     {
         if (health > 0)
@@ -110,22 +122,40 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            if (Input.GetKeyDown(KeyCode.H) && craftableInventory.container[4].amount > 0 && health < 300)
+            {
+                craftableInventory.container[4].addAmount(-1);
+                AddHealth(50);
+            }
+
             SteppingSFX();
         }
 
-        if (bileEffect.activeSelf)
+        if (bileEffect.isPlaying)
         {
             bileVisionTime -= Time.deltaTime;
             if (bileVisionTime <= 0)
-                bileEffect.SetActive(false);
+            {
+                bileEffect.Stop();
+                Color color = bileEffectTexture.color;
+                color.a = 0f;
+                bileEffectTexture.color = color;
+                bileEffect.Prepare();
+            }
         }
-        if (Input.GetKeyDown(KeyCode.H)&& craftableInventory.container[4].amount>0)
+        if (rageEffect.isPlaying)
         {
-            craftableInventory.container[4].addAmount(-1);
-            AddHealth(50);
+            if (!GameManager.instance.inRageMode)
+            {
+                rageEffect.Stop();
+                Color color = rageEffectTexture.color;
+                color.a = 0f;
+                rageEffectTexture.color = color;
+                rageEffect.Prepare();
+            }
         }
     }
-
+    
     // Controls
     private void PlayerMovement()
     {
@@ -148,7 +178,7 @@ public class PlayerController : MonoBehaviour
             {
                 StartCoroutine(Dash(moveDirection));
             }
-            if (!isDashing && !isPinned)
+            if (!isDashing && !isPinned && !isPartiallyPinned)
             {
                 motor.Move(moveDirection * currentSpeed * Time.deltaTime);
                 isMoving = true;
@@ -235,14 +265,14 @@ public class PlayerController : MonoBehaviour
     public void AddHealth(int points)
     {
         health = Mathf.Clamp(health + points, 0, 300);
-        HealthBar.instance.SetHealth(PlayerController.instance.health);
+        healthBar.SetHealth(health);
     }
     public void TakeDamage(int points)
     {
         if (rage.canBeDamaged && health > 0)
         {
             health -= points;
-            HealthBar.instance.SetHealth(health);
+            healthBar.SetHealth(health);
             if (health <= 0)
                 Die();
             else if(!AudioManager.instance.isPlaying("DamagedSFX"))
@@ -270,7 +300,7 @@ public class PlayerController : MonoBehaviour
     {
         isPinned = true;
         isMoving = false;
-        criticalEnemy = enemy.GetComponent<EnemyContoller>();
+        criticalEnemy = enemy.GetComponent<InfectedController>();
         StartCoroutine(GetPinnedHelper());
     }
     IEnumerator GetPinnedHelper()
@@ -281,10 +311,7 @@ public class PlayerController : MonoBehaviour
         character.SetActive(true);
         characterAnimation.Play("Pinned");
         Vector3 origPos = Camera.main.transform.localPosition;
-        Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward * 2f;
-        camVector.y = 0f;
-        camVector += Vector3.up;
-        Camera.main.transform.position = camVector;
+        Camera.main.transform.localPosition = secondaryCamView;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         while (isPinned)
@@ -296,12 +323,13 @@ public class PlayerController : MonoBehaviour
         Camera.main.transform.localPosition = origPos;
         weaponInventory.currentGun.SetActive(true);
     }
-    public void GetPartiallyPinned(Vector3 topPoint, Vector3 endPoint, float speed, Vector3 poi)
+    public void GetPartiallyPinned(Vector3 topPoint, Vector3 endPoint, float speed, Vector3 poi, GameObject enemy)
     {
         isPartiallyPinned = true;
         isPinned = true;
         isGettingPinned = true;
         isMoving = false;
+        criticalEnemy = enemy.GetComponent<InfectedController>();
         Vector3[] points = { transform.position, topPoint, endPoint };
         BezierPath bezierPath = new BezierPath(points);
         GameObject placeholder = new GameObject("PinningPathPlaceHolder");
@@ -309,9 +337,13 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator GetPartiallyPinnedHelper(VertexPath path, float speed, Vector3 poi)
     {
+        Vector3 lookDirection = poi - transform.position;
+        transform.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0f, lookDirection.z));
+        Camera.main.transform.rotation = Quaternion.LookRotation(poi - Camera.main.transform.position);
         pvo.StartCoroutine(pvo.Pinned());
         weaponInventory.currentHandsAnimator.SetTrigger("reset");
         yield return new WaitForEndOfFrame();
+        camLight.enabled = true;
         weaponInventory.currentGun.SetActive(false);
         yield return new WaitForSeconds(0.8f);
         AudioManager.instance.Play("ScreamingSFX");
@@ -328,7 +360,7 @@ public class PlayerController : MonoBehaviour
         while(distanceTravelled < path.length)
         {
             distanceTravelled += speed * Time.deltaTime;
-            Camera.main.transform.rotation = Quaternion.LookRotation(poi - transform.position);
+            Camera.main.transform.rotation = Quaternion.LookRotation(poi - Camera.main.transform.position);
             transform.position = path.GetPointAtDistance(distanceTravelled, EndOfPathInstruction.Stop);
             yield return new WaitForEndOfFrame();
         }
@@ -341,6 +373,7 @@ public class PlayerController : MonoBehaviour
         character.transform.SetParent(transform);
         character.transform.localPosition = Vector3.zero;
         character.transform.localRotation = Quaternion.identity;
+        camLight.enabled = false;
         weaponInventory.currentGun.SetActive(true);
         isGettingPinned = false;
         Time.timeScale = 1f;
@@ -357,6 +390,44 @@ public class PlayerController : MonoBehaviour
     }
 
     // Effects
+    public void HideEffects()
+    {
+        Color color = damagedEffect.color;
+        color.a = 0f;
+        damagedEffect.color = color;
+        if(bileEffect.isPlaying)
+        {
+            bileEffect.Pause();
+            color = bileEffectTexture.color;
+            color.a = 0f;
+            bileEffectTexture.color = color;
+        }
+        if (rageEffect.isPlaying)
+        {
+            rageEffect.Pause();
+            color = rageEffectTexture.color;
+            color.a = 0f;
+            rageEffectTexture.color = color;
+        }
+
+    }
+    public void RestoreEffects()
+    {
+        if (bileEffect.isPaused)
+        {
+            Color color = bileEffectTexture.color;
+            color.a = 1f;
+            bileEffectTexture.color = color;
+            bileEffect.Play();
+        }
+        if (rageEffect.isPaused)
+        {
+            Color color = rageEffectTexture.color;
+            color.a = 1f;
+            rageEffectTexture.color = color;
+            rageEffect.Play();
+        }
+    }
     IEnumerator DamagedEffect()
     {
         Color color = damagedEffect.color;
@@ -442,8 +513,18 @@ public class PlayerController : MonoBehaviour
     public void BileVisionEffect()
     {
         pvo.StartCoroutine(pvo.Bile());
-        bileEffect.SetActive(true);
+        Color color = bileEffectTexture.color;
+        color.a = 1f;
+        bileEffectTexture.color = color;
+        bileEffect.Play();
         bileVisionTime = bileVisionTimeRef;
         AudioManager.instance.Play("BileEffectSFX");
+    }
+    public void RageEffect()
+    {
+        Color color = rageEffectTexture.color;
+        color.a = 1f;
+        rageEffectTexture.color = color;
+        rageEffect.Play();
     }
 }

@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour
 		public AudioMixerGroup mixerGroup;
 		public bool playOnAwake;
 		public bool loop;
+		public bool ignoreListenerPause;
 		[Range(0f, 1f)]
 		public float volume = 0.75f;
 		[Range(-3f, 3f)]
@@ -50,6 +51,7 @@ public class AudioManager : MonoBehaviour
 				s.source.loop = s.loop;
 				s.source.volume = s.volume;
 				s.source.pitch = s.pitch;
+				s.source.ignoreListenerPause = s.ignoreListenerPause;
 			}
 		}
 	}

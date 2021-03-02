@@ -108,7 +108,7 @@ public class GunInventory : MonoBehaviour
     }
     private void Grenade()
     {
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.G) && PlayerController.instance.CanDoIt())
         {
             StartCoroutine(InitiateThrow());
         }
@@ -252,8 +252,7 @@ public class GunInventory : MonoBehaviour
             yield return new WaitForSeconds(0.07f);
             StartCoroutine(Throw());
             removeFromInvObj(grenadesIHave[currentGrenadeCounter]);
-            if(grenadesIHave.Count == 0)
-                print("wtf man");
+
             if (grenadesCounter[currentGrenadeCounter] - 1 == 0)
             {
                 grenadesIHave.RemoveAt(currentGrenadeCounter);
@@ -271,7 +270,7 @@ public class GunInventory : MonoBehaviour
     }
     private IEnumerator Throw()
     {
-        Vector3 position = currentGun.transform.GetChild(0).Find("L_arm").GetChild(0).GetChild(0).position;
+        Vector3 position = currentGun.transform.GetChild(0).Find("L_arm").GetChild(0).GetChild(0).position + Camera.main.transform.forward;
         GameObject resource = getGrenade(grenadesIHave[currentGrenadeCounter].ToString());
         Instantiate(resource, position, Quaternion.identity);
         yield return new WaitForSeconds(1f);

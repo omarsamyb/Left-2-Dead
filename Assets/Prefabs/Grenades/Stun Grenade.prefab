@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3947912359391936534}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.9327574, y: 2.01, z: 5.51}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8301698121162937440}
@@ -52,7 +52,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 32
   m_CollisionDetection: 0
 --- !u!136 &4181773184672315318
 CapsuleCollider:
@@ -62,12 +62,12 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3947912359391936534}
   m_Material: {fileID: 13400000, guid: c43c366d650e3684cbee85cca6993189, type: 2}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.15569168
-  m_Height: 0.7090361
+  m_Radius: 0.098739006
+  m_Height: 0.4463513
   m_Direction: 1
-  m_Center: {x: -0.035618246, y: 0.30580866, z: 0.017809153}
+  m_Center: {x: -0.035618246, y: 0.33865213, z: 0.017809153}
 --- !u!114 &4181773184672315319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,11 +81,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curNadeType: 2
-  Explosion: {fileID: 2811754401239087844, guid: fb10de5ef64e7514bb689c10d23d6570, type: 3}
+  Explosion: {fileID: 1329845292236604, guid: 9bba9cf244c53c5439505dfc96fdd11c, type: 3}
   Fire: {fileID: 0}
   thrust: 20
   _name: Stun Grenade
   maxCapacity: 2
+  lightSource: {fileID: 0}
 --- !u!82 &7350090272391446417
 AudioSource:
   m_ObjectHideFlags: 0

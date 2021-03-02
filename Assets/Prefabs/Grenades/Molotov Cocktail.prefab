@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 476516236420404007}
   - component: {fileID: 78344065905097870}
   - component: {fileID: 78344065905097871}
-  - component: {fileID: 78344065905097869}
   - component: {fileID: 78344065905097872}
   - component: {fileID: -8010572870777485084}
   m_Layer: 0
@@ -52,7 +51,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 32
   m_CollisionDetection: 0
 --- !u!136 &78344065905097871
 CapsuleCollider:
@@ -61,27 +60,13 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 997332167840958877}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_Material: {fileID: 13400000, guid: c43c366d650e3684cbee85cca6993189, type: 2}
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.07486092
   m_Height: 0.49189883
   m_Direction: 1
   m_Center: {x: 0, y: 0.2, z: 0}
---- !u!64 &78344065905097869
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997332167840958877}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2517145826163985434, guid: 1bb7b102b8f51754385cfdc38d3b1676, type: 3}
 --- !u!114 &78344065905097872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,6 +85,7 @@ MonoBehaviour:
   thrust: 20
   _name: Molotov Cocktail
   maxCapacity: 3
+  lightSource: {fileID: 0}
 --- !u!82 &-8010572870777485084
 AudioSource:
   m_ObjectHideFlags: 0

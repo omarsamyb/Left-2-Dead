@@ -6,6 +6,7 @@ public class SceneManagement : MonoBehaviour
     public GameObject elliePrefab;
     public GameObject zoeyPrefab;
     public GameObject louisPrefab;
+
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnLevelFinishedLoading;

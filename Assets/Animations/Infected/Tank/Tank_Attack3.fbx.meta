@@ -39,7 +39,7 @@ ModelImporter:
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 137
+      lastFrame: 98
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -59,7 +59,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.30881092
+      - time: 0.24301386
+        functionName: SoundFX
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: c3cf15956799fa844bcfde92b796fb7f, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.48042807
         functionName: ApplyDamage
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: c3cf15956799fa844bcfde92b796fb7f, type: 3}

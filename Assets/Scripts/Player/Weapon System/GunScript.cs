@@ -15,7 +15,6 @@ public class GunScript : MonoBehaviour
     private PlayerController playerController;
     private GunInventory gunInventory;
     private CompanionVoiceOver cvo;
-    private PlayerVoiceOver pvo;
     private Rage rage;
     public string weaponName;
     public Animator handsAnimator;
@@ -54,7 +53,7 @@ public class GunScript : MonoBehaviour
     public float roundsPerSecond;
     public float damageRef;
     public float damage;
-    private int meleeDamage = 50;
+    private int meleeDamage = 40;
     private int projectileCount = 10;
     private float shotgunSpread = 10f;
     private float waitTillNextFire;
@@ -197,7 +196,6 @@ public class GunScript : MonoBehaviour
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         enemyLayer = 1 << LayerMask.NameToLayer("Enemy");
         cvo = CompanionController.instance.transform.GetComponent<CompanionVoiceOver>();
-        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         ingredientInventory = PlayerController.instance.player.GetComponent<PlayerInventory>().ingredientInventory;
     }
     void Update()
@@ -217,16 +215,21 @@ public class GunScript : MonoBehaviour
             else
                 damage = damageRef;
         }
+        else
+            playerController.currentSpeed = 0f;
     }
 
     // Controls
     private void Controls()
     {
         Movement();
-        Melee();
-        Shooting();
-        Reloading();
-        Aiming();
+        if (!GameManager.instance.inPickUp)
+        {
+            Melee();
+            Shooting();
+            Reloading();
+            Aiming();
+        }
     }
     private void Movement()
     {
@@ -401,10 +404,9 @@ public class GunScript : MonoBehaviour
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 if (enemy.health <= 0)
                 {
-                    rage.UpdateRage(hitInfo.transform.tag);
+                    rage.UpdateRage(enemy.transform.tag);
                     CompanionController.instance.killCounter++;
-                    pvo.fightKills++;
-                    if (hitInfo.transform.tag[0] == 'S')
+                    if (enemy.transform.tag[0] == 'S')
                     {
                         ingredientInventory.container[1].addAmount(1);
                     }
@@ -516,9 +518,19 @@ public class GunScript : MonoBehaviour
               || Physics.Raycast(ray4, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray5, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray6, out hitInfo, 2f, ~ignoreLayer)
               || Physics.Raycast(ray7, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray8, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray9, out hitInfo, 2f, ~ignoreLayer))
         {
-            if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
+            if (hitInfo.transform.root.CompareTag("Enemy") || hitInfo.transform.root.CompareTag("SpecialEnemy"))
             {
-                hitInfo.collider.gameObject.GetComponent<EnemyContoller>().TakeDamage(meleeDamage, hitInfo.point);
+                InfectedController enemy = hitInfo.transform.root.GetComponent<InfectedController>();
+                enemy.TakeDamage(meleeDamage, 0);
+                if (enemy.health <= 0)
+                {
+                    rage.UpdateRage(enemy.transform.tag);
+                    CompanionController.instance.killCounter++;
+                    if (enemy.transform.tag[0] == 'S')
+                    {
+                        ingredientInventory.container[1].addAmount(1);
+                    }
+                }
             }
         }
     }

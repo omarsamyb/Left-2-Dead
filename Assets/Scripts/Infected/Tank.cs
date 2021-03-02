@@ -12,8 +12,10 @@ public class Tank : InfectedController
         patrolSpeed = 1.5f;
         chaseSpeed = 3f;
         attackRange = 6f;
-        attackDelayTime = 1f;
+        attackDelayTime = 2f;
         attackDelay = new WaitForSeconds(attackDelayTime);
+        attackType = AttackType.melee;
+        healthBar.SetMaxHealth(health);
     }
     protected override void Update()
     {
@@ -21,8 +23,12 @@ public class Tank : InfectedController
         if (state == InfectedState.chase || state == InfectedState.attack)
         {
             attackTime += Time.deltaTime;
-            if (state == InfectedState.attack && target)
+            if (state == InfectedState.attack && target && !inAttackSequence)
                 FaceTarget();
+        }
+        if (state != InfectedState.attack)
+        {
+            inAttackSequence = false;
         }
     }
 
@@ -39,17 +45,34 @@ public class Tank : InfectedController
         agent.updateRotation = false;
         if(attackTime < attackDelayTime)
         {
-            animator.SetTrigger("isIdle");
+            animator.SetTrigger("inCooldown");
             yield return new WaitUntil(() => attackTime >= attackDelayTime);
         }
         while (true)
         {
-            animator.SetTrigger("isAttacking");
-            animator.SetInteger("attackIndex", Random.Range(0, 5));
-            yield return new WaitForEndOfFrame();
-            yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f);
-            animator.SetTrigger("isIdle");
+            if (ConditionsCheck(8))
+            {
+                inAttackSequence = true;
+                animator.SetTrigger("isAttacking");
+                if(Random.Range(0, 3) == 0)
+                    animator.SetInteger("attackIndex", 2);
+                else
+                    animator.SetInteger("attackIndex", Random.Range(0, 5));
+
+                yield return new WaitForEndOfFrame();
+                yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f);
+                inAttackSequence = false;
+                yield return null;
+            }
+            inAttackSequence = false;
+            attackTime = 0f;
+            yield return null;
+            animator.SetTrigger("inCooldown");
             yield return attackDelay;
         }
+    }
+    public void SoundFX(int index)
+    {
+        infectedEffects.Attack(index);
     }
 }

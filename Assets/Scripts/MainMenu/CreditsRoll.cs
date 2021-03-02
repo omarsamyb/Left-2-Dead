@@ -39,6 +39,7 @@ public class CreditsRoll : MonoBehaviour
     IEnumerator LoadMenu()
     {
         yield return new WaitForSecondsRealtime(41f);
-        SceneManager.LoadScene(0);
+        GameManager.instance.level = 0;
+        GameManager.instance.LoadNextLevel();
     }
 }

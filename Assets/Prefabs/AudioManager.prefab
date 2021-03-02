@@ -51,6 +51,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ReloadSFX
@@ -59,6 +60,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: EmptyClipSFX
@@ -67,6 +69,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: SwitchWeaponSFX
@@ -75,6 +78,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ReadySFX
@@ -83,6 +87,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ThrowSFX
@@ -91,6 +96,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: GrenadesSFX
@@ -99,6 +105,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 0}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: DashSFX
@@ -107,6 +114,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 0.5
     pitch: 1
   - name: RageModeSFX
@@ -115,6 +123,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 0.5
     pitch: 1
   - name: RageModeMusic
@@ -123,6 +132,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 0.8
     pitch: 1
   - name: BileEffectSFX
@@ -131,6 +141,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ToggleFlashlightSFX
@@ -139,6 +150,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: CriticallyDamagedSFX
@@ -147,6 +159,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 1
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ScreamingSFX
@@ -155,6 +168,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 0.5
   - name: HitGroundSFX
@@ -163,6 +177,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: DamagedSFX
@@ -171,6 +186,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: PlayerVoice
@@ -179,6 +195,7 @@ MonoBehaviour:
     mixerGroup: {fileID: -3026178028513709603, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: RainSFX
@@ -187,6 +204,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 1
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ThunderSFX
@@ -195,6 +213,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: RattleSFX
@@ -203,6 +222,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 1
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: ClickSFX
@@ -211,14 +231,16 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
-  - name: BackgroundMusic
+  - name: MenuBackgroundMusic
     source: {fileID: 0}
     audioClip: {fileID: 8300000, guid: 268ff2c83405ed441bb4b43d3b151c80, type: 3}
     mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 1
     loop: 1
+    ignoreListenerPause: 1
     volume: 1
     pitch: 1
   - name: SteppingSFX
@@ -227,6 +249,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: CreditsMusic
@@ -235,6 +258,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
+    ignoreListenerPause: 0
     volume: 1
     pitch: 1
   - name: BackgroundMusic
@@ -243,5 +267,6 @@ MonoBehaviour:
     mixerGroup: {fileID: 2717202090716348822, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 1
+    ignoreListenerPause: 0
     volume: 0.5
     pitch: 1

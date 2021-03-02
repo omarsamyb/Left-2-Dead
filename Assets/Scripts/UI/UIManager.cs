@@ -24,22 +24,29 @@ public class UIManager : MonoBehaviour
     private bool UICameraToggle = false;
 
     void Update(){
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) )
         {
             if(gameScreenCanvasToggle){
                 pickUpCanvasToggle = !pickUpCanvasToggle;
                 if(pickUpCanvasToggle)
                 {
-                    unLockCursor();
+                    GameManager.instance.UnlockCursor();
                     pickUpMenu(true);
                 }
                 else
                 {
-                    lockCursor();
+                    GameManager.instance.LockCursor();
                     pickUpMenu(false);
                 }
                 pickUpCanvas.SetActive(pickUpCanvasToggle);
             }
+        }
+        if(PlayerController.instance.isGettingPinned || PlayerController.instance.isPartiallyPinned || PlayerController.instance.isPinned)
+        {
+            pickUpCanvasToggle = false;
+            GameManager.instance.LockCursor();
+            pickUpMenu(false);
+            pickUpCanvas.SetActive(pickUpCanvasToggle);
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -114,14 +121,6 @@ public class UIManager : MonoBehaviour
             inventoryCanvas.SetActive(inventoryPanelToggle);
             showUICameraScreen();
         }
-    }
-    public void unLockCursor(){
-        GameManager.instance.inMenu = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-    public void lockCursor(){
-        GameManager.instance.inMenu = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void hideInventoryScreen()

@@ -81,6 +81,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8052493453614882770, guid: d7270b010a968344988c0afa36d24d1e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: -2300582845219444113, guid: d7270b010a968344988c0afa36d24d1e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d7270b010a968344988c0afa36d24d1e, type: 3}
       propertyPath: m_Name
       value: Alcohol
@@ -88,6 +96,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d7270b010a968344988c0afa36d24d1e, type: 3}
       propertyPath: m_Layer
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5970001987654679414, guid: d7270b010a968344988c0afa36d24d1e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7270b010a968344988c0afa36d24d1e, type: 3}

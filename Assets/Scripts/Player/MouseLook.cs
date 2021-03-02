@@ -35,7 +35,7 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
-        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
+        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inPickUp)
             MouseInput();
     }
     private void FixedUpdate()

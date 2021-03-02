@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿//using System.Collections;
+//using System.Collections.Generic;
+//using UnityEngine;
 
-public class NormalInfected : EnemyContoller
-{
+//public class NormalInfected : EnemyContoller
+//{
 
-}
+//}

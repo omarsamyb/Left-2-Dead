@@ -92,6 +92,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.01
       objectReference: {fileID: 0}
+    - target: {fileID: -1308154924754892956, guid: 2ac599fcb3f600148b6f4c266861b3c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2ac599fcb3f600148b6f4c266861b3c3, type: 3}
       propertyPath: m_Name
       value: Rag 1 Variant
@@ -99,6 +103,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 2ac599fcb3f600148b6f4c266861b3c3, type: 3}
       propertyPath: m_Layer
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4340423644140328716, guid: 2ac599fcb3f600148b6f4c266861b3c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6695304551642739032, guid: 2ac599fcb3f600148b6f4c266861b3c3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ac599fcb3f600148b6f4c266861b3c3, type: 3}

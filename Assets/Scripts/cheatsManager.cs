@@ -93,12 +93,12 @@ public class cheatsManager : MonoBehaviour
         normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
         foreach(GameObject enemy in normalEnemy) 
         {
-            enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
+            //enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
         }
         specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
         foreach(GameObject enemy in specialEnemy) 
         {
-            enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
+            //enemy.GetComponent<EnemyContoller>().TakeDamage(1000);
         }
 
     }
@@ -108,11 +108,11 @@ public class cheatsManager : MonoBehaviour
         specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
         foreach(GameObject enemy in normalEnemy) 
         {
-            enemy.GetComponent<EnemyContoller>().TakeDamage(10);
+            //enemy.GetComponent<EnemyContoller>().TakeDamage(10);
         }
         foreach(GameObject enemy in specialEnemy) 
         {
-            enemy.GetComponent<EnemyContoller>().TakeDamage(10);
+            //enemy.GetComponent<EnemyContoller>().TakeDamage(10);
         }
     }
     public void FillWeaponsAmmo()

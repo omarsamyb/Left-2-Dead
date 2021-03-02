@@ -5,39 +5,60 @@ using UnityEngine.AI;
 
 public enum InfectedState
 {
-    idle, patrol, chase, attack, distraction, dead
+    idle, patrol, chase, attack, distraction, dead, empty
+}
+public enum AttackType
+{
+    melee, ranged, pin
 }
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class InfectedController : MonoBehaviour
 {
+    public Transform hitPoint;
     [HideInInspector] public int health;
     [SerializeField] private Collider[] meshColliders;
     private Collider rootCollider;
-    protected Animator animator;
+    [HideInInspector] public Animator animator;
     protected NavMeshAgent agent;
     protected float stoppingDistance;
-    [SerializeField] protected InfectedState state;
+    public InfectedState state;
     [SerializeField] private Vector3[] patrolPoints;
-    [SerializeField] private float patrolDelayTime;
+    [SerializeField] private float patrolDelayTime = 4f;
     protected float patrolSpeed;
     protected float chaseSpeed;
-    private const float suspiciousWalkSpeed = 1.5f;
+    protected float suspiciousWalkSpeed = 1.5f;
     protected int dps;
     protected int dph;
     protected float attackTime;
     protected float attackDelayTime;
     protected float attackRange;
-    protected bool targetType;
+    [HideInInspector] public bool targetType;
     protected Transform target;
-    private float distanceToTarget;
-    private Vector3 randomPatrolPoint;
-    private NavMeshHit navMeshHit;
+    protected float distanceToTarget;
+    protected Vector3 randomPoint;
+    protected Vector3 randomPatrolPoint;
+    protected NavMeshHit navMeshHit;
     private NavMeshPath path;
     private Vector3 faceDirection;
-    private LayerMask infectedLayer;
-    private bool criticalEvent;
+    protected LayerMask infectedLayer;
+    [HideInInspector] public bool criticalEvent;
+    protected bool inAttackSequence;
+    protected AttackType attackType;
     protected InfectedController attackedInfected;
+    [HideInInspector] public bool isPartiallyPinned;
+    [HideInInspector] public bool isPinned;
+    private bool inUnpinRoutine;
+    protected InfectedEffects infectedEffects;
+    [SerializeField] protected HealthBar healthBar;
+    // Events
+    public delegate void HordeDetectPlayerEventHandler();
+    public event HordeDetectPlayerEventHandler HordeDetectPlayer;
+    public delegate void DetectPlayerEventHandler();
+    public static event DetectPlayerEventHandler DetectPlayer;
+    public delegate void FightKillsEventHandler();
+    public static event FightKillsEventHandler FightKills;
+    private bool playerDetected;
     // States
     private Coroutine patrolRoutine;
     private bool inPatrolRoutine;
@@ -59,7 +80,6 @@ public class InfectedController : MonoBehaviour
     private float visionRange;
     private RaycastHit visionHit;
     // Distraction
-    private bool resetState;
     private InfectedState preDistractionState;
     private Vector3 preDistractionPosition;
     private Quaternion preDistractionRotation;
@@ -83,17 +103,23 @@ public class InfectedController : MonoBehaviour
     private Coroutine bileRoutine;
     private bool inBileRoutine;
     private const float bileTimerRef = 5f;
-    private float bileTimer;
+    protected float bileTimer;
     private Vector3 proximity = new Vector3(10f, 1f, 10f);
+    [SerializeField] private GameObject bileEffect;
+    private bool permenantBile;
     private Coroutine fireRoutine;
     private bool inFireRoutine;
     private const float fireTimerRef = 1.1f;
     private float fireTimer;
 
-    protected virtual void Start()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
+    }
+    protected virtual void Start()
+    {
         agent = GetComponent<NavMeshAgent>();
+        infectedEffects = GetComponent<InfectedEffects>();
         path = new NavMeshPath();
         rootCollider = GetComponent<Collider>();
         infectedLayer = 1 << LayerMask.NameToLayer("Enemy");
@@ -108,6 +134,11 @@ public class InfectedController : MonoBehaviour
 
         target = PlayerController.instance.transform;
         targetType = true;
+
+        preDistractionState = InfectedState.empty;
+
+        if (state != InfectedState.idle && state != InfectedState.patrol && state != InfectedState.empty)
+            playerDetected = true;
     }
     protected virtual void Update()
     {
@@ -122,7 +153,10 @@ public class InfectedController : MonoBehaviour
         if (ConditionsCheck(7))
         {
             if (other.CompareTag("Player"))
-                state = InfectedState.chase;
+            {
+                HordeDetectPlayer?.Invoke();
+                ChasePlayer();
+            }
         }
     }
 
@@ -161,6 +195,7 @@ public class InfectedController : MonoBehaviour
         inPatrolRoutine = true;
         agent.stoppingDistance = 0.5f;
         agent.speed = patrolSpeed;
+        agent.updateRotation = true;
         while (true)
         {
             if (patrolPoints.Length == 0)
@@ -202,6 +237,7 @@ public class InfectedController : MonoBehaviour
         inChaseRoutine = true;
         agent.speed = chaseSpeed;
         agent.stoppingDistance = stoppingDistance;
+        agent.updateRotation = true;
         while (true)
         {
             try
@@ -214,7 +250,7 @@ public class InfectedController : MonoBehaviour
                 }
                 else
                 {
-                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))
+                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0) && ReachedDestination())
                         animator.SetTrigger("isIdle");
                     Debug.LogWarning("Unreachable target during chase state of " + gameObject.name);
                 }
@@ -254,7 +290,9 @@ public class InfectedController : MonoBehaviour
         {
             if (visionHit.collider.CompareTag("Player"))
             {
-                state = InfectedState.chase;
+                HordeDetectPlayer?.Invoke();
+                preDistractionState = InfectedState.empty;
+                ChasePlayer();
                 ResetRoutines("playerVisiblityRoutine");
             }
         }
@@ -269,16 +307,16 @@ public class InfectedController : MonoBehaviour
             {
                 if (state == InfectedState.chase)
                 {
-                    if (bileTimer > 0f)
+                    if (bileTimer > 0f || permenantBile)
                         ResetRoutines("bileRoutine");
                     else
                         ResetRoutines();
                     state = InfectedState.attack;
                 }
             }
-            else if(state == InfectedState.attack)
+            else if(state == InfectedState.attack && !inAttackSequence)
             {
-                if (bileTimer > 0f)
+                if (bileTimer > 0f || permenantBile)
                     ResetRoutines("bileRoutine");
                 else
                     ResetRoutines();
@@ -303,12 +341,16 @@ public class InfectedController : MonoBehaviour
     // Distraction
     private void Distraction()
     {
-        if (bileTimer > 0f)
+        if (bileTimer > 0f || permenantBile)
         {
-            bileTimer -= Time.deltaTime;
+            if(bileTimer > 0f)
+                bileTimer -= Time.deltaTime;
             if (!inBileRoutine)
                 Bile(true);
         }
+        else if (bileEffect.activeSelf && !inBileRoutine)
+            bileEffect.SetActive(false);
+
         if(pipeSources.Count > 0)
         {
             pipeSources.RemoveAll(source => !source || source.localScale == Vector3.zero);
@@ -325,7 +367,7 @@ public class InfectedController : MonoBehaviour
     {
         if (ConditionsCheck(2))
         {
-            if (state != InfectedState.distraction)
+            if (state != InfectedState.distraction && preDistractionState == InfectedState.empty)
             {
                 preDistractionPosition = transform.position;
                 preDistractionRotation = transform.rotation;
@@ -341,19 +383,20 @@ public class InfectedController : MonoBehaviour
         print(gameObject.name +" Started Noise Routine");
         inNoiseRoutine = true;
         agent.stoppingDistance = 0.5f;
+        agent.updateRotation = true;
         agent.speed = suspiciousWalkSpeed;
         if (agent.CalculatePath(source, path) && path.status == NavMeshPathStatus.PathComplete)
-        {
-            if(!animator.GetCurrentAnimatorStateInfo(0).IsName("SuspiciousWalking"))
-                animator.SetTrigger("isSuspicious");
             agent.SetPath(path);
+        else if(RandomReachablePoint())
+        {
+            Debug.LogWarning("Unreachable target during Noise Routine of " + gameObject.name + "retrying using random close point");
         }
         else
         {
             Debug.LogWarning("Unreachable target during Noise Routine of " + gameObject.name);
-            inNoiseRoutine = false;
-            yield break;
         }
+        if (!animator.GetCurrentAnimatorStateInfo(0).IsName("SuspiciousWalking"))
+            animator.SetTrigger("isSuspicious");
 
         while (true)
         {
@@ -361,7 +404,7 @@ public class InfectedController : MonoBehaviour
                 break;
             yield return null;
         }
-        visionAngle = 90f;
+        visionAngle = 100f;
         animator.SetTrigger("isSuspiciousChecking");
         yield return new WaitForEndOfFrame();
         yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
@@ -374,7 +417,12 @@ public class InfectedController : MonoBehaviour
             yield return null;
         }
         yield return resetRotationRoutine = StartCoroutine(ResetRotation());
-        state = preDistractionState;
+        if (preDistractionState != InfectedState.empty && state != InfectedState.dead)
+        {
+            state = preDistractionState;
+            preDistractionState = InfectedState.empty;
+        }
+
         inNoiseRoutine = false;
         print(gameObject.name + " Stopping Noise Routine");
     }
@@ -382,7 +430,7 @@ public class InfectedController : MonoBehaviour
     {
         if (ConditionsCheck(3))
         {
-            if (state != InfectedState.distraction && bileTimer <= 0f)
+            if (state != InfectedState.distraction && bileTimer <= 0f && !permenantBile && preDistractionState == InfectedState.empty)
                 preDistractionState = state;
             ResetRoutines();
             state = InfectedState.distraction;
@@ -395,7 +443,17 @@ public class InfectedController : MonoBehaviour
         inStunRoutine = true;
         animator.SetTrigger("isStunned");
         yield return stunTime;
-        state = preDistractionState;
+        if (bileTimer <= 0f && !permenantBile && pipeSources.Count == 0)
+        {
+            ResetRoutines("stunRoutine");
+            yield return resetPositionRoutine = StartCoroutine(ResetPosition());
+        }
+        if (preDistractionState != InfectedState.empty && state != InfectedState.dead)
+        {
+            state = preDistractionState;
+            preDistractionState = InfectedState.empty;
+        }
+        
         inStunRoutine = false;
         print(gameObject.name + " Stopping Stun Routine");
     }
@@ -405,7 +463,7 @@ public class InfectedController : MonoBehaviour
             pipeSources.Add(source);
         if (ConditionsCheck(4))
         {
-            if (state != InfectedState.distraction)
+            if (state != InfectedState.distraction && preDistractionState == InfectedState.empty)
             {
                 preDistractionState = state;
                 preDistractionPosition = transform.position;
@@ -422,6 +480,7 @@ public class InfectedController : MonoBehaviour
         inPipeRoutine = true;
         pipeExploaded = false;
         agent.stoppingDistance = 0.5f;
+        agent.updateRotation = true;
         agent.speed = chaseSpeed;
 
         if (agent.CalculatePath(source.position, path) && path.status == NavMeshPathStatus.PathComplete)
@@ -440,28 +499,35 @@ public class InfectedController : MonoBehaviour
 
         while (true)
         {
-            if (ReachedDestination())
+            if (ReachedDestination() || criticalEvent)
                 break;
             yield return null;
         }
 
-        animator.SetTrigger("isCheckingPipe");
+        if(!criticalEvent)
+            animator.SetTrigger("isCheckingPipe");
         yield return new WaitUntil(() => pipeExploaded);
 
         ResetRoutines("pipeRoutine");
         yield return resetPositionRoutine = StartCoroutine(ResetPosition());
-        if (state != InfectedState.dead)
+        if (preDistractionState != InfectedState.empty && state != InfectedState.dead)
+        {
             state = preDistractionState;
+            preDistractionState = InfectedState.empty;
+        }
+        
         inPipeRoutine = false;
         print(gameObject.name + " Stopping Pipe Routine");
     }
-    public void Bile(bool resume=false)
+    public void Bile(bool resume=false, bool permenant = false)
     {
         if (!resume)
             bileTimer = bileTimerRef;
+        if (permenant)
+            permenantBile = true;
         if (ConditionsCheck(5))
         {
-            if (state != InfectedState.distraction)
+            if (state != InfectedState.distraction && preDistractionState == InfectedState.empty)
             {
                 preDistractionState = state;
                 preDistractionPosition = transform.position;
@@ -476,42 +542,144 @@ public class InfectedController : MonoBehaviour
     {
         print(gameObject.name + " Started Bile Routine");
         inBileRoutine = true;
-        while(bileTimer > 0f)
+        bool targetFound;
+        bileEffect.SetActive(true);
+        while(bileTimer > 0f || permenantBile)
         {
+            targetFound = false;
+            yield return new WaitUntil(() => !isPartiallyPinned && !isPinned);
             Collider[] colliders = Physics.OverlapBox(transform.position + transform.up, proximity, Quaternion.identity, infectedLayer);
             if(colliders.Length > 1)
             {
+                float minDistance = float.MaxValue;
+                float distance;
                 foreach (Collider collider in colliders)
                 {
                     if(!ReferenceEquals(collider.transform, transform))
                     {
-                        attackedInfected = collider.GetComponent<InfectedController>();
-                        break;
+                        distance = Vector3.SqrMagnitude(collider.transform.position - transform.position);
+                        if (distance < minDistance || permenantBile)
+                        {
+                            attackedInfected = collider.GetComponent<InfectedController>();
+                            if (!attackedInfected.isPartiallyPinned && !attackedInfected.isPinned)
+                            {
+                                targetFound = true;
+                                minDistance = distance;
+                                if (permenantBile && attackedInfected.targetType)
+                                    break;
+                            }
+                        }
                     }
                 }
-                target = attackedInfected.transform;
-                targetType = false;
-                state = InfectedState.chase;
-                yield return new WaitUntil(() => attackedInfected.health <= 0 || bileTimer <= 0f);
-                state = InfectedState.distraction;
+                if (targetFound)
+                {
+                    if (isPinned || isPartiallyPinned)
+                        continue;
+                    target = attackedInfected.transform;
+                    targetType = false;
+                    attackTime = attackDelayTime;
+                    state = InfectedState.chase;
+                    yield return new WaitUntil(() => attackedInfected.health <= 0 || (bileTimer <= 0f && !permenantBile && !inAttackSequence));
+                    state = InfectedState.distraction;
+                }
+                else
+                {
+                    if (!animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Cooldown"))
+                    {
+                        animator.SetTrigger("inCooldown");
+                        print("Target Infected is pinned, waiting...");
+                    }
+                    yield return chaseDelay;
+                    state = InfectedState.distraction;
+                }
             }
             else
             {
-                if (!animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+                // TODO: make zombie hit itself until death
+                if (permenantBile)
                 {
-                    animator.SetTrigger("isIdle");
-                    print("No Infected nearby, retrying...");
+                    TakeDamage(1000, -1);
+                    break;
                 }
-                yield return chaseDelay;
-                state = InfectedState.distraction;
+                else
+                {
+                    if (!animator.IsInTransition(0) && !animator.GetCurrentAnimatorStateInfo(0).IsName("Cooldown"))
+                    {
+                        animator.SetTrigger("inCooldown");
+                        print("No Infected nearby, retrying...");
+                    }
+                    yield return chaseDelay;
+                    state = InfectedState.distraction;
+                }
             }
         }
-        ResetRoutines("bileRoutine");
-        yield return resetPositionRoutine = StartCoroutine(ResetPosition());
-        if (state != InfectedState.dead)
+        yield return new WaitUntil(() => !isPartiallyPinned && !isPinned);
+        bileEffect.SetActive(false);
+        if (pipeSources.Count == 0)
+        {
+            ResetRoutines("bileRoutine");
+            yield return resetPositionRoutine = StartCoroutine(ResetPosition());
+        }
+        if (preDistractionState != InfectedState.empty && state != InfectedState.dead)
+        {
             state = preDistractionState;
+            preDistractionState = InfectedState.empty;
+        }
+        
         inBileRoutine = false;
         print(gameObject.name + " Stopping Bile Routine");
+    }
+
+    // Pinning
+    public void GetPartiallyPinned(Vector3 chargerPos, Vector3 position)
+    {
+        if(inResetPositionRoutine) 
+            ResetRoutines();
+        else
+            ResetRoutines("bileRoutine");
+        if (!inBileRoutine)
+            Bile();
+        state = InfectedState.distraction;
+        isPartiallyPinned = true;
+        Vector3 lookDirection = chargerPos - transform.position;
+        transform.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0f, lookDirection.z));
+        animator.SetTrigger("isPartiallyPinned");
+        StartCoroutine(Reposition(position));
+    }
+    public void GetPinned(Vector3 hunterPos)
+    {
+        if (inResetPositionRoutine)
+            ResetRoutines();
+        else
+            ResetRoutines("bileRoutine");
+        if (!inBileRoutine)
+            Bile();
+        state = InfectedState.distraction;
+        isPinned = true;
+        Vector3 lookDirection = hunterPos - transform.position;
+        transform.rotation = Quaternion.LookRotation(new Vector3(lookDirection.x, 0f, lookDirection.z));
+        animator.SetTrigger("isPinned");
+    }
+    public void Unpin()
+    {
+        if ((isPartiallyPinned || isPinned) && !inUnpinRoutine && state != InfectedState.dead)
+        {
+            StartCoroutine(UnpinRoutine());
+        }
+    }
+    private IEnumerator UnpinRoutine()
+    {
+        inUnpinRoutine = true;
+        animator.SetTrigger("unpin");
+        yield return new WaitForEndOfFrame();
+        yield return new WaitUntil(() => !animator.IsInTransition(0));
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Getting Up"))
+            yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
+        else
+            animator.ResetTrigger("unpin");
+        isPartiallyPinned = false;
+        isPinned = false;
+        inUnpinRoutine = false;
     }
 
     // Health
@@ -519,6 +687,8 @@ public class InfectedController : MonoBehaviour
     {
         if (target && state == InfectedState.attack)
         {
+            if (attackType == AttackType.melee && distanceToTarget > attackRange)
+                return;
             bool targetDied = false;
             if (targetType)
             {
@@ -530,13 +700,24 @@ public class InfectedController : MonoBehaviour
             {
                 attackedInfected.TakeDamage(mode == 0? Mathf.CeilToInt(dps * attackTime) : dph, -1);
                 if (attackedInfected.health <= 0)
+                {
                     targetDied = true;
+                    if (attackType == AttackType.pin)
+                        attackedInfected.animator.SetBool("isDamageDead", true);
+                }
                 else
                 {
-                    if(attackedInfected.state == InfectedState.idle || attackedInfected.state == InfectedState.patrol)
+                    if (attackedInfected.GetType() != typeof(Boomer))
                     {
-                        attackedInfected.bileTimer = bileTimer;
-                        attackedInfected.Bile(true);
+                        if (permenantBile)
+                        {
+                            if (attackedInfected.state == InfectedState.idle || attackedInfected.state == InfectedState.patrol)
+                                attackedInfected.bileTimer = bileTimerRef;
+                        }
+                        else
+                        {
+                            attackedInfected.bileTimer = bileTimer;
+                        }
                     }
                 }
             }
@@ -548,6 +729,7 @@ public class InfectedController : MonoBehaviour
     public void TakeDamage(int points, int type)
     {
         health -= points;
+        healthBar.SetHealth(health);
         switch (type)
         {
             // Bullet
@@ -578,25 +760,28 @@ public class InfectedController : MonoBehaviour
                 break;
             // Fire
             case 2:
-                criticalEvent = true;
-                fireTimer = fireTimerRef;
-                if (!inFireRoutine)
-                    fireRoutine = StartCoroutine(Fire());
+                if (!criticalEvent)
+                {
+                    criticalEvent = true;
+                    fireTimer = fireTimerRef;
+                    if (!inFireRoutine)
+                        fireRoutine = StartCoroutine(Fire());
+                }
                 break;
         }
         if (health <= 0)
-            Die();
+            StartCoroutine(Die());
+        else
+            infectedEffects.Damaged();
     }
     private IEnumerator Explosion()
     {
         inExplosionRoutine = true;
-        resetState = false;
-        if (state != InfectedState.distraction)
+        if (state != InfectedState.distraction && preDistractionState == InfectedState.empty)
         {
             preDistractionState = state;
             preDistractionPosition = transform.position;
             preDistractionRotation = transform.rotation;
-            resetState = true;
         }
         state = InfectedState.distraction;
         if (inPipeRoutine)
@@ -608,30 +793,32 @@ public class InfectedController : MonoBehaviour
             animator.SetBool("isDamageDead", true);
         RandomRotation();
         animator.SetTrigger("isExploaded");
-        yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
+        yield return new WaitForEndOfFrame();
+        yield return new WaitWhile(() => animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
         if (state != InfectedState.dead)
         {
             yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
-            if (resetState)
+            criticalEvent = false;
+            yield return resetPositionRoutine = StartCoroutine(ResetPosition());
+            if (preDistractionState != InfectedState.empty)
             {
-                yield return resetPositionRoutine = StartCoroutine(ResetPosition());
                 state = preDistractionState;
+                preDistractionState = InfectedState.empty;
             }
         }
         pipeExploaded = true;
         criticalEvent = false;
         inExplosionRoutine = false;
-        // TODO: Check the neccessity of this condition
-        //if (inPipeRoutine)
-        //    ResetRoutines("pipeRoutine");
-        //else
-        //    ResetRoutines();
     }
     private IEnumerator Fire()
     {
         inFireRoutine = true;
-        if (state != InfectedState.distraction)
+        if (state != InfectedState.distraction && preDistractionState == InfectedState.empty)
+        {
             preDistractionState = state;
+            preDistractionPosition = transform.position;
+            preDistractionRotation = transform.rotation;
+        }
         state = InfectedState.distraction;
         ResetRoutines();
         RandomRotation();
@@ -643,33 +830,44 @@ public class InfectedController : MonoBehaviour
             if(state == InfectedState.dead)
             {
                 inFireRoutine = false;
+                criticalEvent = false;
                 yield break;
             }
             yield return null;
         }
-        if(state != InfectedState.dead)
-            state = preDistractionState;
+        if (state != InfectedState.dead)
+        {
+            criticalEvent = false;
+            yield return resetPositionRoutine = StartCoroutine(ResetPosition());
+            if (preDistractionState != InfectedState.empty && state != InfectedState.dead)
+            {
+                state = preDistractionState;
+                preDistractionState = InfectedState.empty;
+            }
+        }
         criticalEvent = false;
         inFireRoutine = false;
         ResetRoutines();
     }
-    private void Die()
+    private IEnumerator Die()
     {
+        if(playerDetected)
+            FightKills?.Invoke();
+        infectedEffects.Dead();
         animator.SetBool("isDead", true);
         state = InfectedState.dead;
-        ResetRoutines();
         rootCollider.enabled = false;
-        foreach (Collider collider in meshColliders)
-        {
-            collider.enabled = false;
-        }
+        DisableColliders();
+        Destroy(healthBar.transform.parent.gameObject);
+        yield return new WaitUntil(() => !criticalEvent);
+        ResetRoutines();
         Destroy(gameObject, 6f);
     }
 
     // Helpers
-    private bool ConditionsCheck(int type)
+    protected bool ConditionsCheck(int type)
     {
-        if (state == InfectedState.dead || criticalEvent)
+        if (state == InfectedState.dead || criticalEvent || isPartiallyPinned || isPinned)
             return false;
         switch (type)
         {
@@ -677,7 +875,7 @@ public class InfectedController : MonoBehaviour
             case 0:
                 if (state == InfectedState.chase || state == InfectedState.attack || inPlayerVisiblityRoutine || distanceToTarget > visionRange || !target)
                     return false;
-                if (state == InfectedState.distraction && !inNoiseRoutine)
+                if (state == InfectedState.distraction && !inNoiseRoutine && !inResetPositionRoutine)
                     return false;
                 break;
             // AttackRange
@@ -717,6 +915,13 @@ public class InfectedController : MonoBehaviour
                 if (state != InfectedState.idle && state != InfectedState.patrol)
                     return false;
                 break;
+            // Attack
+            case 8:
+                if (targetType && (PlayerController.instance.isPartiallyPinned || PlayerController.instance.isPartiallyPinned))
+                    return false;
+                if (!targetType && attackedInfected && (attackedInfected.isPartiallyPinned || attackedInfected.isPinned))
+                    return false;
+                break;
         }
         return true;
     }
@@ -724,13 +929,15 @@ public class InfectedController : MonoBehaviour
     {
         agent.updateRotation = true;
         agent.ResetPath();
-        if(bileTimer <= 0f && PlayerController.instance.health > 0)
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        if ((bileTimer <= 0f && !permenantBile) && PlayerController.instance.health > 0)
         {
             target = PlayerController.instance.transform;
             targetType = true;
         }
+        ResetTriggers();
 
-        if(inResetPositionRoutine && exception != "resetPositionRoutine")
+        if (inResetPositionRoutine && exception != "resetPositionRoutine")
         {
             print(gameObject.name + " Stopping Reset Position Routine");
             StopCoroutine(resetPositionRoutine);
@@ -788,6 +995,7 @@ public class InfectedController : MonoBehaviour
         {
             print(gameObject.name + " Stopping Bile Routine");
             StopCoroutine(bileRoutine);
+            bileEffect.SetActive(false);
             inBileRoutine = false;
         }
     }
@@ -825,9 +1033,9 @@ public class InfectedController : MonoBehaviour
         }
         inResetRotationRoutine = false;
     }
-    private bool ReachedDestination()
+    protected bool ReachedDestination()
     {
-        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        if (agent.enabled && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             if (!agent.hasPath || agent.velocity.sqrMagnitude <= 0.1f)
             {
@@ -849,5 +1057,53 @@ public class InfectedController : MonoBehaviour
             transform.Rotate(Vector3.up, Random.Range(0, 40));
         else
             transform.Rotate(Vector3.up, -Random.Range(0, 40));
+    }
+    protected bool RandomReachablePoint()
+    {
+        if (NavMesh.SamplePosition(target.position, out navMeshHit, 4.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
+        {
+            agent.SetDestination(navMeshHit.position);
+            return true;
+        }
+        return false;
+    }
+    private IEnumerator Reposition(Vector3 position)
+    {
+        Vector3 oldPos = transform.position;
+        for(float t = 0f; t < 1f; t+= Time.deltaTime)
+        {
+            transform.position = Vector3.Lerp(oldPos, position, t);
+            yield return null;
+        }
+    }
+    protected void DisableColliders()
+    {
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        foreach (Collider collider in meshColliders)
+        {
+            collider.enabled = false;
+        }
+    }
+    protected void EnableColliders()
+    {
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        foreach (Collider collider in meshColliders)
+        {
+            collider.enabled = true;
+        }
+    }
+    protected void ResetTriggers()
+    {
+        foreach(AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.type == AnimatorControllerParameterType.Trigger)
+                animator.ResetTrigger(param.name);
+        }
+    }
+    public void ChasePlayer()
+    {
+        playerDetected = true;
+        DetectPlayer?.Invoke();
+        state = InfectedState.chase;
     }
 }

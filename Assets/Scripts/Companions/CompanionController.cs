@@ -6,7 +6,6 @@ using System.Collections;
 public class CompanionController : MonoBehaviour
 {
     public static CompanionController instance;
-    // public string weaponName;
     public GameObject weaponPrefab;
     public int maxClips = 3;
     public GameObject muzzelSpawn;
@@ -23,16 +22,15 @@ public class CompanionController : MonoBehaviour
     private float waitTillNextFire;
     private RaycastHit hitInfo;
     private AudioSource fireSource;
-    private TextMesh HUD_companion;
 
     private NavMeshAgent agent;
     private NavMeshObstacle obstacle;
     private Transform player;
     private PlayerController playerController;
     private Animator animator;
-    private EnemyContoller normalEnemy;
-    private EnemyContoller specialEnemy;
-    private EnemyContoller chosenEnemy;
+    private InfectedController normalEnemy;
+    private InfectedController specialEnemy;
+    private InfectedController chosenEnemy;
     Collider[] hits;
     LayerMask enemyLayer;
     LayerMask shootingLayer;
@@ -44,11 +42,12 @@ public class CompanionController : MonoBehaviour
     [HideInInspector] public int killCounter;
     [HideInInspector] public bool canApplyAbility;
     private CompanionVoiceOver cvo;
-    private PlayerVoiceOver pvo;
     private float weaponNoiseCoolDownRef = 0.5f;
     private float weaponNoiseCoolDown;
     private float noiseRange = 10f;
-
+    private float moveTimerRef = 1f;
+    private float moveTimer;
+    private float stoppingDistanceRef;
 
     private void Awake()
     {
@@ -80,10 +79,15 @@ public class CompanionController : MonoBehaviour
         runningSpeed = agent.speed;
         walkingSpeed = agent.speed / 2f;
         cvo = GetComponent<CompanionVoiceOver>();
-        pvo = PlayerController.instance.transform.GetComponent<PlayerVoiceOver>();
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
+        stoppingDistanceRef = agent.stoppingDistance;
 
         agent.SetDestination(player.position);
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player") && moveTimer <= 0f && !inCoroutine)
+            StartCoroutine(ChangePosition());
     }
 
     void Update()
@@ -101,6 +105,8 @@ public class CompanionController : MonoBehaviour
 
             if (weaponNoiseCoolDown > 0)
                 weaponNoiseCoolDown -= Time.deltaTime;
+            if (moveTimer > 0f)
+                moveTimer -= Time.deltaTime;
         }
     }
     private void Movement()
@@ -115,13 +121,13 @@ public class CompanionController : MonoBehaviour
         else if (!agent.isOnOffMeshLink && isJumping)
             isJumping = false;
 
-        if (distance > agent.stoppingDistance)
+        if (distance > agent.stoppingDistance && moveTimer <= 0f && agent.stoppingDistance > 1f)
         {
             if (!inCoroutine)
                 StartCoroutine(GoToPlayer());
         }
 
-        if (distance < agent.stoppingDistance + agent.radius * 2)
+        if (distance < 4f)
             canApplyAbility = true;
         else
             canApplyAbility = false;
@@ -134,6 +140,7 @@ public class CompanionController : MonoBehaviour
                 {
                     animator.SetInteger("speed", 0);
                     agent.ResetPath();
+                    agent.stoppingDistance = stoppingDistanceRef;
                     agent.enabled = false;
                     obstacle.enabled = true;
                 }
@@ -150,6 +157,7 @@ public class CompanionController : MonoBehaviour
             agent.enabled = true;
         }
 
+        agent.stoppingDistance = stoppingDistanceRef;
         agent.SetDestination(player.position);
         if (agent.remainingDistance < agent.stoppingDistance * 1.8f)
         {
@@ -164,19 +172,43 @@ public class CompanionController : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         inCoroutine = false;
     }
+    IEnumerator ChangePosition()
+    {
+        inCoroutine = true;
+        if (!agent.enabled)
+        {
+            obstacle.enabled = false;
+            yield return null;
+            agent.enabled = true;
+        }
+        Vector3 randomPoint = transform.position + Random.insideUnitSphere * 2;
+        NavMeshHit navMeshHit;
+        if (NavMesh.SamplePosition(randomPoint, out navMeshHit, 2.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
+        {
+            animator.SetInteger("speed", 1);
+            agent.stoppingDistance = 0.5f;
+            agent.speed = walkingSpeed;
+            agent.SetDestination(navMeshHit.position);
+            yield return new WaitForSeconds(0.2f);
+        }
+        inCoroutine = false;
+    }
     private void Shooting()
     {
-        if (style == GunStyles.nonautomatic)
+        if (!PlayerController.instance.isGettingPinned)
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-                ShootWeapon();
-        }
-        else if (style == GunStyles.automatic)
-        {
-            if (Input.GetKey(KeyCode.Q))
-                ShootWeapon();
-            else
-                animator.SetBool("isShooting", false);
+            if (style == GunStyles.nonautomatic)
+            {
+                if (Input.GetKeyDown(KeyCode.Q))
+                    ShootWeapon();
+            }
+            else if (style == GunStyles.automatic)
+            {
+                if (Input.GetKey(KeyCode.Q))
+                    ShootWeapon();
+                else
+                    animator.SetBool("isShooting", false);
+            }
         }
         waitTillNextFire -= roundsPerSecond * Time.deltaTime;
     }
@@ -215,14 +247,27 @@ public class CompanionController : MonoBehaviour
             normalEnemy = null;
             specialEnemy = null;
             hits = Physics.OverlapBox(transform.position, new Vector3(range / 2, 1, range / 2), Quaternion.identity, enemyLayer);
+            float minDistanceNormal = float.MaxValue;
+            float minDistanceSpecial = float.MaxValue;
+            float distance;
             foreach (Collider enemy in hits)
             {
-                if (enemy.gameObject.CompareTag("Enemy") && normalEnemy == null)
-                    normalEnemy = enemy.GetComponent<EnemyContoller>();
+                distance = Vector3.SqrMagnitude(enemy.transform.position - transform.position);
+                if (enemy.gameObject.CompareTag("Enemy"))
+                {
+                    if (distance < minDistanceNormal)
+                    {
+                        normalEnemy = enemy.GetComponent<InfectedController>();
+                        minDistanceNormal = distance;
+                    }
+                }
                 else if (enemy.gameObject.CompareTag("SpecialEnemy"))
                 {
-                    specialEnemy = enemy.GetComponent<EnemyContoller>();
-                    break;
+                    if (distance < minDistanceSpecial)
+                    {
+                        specialEnemy = enemy.GetComponent<InfectedController>();
+                        minDistanceSpecial = distance;
+                    }
                 }
             }
             if (specialEnemy)
@@ -248,21 +293,24 @@ public class CompanionController : MonoBehaviour
 
         if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range * 2, shootingLayer))
         {
-            if (hitInfo.transform.CompareTag("Enemy") || hitInfo.transform.CompareTag("SpecialEnemy"))
+            if (hitInfo.transform.root.CompareTag("Enemy") || hitInfo.transform.root.CompareTag("SpecialEnemy"))
             {
-                EnemyContoller enemy = hitInfo.collider.gameObject.GetComponent<EnemyContoller>();
-                enemy.TakeDamage(damage, hitInfo.point);
+                InfectedController enemy = hitInfo.transform.root.GetComponent<InfectedController>();
+                enemy.TakeDamage(damage, 0);
                 if (enemy.health <= 0)
                 {
                     cvo.StartCoroutine(cvo.Kill());
-                    pvo.fightKills++;
                     killCounter++;
-                    if(isCriticalEnemy && hitInfo.transform.CompareTag("SpecialEnemy"))
+                    if(isCriticalEnemy && enemy.transform.CompareTag("SpecialEnemy"))
                     {
                         PlayerController.instance.criticalEnemy = null;
                         PlayerController.instance.isPinned = false;
+                        PlayerController.instance.isPartiallyPinned = false;
                     }
                 }
+                moveTimer = moveTimerRef;
+                if (agent.enabled)
+                    agent.ResetPath();
             }
             else
             {

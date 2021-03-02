@@ -28,6 +28,11 @@ public class CompanionVoiceOver : MonoBehaviour
         healUpTimer = healUpTimerRef;
         orderTimer = orderTimerRef;
         killTimer = killTimerRef;
+        detectionIndex = Random.Range(0, detectionClips.Length);
+        friendlyFireIndex = Random.Range(0, friendlyFireClips.Length);
+        healUpIndex = Random.Range(0, healUpClips.Length);
+        orderIndex = Random.Range(0, orderClips.Length);
+        killIndex = Random.Range(0, killClips.Length);
     }
 
     void Update()

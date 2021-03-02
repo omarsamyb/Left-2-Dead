@@ -8,11 +8,10 @@ public class timer : MonoBehaviour
 {
     public GameObject text;
 
-    // Update is called once per frame
     void Update()
     {
         if(GameManager.instance.level == 3 && GameManager.instance.timerIsRunning){
-            text.GetComponent<TextMeshProUGUI>().SetText(GameManager.instance.DisplayTime());
+            text.GetComponent<TextMeshProUGUI>().SetText(DisplayTime());
             if(GameManager.instance.timeRemaining - 30 <= 0.5){
                 text.GetComponent<TextMeshProUGUI>().color = new Color32(255, 128, 0, 255);
             }
@@ -25,5 +24,11 @@ public class timer : MonoBehaviour
                 gameObject.SetActive(false);
             }
         }
+    }
+    public string DisplayTime()
+    {
+        float minutes = Mathf.FloorToInt(GameManager.instance.timeRemaining / 60);
+        float seconds = Mathf.FloorToInt(GameManager.instance.timeRemaining % 60);
+        return string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }

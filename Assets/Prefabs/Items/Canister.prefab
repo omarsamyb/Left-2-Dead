@@ -113,6 +113,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 7e2b821b8cd5c334fa3271a87ba7d64c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e2b821b8cd5c334fa3271a87ba7d64c, type: 3}
 --- !u!1 &4915090637679478090 stripped

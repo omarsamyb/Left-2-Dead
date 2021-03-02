@@ -19,6 +19,7 @@ public class Rage : MonoBehaviour
     private int normalKillPoints = 10;
     private int specialKillPoints = 50;
     private PlayerVoiceOver pvo;
+    private Vector3 secondaryCamView;
 
     public event Action<float> OnRageChange = delegate { };
 
@@ -31,6 +32,7 @@ public class Rage : MonoBehaviour
         gunInventory = GetComponent<GunInventory>();
         canBeDamaged = true;
         pvo = GetComponent<PlayerVoiceOver>();
+        secondaryCamView = new Vector3(0f, 1.5f, -1.5f);
     }
 
     void Update()
@@ -91,6 +93,7 @@ public class Rage : MonoBehaviour
 
     public IEnumerator ActivateRageMode()
     {
+        PlayerController.instance.RageEffect();
         AudioManager.instance.Stop("PlayerVoice");
         canBeDamaged = false;
         AudioManager.instance.Play("RageModeMusic");
@@ -99,10 +102,7 @@ public class Rage : MonoBehaviour
         character.SetActive(true);
         characterAnimation.Play("Rage");
         Vector3 origPos = Camera.main.transform.localPosition;
-        Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward;
-        camVector.y = 0f;
-        camVector += Vector3.up * 1.2f;
-        Camera.main.transform.position = camVector;
+        Camera.main.transform.localPosition = secondaryCamView;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
         yield return new WaitForSeconds(0.1f);
