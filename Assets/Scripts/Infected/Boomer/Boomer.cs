@@ -104,18 +104,21 @@ public class Boomer : InfectedController
                 else
                     Debug.LogWarning("Could not generate vomit puddle - target not near a ground");
 
-                animator.SetTrigger("isAttacking");
-                yield return new WaitForEndOfFrame();
-                while (animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+                if (Physics.OverlapBox(transform.position + transform.up + transform.forward * 6f, new Vector3(6f, 0.5f, 6f), Quaternion.identity, infectedLayer).Length < 16f)
                 {
-                    if (collided && !inSpawnRoutine && canSpawn)
+                    animator.SetTrigger("isAttacking");
+                    yield return new WaitForEndOfFrame();
+                    while (animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
                     {
-                        canSpawn = false;
-                        StartCoroutine(SpawnZombies(bileTimer > 0f ? true : false));
+                        if (collided && !inSpawnRoutine && canSpawn)
+                        {
+                            canSpawn = false;
+                            StartCoroutine(SpawnZombies(bileTimer > 0f ? true : false));
+                        }
+                        yield return null;
                     }
-                    yield return null;
+                    inAttackSequence = false;
                 }
-                inAttackSequence = false;
             }
             inAttackSequence = false;
             attackTime = 0f;

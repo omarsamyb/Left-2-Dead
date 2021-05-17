@@ -164,7 +164,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 440706139317415019}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.2
   m_Height: 1.16824
   m_Direction: 1
@@ -1529,7 +1529,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 3661422375801863014}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.22607134
   m_Height: 0.5352396
   m_Direction: 1
@@ -1731,7 +1731,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 5372695854693452963}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.22607134
   m_Height: 0.5352396
   m_Direction: 1
@@ -1777,7 +1777,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 5415528221073278687}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.2
   m_Height: 1.16824
   m_Direction: 1

@@ -48,6 +48,7 @@ public class CompanionController : MonoBehaviour
     private float moveTimerRef = 1f;
     private float moveTimer;
     private float stoppingDistanceRef;
+    InventoryObject ingredientInventory;
 
     private void Awake()
     {
@@ -81,6 +82,7 @@ public class CompanionController : MonoBehaviour
         cvo = GetComponent<CompanionVoiceOver>();
         weaponNoiseCoolDown = weaponNoiseCoolDownRef;
         stoppingDistanceRef = agent.stoppingDistance;
+        ingredientInventory = PlayerController.instance.player.GetComponent<PlayerInventory>().ingredientInventory;
 
         agent.SetDestination(player.position);
     }
@@ -270,7 +272,7 @@ public class CompanionController : MonoBehaviour
                     }
                 }
             }
-            if (specialEnemy)
+            if(minDistanceSpecial < minDistanceNormal)
                 chosenEnemy = specialEnemy;
             else
                 chosenEnemy = normalEnemy;
@@ -285,17 +287,17 @@ public class CompanionController : MonoBehaviour
         Vector3 direction = Vector3.zero;
         if (chosenEnemy)
         {
-            direction = (chosenEnemy.hitPoint.position - transform.position);
+            direction = (chosenEnemy.hitPoint.position - transform.position).normalized;
             lookRotation = Quaternion.LookRotation(direction);
         }
 
         float infrontOfWallDistance = 0.1f;
 
-        if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range * 2, shootingLayer))
+        if (Physics.Raycast(transform.position, lookRotation * Vector3.forward, out hitInfo, range * 2, isCriticalEnemy? enemyLayer : shootingLayer))
         {
-            if (hitInfo.transform.root.CompareTag("Enemy") || hitInfo.transform.root.CompareTag("SpecialEnemy"))
+            InfectedController enemy = hitInfo.transform.GetComponentInParent<InfectedController>();
+            if (enemy)
             {
-                InfectedController enemy = hitInfo.transform.root.GetComponent<InfectedController>();
                 enemy.TakeDamage(damage, 0);
                 if (enemy.health <= 0)
                 {
@@ -303,6 +305,7 @@ public class CompanionController : MonoBehaviour
                     killCounter++;
                     if(isCriticalEnemy && enemy.transform.CompareTag("SpecialEnemy"))
                     {
+                        ingredientInventory.container[1].addAmount(1);
                         PlayerController.instance.criticalEnemy = null;
                         PlayerController.instance.isPinned = false;
                         PlayerController.instance.isPartiallyPinned = false;

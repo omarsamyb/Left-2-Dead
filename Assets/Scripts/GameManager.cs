@@ -56,28 +56,13 @@ public class GameManager : MonoBehaviour
     {
         if ((inMenu || isGameOver) && !paused) // Pause
         {
-            AudioManager.instance.Play("MenuBackgroundMusic");
             paused = true;
-            AudioListener.pause = true;
-            UnlockCursor();
-            PlayerController.instance.HideEffects();
-            if(inMenu ){
-                savedTimeScale = Time.timeScale;
-            }
-            if (isGameOver)
-            {
-                Time.timeScale = 0f;
-            }
-            Time.timeScale = 0f;
+            StartCoroutine(PauseGame());
         }
         else if(!inMenu && !isGameOver && paused)
         {
-            AudioManager.instance.Stop("MenuBackgroundMusic");
-            AudioListener.pause = false;
             paused = false;
-            LockCursor();
-            PlayerController.instance.RestoreEffects();
-            Time.timeScale = savedTimeScale;
+            ResumeGame();
         }
 
         if (timerIsRunning)
@@ -96,9 +81,38 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    private void ResumeGame()
+    {
+        AudioManager.instance.Stop("MenuBackgroundMusic");
+        AudioListener.pause = false;
+        paused = false;
+        LockCursor();
+        PlayerController.instance.RestoreEffects();
+        Time.timeScale = savedTimeScale;
+    }
+    private IEnumerator PauseGame()
+    {
+        AudioManager.instance.Play("MenuBackgroundMusic");
+        PlayerController.instance.HideEffects();
+        yield return new WaitForEndOfFrame();
+        AudioListener.pause = true;
+        UnlockCursor();
+        if (inMenu)
+        {
+            savedTimeScale = Time.timeScale;
+        }
+        Time.timeScale = 0f;
+    }
 
     public void LoadNextLevel(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        try
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        catch
+        {
+            SceneManager.LoadScene(0);
+        }
 
         craftable.resetInventory();
         ammo.resetInventory();
@@ -106,6 +120,19 @@ public class GameManager : MonoBehaviour
 
         level += 1;    
         if(level == 3){
+            timerIsRunning = true;
+        }
+    }
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        craftable.resetInventory();
+        ammo.resetInventory();
+        ingredient.resetInventory();
+
+        if (level == 3)
+        {
             timerIsRunning = true;
         }
     }

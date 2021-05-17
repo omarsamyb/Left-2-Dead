@@ -2,19 +2,19 @@
 
 public class BoomerVomit : MonoBehaviour
 {
-    Transform collidee;
+    InfectedController enemy;
 
     private void OnParticleCollision(GameObject other)
     {
-        collidee = other.transform.root;
-        if (collidee.CompareTag("Player") || collidee.CompareTag("Enemy") || collidee.CompareTag("SpecialEnemy"))
+        enemy = other.GetComponentInParent<InfectedController>();
+        if (other.CompareTag("Player") || enemy)
         {
             try
             {
-                Boomer boomer = transform.root.GetComponent<Boomer>();
-                if (!ReferenceEquals(boomer.transform, other.transform.root))
+                Boomer boomer = transform.GetComponentInParent<Boomer>();
+                if (!ReferenceEquals(boomer.transform, enemy? enemy.transform : other.transform))
                 {
-                    if ((boomer.targetType && !collidee.CompareTag("Player")) || (!boomer.targetType && collidee.CompareTag("Player")))
+                    if ((boomer.targetType && !other.CompareTag("Player")) || (!boomer.targetType && other.CompareTag("Player")))
                         return;
                     boomer.collided = true;
                 }

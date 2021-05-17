@@ -31,21 +31,23 @@ public class MouseLook : MonoBehaviour
         bottomAngleView = -45f;
         yRotationSpeed = 0.1f;
         xRotationSpeed = 0.1f;
+        yRotation = PlayerController.instance.transform.rotation.eulerAngles.y;
+        wantedYRotation = yRotation;
     }
 
     void Update()
     {
-        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inPickUp)
-            MouseInput();
-    }
-    private void FixedUpdate()
-    {
-        if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
+        if (PlayerController.instance.health > 0)
         {
-            yRotation = Mathf.SmoothDamp(yRotation, wantedYRotation, ref rotationYVelocity, yRotationSpeed);
-            xRotation = Mathf.SmoothDamp(xRotation, wantedXRotation, ref rotationXVelocity, xRotationSpeed);
-            player.rotation = Quaternion.Euler(0f, yRotation, 0f);
-            transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inPickUp)
+                MouseInput();
+            if (!PlayerController.instance.isGettingPinned && !GameManager.instance.inMenu)
+            {
+                yRotation = Mathf.SmoothDamp(yRotation, wantedYRotation, ref rotationYVelocity, yRotationSpeed);
+                xRotation = Mathf.SmoothDamp(xRotation, wantedXRotation, ref rotationXVelocity, xRotationSpeed);
+                player.rotation = Quaternion.Euler(0f, yRotation, 0f);
+                transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            }
         }
     }
 

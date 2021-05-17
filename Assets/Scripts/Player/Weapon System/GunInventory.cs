@@ -35,14 +35,11 @@ public class GunInventory : MonoBehaviour
     //  0       1      2     3        4
     public GameObject[] grenadePrefabs;
     public GameObject[] weaponPrefabs;
-    void Awake()
-    {
-        StartCoroutine(SpawnWeaponUponStart());
-        PopulateWeapons();
-    }
+ 
     private void Start()
     {
         AudioManager.instance.Play("SwitchWeaponSFX");
+        StartCoroutine(SpawnWeaponUponStart());
     }
     void Update()
     {
@@ -162,6 +159,7 @@ public class GunInventory : MonoBehaviour
     IEnumerator SpawnWeaponUponStart()
     {
         yield return new WaitForSeconds(0.5f);
+        PopulateWeapons();
         StartCoroutine(ActivateWeapon(0, 0));
     }
     private void PopulateWeapons()

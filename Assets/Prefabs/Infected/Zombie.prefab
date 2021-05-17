@@ -224,7 +224,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 1601717242771422349}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.0794669
   m_Height: 0.5450261
   m_Direction: 0
@@ -379,7 +379,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 2197883475574578977}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.0794669
   m_Height: 0.2581178
   m_Direction: 0
@@ -896,10 +896,10 @@ NavMeshObstacle:
   m_Shape: 0
   m_Extents: {x: 0.2, y: 1, z: 0.2}
   m_MoveThreshold: 0.1
-  m_Carve: 0
+  m_Carve: 1
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 1, z: 0}
-  m_TimeToStationary: 0.5
+  m_TimeToStationary: 0
 --- !u!82 &-3877944924040101096
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1739,7 +1739,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 5850709611222724503}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.0794669
   m_Height: 0.2581178
   m_Direction: 0
@@ -2018,7 +2018,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 7554405135572131875}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.0794669
   m_Height: 0.5450261
   m_Direction: 0

@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     public VideoPlayer bileEffect;
     public VideoPlayer rageEffect;
     private float bileVisionTimeRef = 4f;
-    private float bileVisionTime = 4f;
+    private float bileVisionTime = 0f;
     public Image damagedEffect;
     public Image criticallyDamagedEffect;
     private float damageFirstFadeDuration = 0.5f;
@@ -242,7 +242,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Health
-    private void Die()
+    private IEnumerator Die()
     {
         cvo.PlayerDeath();
         AudioManager.instance.Stop("DamagedSFX");
@@ -254,12 +254,10 @@ public class PlayerController : MonoBehaviour
         else
         {
             characterAnimation.Play("Die");
-            Vector3 camVector = Camera.main.transform.position - Camera.main.transform.forward * 2f;
-            camVector.y = 0f;
-            camVector += Vector3.up;
-            Camera.main.transform.position = camVector;
+            Camera.main.transform.localPosition = secondaryCamView;
         }
         character.transform.parent = null;
+        yield return new WaitForSeconds(4f);
         GameManager.instance.isGameOver = true;
     }
     public void AddHealth(int points)
@@ -274,7 +272,7 @@ public class PlayerController : MonoBehaviour
             health -= points;
             healthBar.SetHealth(health);
             if (health <= 0)
-                Die();
+                StartCoroutine(Die());
             else if(!AudioManager.instance.isPlaying("DamagedSFX"))
             {
                 AudioClip clip = damagedSFX[damagedIndex];
@@ -392,17 +390,20 @@ public class PlayerController : MonoBehaviour
     // Effects
     public void HideEffects()
     {
+        if (damageFadeRoutine != null)
+            StopCoroutine(damageFadeRoutine);
         Color color = damagedEffect.color;
         color.a = 0f;
         damagedEffect.color = color;
-        if(bileEffect.isPlaying)
+        criticallyDamagedEffect.color = color;
+        if(bileEffect && bileEffect.isPlaying && bileVisionTime > 0)
         {
             bileEffect.Pause();
             color = bileEffectTexture.color;
             color.a = 0f;
             bileEffectTexture.color = color;
         }
-        if (rageEffect.isPlaying)
+        if (rageEffect && rageEffect.isPlaying && GameManager.instance.inRageMode)
         {
             rageEffect.Pause();
             color = rageEffectTexture.color;
@@ -413,14 +414,14 @@ public class PlayerController : MonoBehaviour
     }
     public void RestoreEffects()
     {
-        if (bileEffect.isPaused)
+        if (bileEffect.isPaused && bileVisionTime > 0)
         {
             Color color = bileEffectTexture.color;
             color.a = 1f;
             bileEffectTexture.color = color;
             bileEffect.Play();
         }
-        if (rageEffect.isPaused)
+        if (rageEffect.isPaused && GameManager.instance.inRageMode)
         {
             Color color = rageEffectTexture.color;
             color.a = 1f;

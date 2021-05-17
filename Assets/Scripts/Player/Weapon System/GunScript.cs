@@ -340,7 +340,7 @@ public class GunScript : MonoBehaviour
         gunWeightX = Mathf.SmoothDamp(gunWeightX, mouseLook.xRotation, ref velocityGunRotate.x, rotationLagTime);
         gunWeightY = Mathf.SmoothDamp(gunWeightY, mouseLook.yRotation, ref velocityGunRotate.y, rotationLagTime);
 
-        transform.rotation = Quaternion.Euler(gunWeightX + (angularVelocityX * forwardRotationAmount.x), gunWeightY + (angularVelocityY * forwardRotationAmount.y), 0);
+        transform.rotation = Quaternion.Euler(gunWeightX + (angularVelocityX * forwardRotationAmount.x), gunWeightY + (angularVelocityY * forwardRotationAmount.y), 0f);
     }
 
     // Shooting
@@ -397,9 +397,9 @@ public class GunScript : MonoBehaviour
 
         if (Physics.Raycast(bulletSpawnPlace.position, rotation * Vector3.forward, out hitInfo, maxDistance, ~ignoreLayer, QueryTriggerInteraction.Ignore))
         {
-            if (hitInfo.transform.root.CompareTag("Enemy") || hitInfo.transform.root.CompareTag("SpecialEnemy"))
+            InfectedController enemy = hitInfo.transform.GetComponentInParent<InfectedController>();
+            if (enemy)
             {
-                InfectedController enemy = hitInfo.transform.root.GetComponent<InfectedController>();
                 enemy.TakeDamage((int)damage, 0);
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
                 if (enemy.health <= 0)
@@ -518,9 +518,9 @@ public class GunScript : MonoBehaviour
               || Physics.Raycast(ray4, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray5, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray6, out hitInfo, 2f, ~ignoreLayer)
               || Physics.Raycast(ray7, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray8, out hitInfo, 2f, ~ignoreLayer) || Physics.Raycast(ray9, out hitInfo, 2f, ~ignoreLayer))
         {
-            if (hitInfo.transform.root.CompareTag("Enemy") || hitInfo.transform.root.CompareTag("SpecialEnemy"))
+            InfectedController enemy = hitInfo.transform.GetComponentInParent<InfectedController>();
+            if (enemy)
             {
-                InfectedController enemy = hitInfo.transform.root.GetComponent<InfectedController>();
                 enemy.TakeDamage(meleeDamage, 0);
                 if (enemy.health <= 0)
                 {

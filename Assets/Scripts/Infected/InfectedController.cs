@@ -51,6 +51,8 @@ public class InfectedController : MonoBehaviour
     private bool inUnpinRoutine;
     protected InfectedEffects infectedEffects;
     [SerializeField] protected HealthBar healthBar;
+    private Rage playerRage;
+    private bool stealthAlerted;
     // Events
     public delegate void HordeDetectPlayerEventHandler();
     public event HordeDetectPlayerEventHandler HordeDetectPlayer;
@@ -75,7 +77,7 @@ public class InfectedController : MonoBehaviour
     private bool inPlayerVisiblityRoutine;
     private WaitForSeconds playerVisiblityDelay;
     private float angleToPlayer;
-    private const float visionAngleRef = 45f;
+    private const float visionAngleRef = 50f;
     private float visionAngle;
     private float visionRange;
     private RaycastHit visionHit;
@@ -120,6 +122,7 @@ public class InfectedController : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         infectedEffects = GetComponent<InfectedEffects>();
+        playerRage = PlayerController.instance.transform.GetComponent<Rage>();
         path = new NavMeshPath();
         rootCollider = GetComponent<Collider>();
         infectedLayer = 1 << LayerMask.NameToLayer("Enemy");
@@ -130,7 +133,7 @@ public class InfectedController : MonoBehaviour
         playerVisiblityDelay = new WaitForSeconds(0.1f);
 
         visionAngle = visionAngleRef;
-        visionRange = 180f;
+        visionRange = 180;
 
         target = PlayerController.instance.transform;
         targetType = true;
@@ -194,6 +197,7 @@ public class InfectedController : MonoBehaviour
         print(gameObject.name + " Started Patrol Routine");
         inPatrolRoutine = true;
         agent.stoppingDistance = 0.5f;
+        yield return null;
         agent.speed = patrolSpeed;
         agent.updateRotation = true;
         while (true)
@@ -201,14 +205,14 @@ public class InfectedController : MonoBehaviour
             if (patrolPoints.Length == 0)
             {
                 randomPatrolPoint = transform.position + Random.insideUnitSphere * 5f;
-                if (NavMesh.SamplePosition(randomPatrolPoint, out navMeshHit, 2.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
+                if (agent.enabled && NavMesh.SamplePosition(randomPatrolPoint, out navMeshHit, 2.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
                     agent.SetDestination(navMeshHit.position);
                 else
                     continue;
             }
             else
             {
-                if (NavMesh.SamplePosition(patrolPoints[patrolPointIndex], out navMeshHit, 5.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
+                if (agent.enabled && NavMesh.SamplePosition(patrolPoints[patrolPointIndex], out navMeshHit, 5.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
                     agent.SetDestination(navMeshHit.position);
                 else
                     Debug.LogWarning("Unreachable Patrol Point, please adjust " + gameObject.name + "'s patrol point at index " + patrolPointIndex);
@@ -237,12 +241,13 @@ public class InfectedController : MonoBehaviour
         inChaseRoutine = true;
         agent.speed = chaseSpeed;
         agent.stoppingDistance = stoppingDistance;
+        yield return null;
         agent.updateRotation = true;
         while (true)
         {
             try
             {
-                if (agent.CalculatePath(target.position, path) && path.status == NavMeshPathStatus.PathComplete)
+                if (agent.enabled && agent.CalculatePath(target.position, path) && path.status == NavMeshPathStatus.PathComplete)
                 {
                     if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Chasing") && !animator.IsInTransition(0))
                         animator.SetTrigger("isChasing");
@@ -286,13 +291,15 @@ public class InfectedController : MonoBehaviour
     private IEnumerator PlayerVisiblity()
     {
         inPlayerVisiblityRoutine = true;
-        if(Physics.Raycast(transform.position, (PlayerController.instance.transform.position - transform.position), out visionHit, visionRange, ~infectedLayer, QueryTriggerInteraction.Ignore))
+        if(Physics.Raycast(transform.position + transform.up * 1.5f, ((PlayerController.instance.transform.position + PlayerController.instance.transform.up) - (transform.position + transform.up * 1.5f)).normalized, out visionHit, visionRange, ~infectedLayer, QueryTriggerInteraction.Ignore))
         {
             if (visionHit.collider.CompareTag("Player"))
             {
                 HordeDetectPlayer?.Invoke();
                 preDistractionState = InfectedState.empty;
                 ChasePlayer();
+                if (GameManager.instance.level == 2)
+                    AlertAllInfected();
                 ResetRoutines("playerVisiblityRoutine");
             }
         }
@@ -303,7 +310,7 @@ public class InfectedController : MonoBehaviour
     {
         if (ConditionsCheck(1))
         {
-            if (distanceToTarget <= attackRange && ReachedDestination())
+            if ((distanceToTarget <= attackRange && ReachedDestination()) || !agent.enabled)
             {
                 if (state == InfectedState.chase)
                 {
@@ -383,9 +390,10 @@ public class InfectedController : MonoBehaviour
         print(gameObject.name +" Started Noise Routine");
         inNoiseRoutine = true;
         agent.stoppingDistance = 0.5f;
+        yield return null;
         agent.updateRotation = true;
         agent.speed = suspiciousWalkSpeed;
-        if (agent.CalculatePath(source, path) && path.status == NavMeshPathStatus.PathComplete)
+        if (agent.enabled && agent.CalculatePath(source, path) && path.status == NavMeshPathStatus.PathComplete)
             agent.SetPath(path);
         else if(RandomReachablePoint())
         {
@@ -480,10 +488,11 @@ public class InfectedController : MonoBehaviour
         inPipeRoutine = true;
         pipeExploaded = false;
         agent.stoppingDistance = 0.5f;
+        yield return null;
         agent.updateRotation = true;
         agent.speed = chaseSpeed;
 
-        if (agent.CalculatePath(source.position, path) && path.status == NavMeshPathStatus.PathComplete)
+        if (agent.enabled && agent.CalculatePath(source.position, path) && path.status == NavMeshPathStatus.PathComplete)
         {
             animator.SetTrigger("isChasing");
             agent.SetPath(path);
@@ -685,7 +694,7 @@ public class InfectedController : MonoBehaviour
     // Health
     public void ApplyDamage(int mode=0)
     {
-        if (target && state == InfectedState.attack)
+        if (target && state == InfectedState.attack && !GameManager.instance.inMenu)
         {
             if (attackType == AttackType.melee && distanceToTarget > attackRange)
                 return;
@@ -917,7 +926,7 @@ public class InfectedController : MonoBehaviour
                 break;
             // Attack
             case 8:
-                if (targetType && (PlayerController.instance.isPartiallyPinned || PlayerController.instance.isPartiallyPinned))
+                if (targetType && (PlayerController.instance.isPinned || PlayerController.instance.isPartiallyPinned || !playerRage.canBeDamaged))
                     return false;
                 if (!targetType && attackedInfected && (attackedInfected.isPartiallyPinned || attackedInfected.isPinned))
                     return false;
@@ -928,7 +937,8 @@ public class InfectedController : MonoBehaviour
     private void ResetRoutines(string exception="")
     {
         agent.updateRotation = true;
-        agent.ResetPath();
+        if(agent.enabled)
+            agent.ResetPath();
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         if ((bileTimer <= 0f && !permenantBile) && PlayerController.instance.health > 0)
         {
@@ -1006,6 +1016,7 @@ public class InfectedController : MonoBehaviour
             print(gameObject.name + " Starting Reset Position Routine");
             inResetPositionRoutine = true;
             agent.stoppingDistance = 0.5f;
+            yield return null;
             agent.speed = patrolSpeed;
             agent.updateRotation = true;
             animator.SetTrigger("isPatroling");
@@ -1060,7 +1071,7 @@ public class InfectedController : MonoBehaviour
     }
     protected bool RandomReachablePoint()
     {
-        if (NavMesh.SamplePosition(target.position, out navMeshHit, 4.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
+        if (agent.enabled && NavMesh.SamplePosition(target.position, out navMeshHit, 4.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
         {
             agent.SetDestination(navMeshHit.position);
             return true;
@@ -1102,8 +1113,26 @@ public class InfectedController : MonoBehaviour
     }
     public void ChasePlayer()
     {
-        playerDetected = true;
-        DetectPlayer?.Invoke();
-        state = InfectedState.chase;
+        print("KK");
+        if (!playerDetected)
+        {
+            playerDetected = true;
+            DetectPlayer?.Invoke();
+            state = InfectedState.chase;
+        }
+    }
+    private void AlertAllInfected()
+    {
+        GameObject[] normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
+        GameObject[] specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
+        foreach(GameObject normal in normalEnemy)
+        {
+            normal.GetComponent<InfectedController>().ChasePlayer();
+        }
+        foreach (GameObject special in specialEnemy)
+        {
+            special.GetComponent<InfectedController>().ChasePlayer();
+        }
+
     }
 }

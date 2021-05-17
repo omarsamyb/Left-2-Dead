@@ -186,7 +186,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 6113634450073534202, guid: 1e79641f78f9ab143bddc5d38aa29049, type: 2}
     playOnAwake: 0
     loop: 0
-    ignoreListenerPause: 0
+    ignoreListenerPause: 1
     volume: 1
     pitch: 1
   - name: PlayerVoice

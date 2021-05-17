@@ -24,41 +24,46 @@ public class UIManager : MonoBehaviour
     private bool UICameraToggle = false;
 
     void Update(){
-        if (Input.GetKeyDown(KeyCode.E) )
-        {
-            if(gameScreenCanvasToggle){
-                pickUpCanvasToggle = !pickUpCanvasToggle;
-                if(pickUpCanvasToggle)
-                {
-                    GameManager.instance.UnlockCursor();
-                    pickUpMenu(true);
-                }
-                else
-                {
-                    GameManager.instance.LockCursor();
-                    pickUpMenu(false);
-                }
-                pickUpCanvas.SetActive(pickUpCanvasToggle);
-            }
-        }
-        if(PlayerController.instance.isGettingPinned || PlayerController.instance.isPartiallyPinned || PlayerController.instance.isPinned)
+        if (PlayerController.instance.isGettingPinned || PlayerController.instance.isPartiallyPinned || PlayerController.instance.isPinned || PlayerController.instance.health <= 0)
         {
             pickUpCanvasToggle = false;
             GameManager.instance.LockCursor();
             pickUpMenu(false);
             pickUpCanvas.SetActive(pickUpCanvasToggle);
         }
-        if (Input.GetKeyDown(KeyCode.T))
+        if (PlayerController.instance.health > 0)
         {
-            LoadCrafting();
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            LoadInventory();
-        }
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            LoadInventory();
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (gameScreenCanvasToggle)
+                {
+                    pickUpCanvasToggle = !pickUpCanvasToggle;
+                    if (pickUpCanvasToggle)
+                    {
+                        GameManager.instance.UnlockCursor();
+                        pickUpMenu(true);
+                    }
+                    else
+                    {
+                        GameManager.instance.LockCursor();
+                        pickUpMenu(false);
+                    }
+                    pickUpCanvas.SetActive(pickUpCanvasToggle);
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                LoadCrafting();
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                LoadInventory();
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                LoadInventory();
+            }
         }
         if(GameManager.instance.isGameOver)
         {
@@ -80,8 +85,9 @@ public class UIManager : MonoBehaviour
     public void RestartLevel()
     {
         GameManager.instance.inMenu = false;
+        GameManager.instance.inPickUp = false;
         GameManager.instance.isGameOver = false;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        GameManager.instance.RestartLevel();
     }
 
     public void ToMainMenu()
@@ -171,6 +177,7 @@ public class UIManager : MonoBehaviour
 
     public void showGameOverScreen()
     {
+        GameManager.instance.UnlockCursor();
         hideCraftingScreen();
         hideInventoryScreen();
         hideGameScreen();

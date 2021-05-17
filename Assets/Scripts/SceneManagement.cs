@@ -24,17 +24,17 @@ public class SceneManagement : MonoBehaviour
         if (GameManager.instance.companionId == 0)
         {
             GameObject resource = elliePrefab;
-            Instantiate(resource, transform.position, Quaternion.identity);
+            Instantiate(resource, transform.position, PlayerController.instance.transform.rotation);
         }
         else if(GameManager.instance.companionId == 1)
         {
             GameObject resource = zoeyPrefab;
-            Instantiate(resource, transform.position, Quaternion.identity);
+            Instantiate(resource, transform.position, PlayerController.instance.transform.rotation);
         }
         else if (GameManager.instance.companionId == 2)
         {
             GameObject resource = louisPrefab;
-            Instantiate(resource, transform.position, Quaternion.identity);
+            Instantiate(resource, transform.position, PlayerController.instance.transform.rotation);
         }
     }
 }

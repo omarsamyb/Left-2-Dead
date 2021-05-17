@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
@@ -20,7 +19,13 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         inMainMenu = true;
-        AudioManager.instance.Play("BackgroundMusic");
+        AudioManager.instance.Play("MenuBackgroundMusic");
+    }
+    private void OnDisable()
+    {
+        color = fadeImg.color;
+        color.a = 0f;
+        fadeImg.color = color;
     }
 
     void Update()
@@ -48,7 +53,7 @@ public class MainMenu : MonoBehaviour
         else
         {
             switchIndex--;
-            if (switchIndex < 0)
+            if (switchIndex <= 0)
                 switchIndex = cams.Length - 1;
         }
         if (switchIndex == 0)
@@ -59,9 +64,9 @@ public class MainMenu : MonoBehaviour
     public void SelectCompanion()
     {
         GameManager.instance.companionId = --switchIndex;
-        AudioManager.instance.Stop("BackgroundMusic");
+        AudioManager.instance.Stop("MenuBackgroundMusic");
         AudioManager.instance.Stop("RainSFX");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        GameManager.instance.LoadNextLevel();
     }
     public void SelectEffect()
     {
