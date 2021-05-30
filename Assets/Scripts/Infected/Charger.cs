@@ -92,12 +92,20 @@ public class Charger : InfectedController
                     {
                         if (!PlayerController.instance.isPartiallyPinned && !PlayerController.instance.isPinned)
                         {
-                            PlayerController.instance.GetPartiallyPinned(transform.position + transform.up * 0.6f, transform.position - transform.forward * 0.9f - transform.up * 1.2f, 4.5f, transform.position + transform.up, gameObject);
-                            yield return new WaitForEndOfFrame();
-                            animator.SetTrigger("pin");
-                            yield return new WaitForEndOfFrame();
-                            yield return new WaitWhile(() => !animator.GetCurrentAnimatorStateInfo(0).IsName(punchStateName) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
-                            PlayerController.instance.isPartiallyPinned = false;
+                            Vector3 endPoint = transform.position - transform.forward * 0.9f - transform.up * 1.2f;
+                            LayerMask layer = (1 << LayerMask.NameToLayer("World")) | (1 << LayerMask.NameToLayer("Ground"));
+                            if (Physics.Raycast(transform.position + transform.up * 1.5f, ((transform.position - transform.forward * 1.5f - transform.up * 1.2f) - (transform.position + transform.up * 1.5f)).normalized, out RaycastHit hit, 20f, layer))
+                            {
+                                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                                {
+                                    PlayerController.instance.GetPartiallyPinned(transform.position + transform.up * 0.6f, endPoint, 4.5f, transform.position + transform.up, gameObject);
+                                    yield return new WaitForEndOfFrame();
+                                    animator.SetTrigger("pin");
+                                    yield return new WaitForEndOfFrame();
+                                    yield return new WaitWhile(() => !animator.GetCurrentAnimatorStateInfo(0).IsName(punchStateName) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
+                                    PlayerController.instance.isPartiallyPinned = false;
+                                }
+                            }
                         }
                     }
                     else
