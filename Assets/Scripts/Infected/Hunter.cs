@@ -7,6 +7,7 @@ public class Hunter : InfectedController
     private float pinRange;
     private float chargeSpeed;
     private float maxJumpDistance;
+    [SerializeField] private CapsuleCollider collisionCollider;
 
     protected override void Start()
     {
@@ -85,6 +86,7 @@ public class Hunter : InfectedController
                     infectedEffects.Attack(0);
                     FaceTarget();
                     yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"));
+                    collisionCollider.enabled = false;
                     Vector3 currentPos = transform.position;
                     float clipStart = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
                     while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
@@ -119,6 +121,7 @@ public class Hunter : InfectedController
                             yield return new WaitForSeconds(1f);
                         }
                     }
+                    collisionCollider.enabled = true;
                 }
             }
             inAttackSequence = false;

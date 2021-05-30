@@ -23,12 +23,12 @@ public class Zombie : InfectedController
         base.Update();
         if(state == InfectedState.attack)
             attackTime += Time.deltaTime;
-        if(agent.enabled && ReachedDestination())
+        if (agent.enabled && (state == InfectedState.idle || ReachedDestination()))
         {
             agent.enabled = false;
             obstacle.enabled = true;
         }
-        if(!agent.enabled && distanceToTarget > Mathf.Pow(agent.stoppingDistance, 2))
+        if (!agent.enabled && state != InfectedState.idle && distanceToTarget > Mathf.Pow(agent.stoppingDistance, 2))
         {
             obstacle.enabled = false;
             agent.enabled = true;

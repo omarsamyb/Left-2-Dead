@@ -312,6 +312,7 @@ public class PlayerController : MonoBehaviour
         Camera.main.transform.localPosition = secondaryCamView;
         Transform origParent = character.transform.parent;
         character.transform.parent = null;
+        character.transform.Translate(0f, -0.2f, -0f);
         while (isPinned)
             yield return null;
         pvo.StartCoroutine(pvo.Unpinned(1));

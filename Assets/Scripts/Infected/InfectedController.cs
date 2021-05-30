@@ -53,6 +53,7 @@ public class InfectedController : MonoBehaviour
     [SerializeField] protected HealthBar healthBar;
     private Rage playerRage;
     private bool stealthAlerted;
+    private LayerMask ignorableMasks;
     // Events
     public delegate void HordeDetectPlayerEventHandler();
     public event HordeDetectPlayerEventHandler HordeDetectPlayer;
@@ -126,6 +127,7 @@ public class InfectedController : MonoBehaviour
         path = new NavMeshPath();
         rootCollider = GetComponent<Collider>();
         infectedLayer = 1 << LayerMask.NameToLayer("Enemy");
+        ignorableMasks = 1 << LayerMask.NameToLayer("CharacterCollisionBlocker");
 
         patrolDelay = new WaitForSeconds(patrolDelayTime);
         chaseDelay = new WaitForSeconds(0.1f);
@@ -141,7 +143,7 @@ public class InfectedController : MonoBehaviour
         preDistractionState = InfectedState.empty;
 
         if (state != InfectedState.idle && state != InfectedState.patrol && state != InfectedState.empty)
-            playerDetected = true;
+            ChasePlayer();
     }
     protected virtual void Update()
     {
@@ -185,12 +187,20 @@ public class InfectedController : MonoBehaviour
     private void Idle()
     {
         if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !animator.IsInTransition(0))
+        {
+            playerDetected = false;
+            ResetRoutines("playerVisiblityRoutine");
             animator.SetTrigger("isIdle");
+        }
     }
     private void Patrol()
     {
         if (!inPatrolRoutine)
+        {
+            playerDetected = false;
+            ResetRoutines("playerVisiblityRoutine");
             patrolRoutine = StartCoroutine(PatrolRoutine());
+        }
     }
     private IEnumerator PatrolRoutine()
     {
@@ -233,7 +243,10 @@ public class InfectedController : MonoBehaviour
     private void Chase()
     {
         if (!inChaseRoutine && target)
+        {
+            ResetRoutines();
             chaseRoutine = StartCoroutine(ChaseRoutine());
+        }
     }
     private IEnumerator ChaseRoutine()
     {
@@ -273,6 +286,7 @@ public class InfectedController : MonoBehaviour
     {
         if (inAttackRoutine || !target)
             return false;
+        ResetRoutines();
         return true;
     }
 
@@ -291,7 +305,7 @@ public class InfectedController : MonoBehaviour
     private IEnumerator PlayerVisiblity()
     {
         inPlayerVisiblityRoutine = true;
-        if(Physics.Raycast(transform.position + transform.up * 1.5f, ((PlayerController.instance.transform.position + PlayerController.instance.transform.up) - (transform.position + transform.up * 1.5f)).normalized, out visionHit, visionRange, ~infectedLayer, QueryTriggerInteraction.Ignore))
+        if(Physics.Raycast(transform.position + transform.up * 1.5f, ((PlayerController.instance.transform.position + PlayerController.instance.transform.up) - (transform.position + transform.up * 1.5f)).normalized, out visionHit, visionRange, ~(infectedLayer | ignorableMasks), QueryTriggerInteraction.Ignore))
         {
             if (visionHit.collider.CompareTag("Player"))
             {
@@ -1113,7 +1127,6 @@ public class InfectedController : MonoBehaviour
     }
     public void ChasePlayer()
     {
-        print("KK");
         if (!playerDetected)
         {
             playerDetected = true;
