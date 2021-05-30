@@ -39,9 +39,9 @@ public class Boomer : InfectedController
         modifier = 0.5f;
         vomitPuddleGO.transform.SetParent(DynamicObjects.instance.transform, false);
         vomitPuddleGO.SetActive(false);
-        spawnDurationRef = 4;
+        spawnDurationRef = 3;
         spawnDuration = spawnDurationRef;
-        zombieSpawnRate = 4;
+        zombieSpawnRate = 2;
         puddleSource = vomitPuddleGO.GetComponent<AudioSource>();
         healthBar.SetMaxHealth(health);
     }
@@ -53,7 +53,7 @@ public class Boomer : InfectedController
             attackTime += Time.deltaTime;
             if (state == InfectedState.attack && target && !inAttackSequence)
                 FaceTarget();
-            if(inAttackSequence && target)
+            if (inAttackSequence && target)
                 vomitGO.transform.rotation = Quaternion.Euler(Quaternion.LookRotation((target.position - transform.position).normalized).eulerAngles.x, vomitGO.transform.parent.rotation.eulerAngles.y, 0f);
         }
         if (state != InfectedState.attack)
@@ -104,7 +104,7 @@ public class Boomer : InfectedController
                 else
                     Debug.LogWarning("Could not generate vomit puddle - target not near a ground");
 
-                if (Physics.OverlapBox(transform.position + transform.up + transform.forward * 6f, new Vector3(6f, 0.5f, 6f), Quaternion.identity, infectedLayer).Length < 16f)
+                if (Physics.OverlapBox(transform.position + transform.up + transform.forward * 6f, new Vector3(6f, 0.5f, 6f), Quaternion.identity, infectedLayer).Length < (zombieSpawnRate * spawnDurationRef) / 2)
                 {
                     animator.SetTrigger("isAttacking");
                     yield return new WaitForEndOfFrame();
