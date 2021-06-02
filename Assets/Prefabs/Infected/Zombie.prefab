@@ -1117,6 +1117,7 @@ MonoBehaviour:
   - {fileID: 2505850756149919832}
   - {fileID: 815833523702674822}
   - {fileID: 4805109736298357323}
+  - {fileID: 3745516876344814583}
   animator: {fileID: 0}
   state: 0
   patrolPoints: []
@@ -2831,6 +2832,10 @@ PrefabInstance:
     - target: {fileID: 1563576854523659190, guid: a26131835138a444cbc519373922615d, type: 3}
       propertyPath: m_Name
       value: ZombieHBcanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1563576854523659190, guid: a26131835138a444cbc519373922615d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a26131835138a444cbc519373922615d, type: 3}

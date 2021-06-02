@@ -692,6 +692,7 @@ MonoBehaviour:
   - {fileID: 7384994942192364847}
   - {fileID: 4308187030453672508}
   - {fileID: 7387726480292698097}
+  - {fileID: 5619232216985945171}
   animator: {fileID: 0}
   state: 0
   patrolPoints: []

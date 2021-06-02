@@ -881,7 +881,8 @@ public class InfectedController : MonoBehaviour
         state = InfectedState.dead;
         rootCollider.enabled = false;
         DisableColliders();
-        Destroy(healthBar.transform.parent.gameObject);
+        if(healthBar)
+            Destroy(healthBar.transform.parent.gameObject);
         yield return new WaitUntil(() => !criticalEvent);
         ResetRoutines();
         Destroy(gameObject, 6f);
