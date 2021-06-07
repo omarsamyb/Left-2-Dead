@@ -16,6 +16,7 @@ public class Tank : InfectedController
         attackDelay = new WaitForSeconds(attackDelayTime);
         attackType = AttackType.melee;
         healthBar.SetMaxHealth(health);
+        height = 2.2f;
     }
     protected override void Update()
     {

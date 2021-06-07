@@ -17,21 +17,30 @@ public class Zombie : InfectedController
         attackType = AttackType.melee;
         healthBar.SetMaxHealth(health);
         obstacle = GetComponent<NavMeshObstacle>();
+        height = 2f;
     }
     protected override void Update()
     {
         base.Update();
         if(state == InfectedState.attack)
             attackTime += Time.deltaTime;
-        if (agent.enabled && (state == InfectedState.idle || ReachedDestination()))
+        if (state != InfectedState.dead)
+        {
+            if (agent.enabled && (state == InfectedState.idle || ReachedDestination()))
+            {
+                agent.enabled = false;
+                obstacle.enabled = true;
+            }
+            if (!agent.enabled && state != InfectedState.idle && distanceToTarget > Mathf.Pow(agent.stoppingDistance, 2))
+            {
+                obstacle.enabled = false;
+                agent.enabled = true;
+            }
+        }
+        else
         {
             agent.enabled = false;
-            obstacle.enabled = true;
-        }
-        if (!agent.enabled && state != InfectedState.idle && distanceToTarget > Mathf.Pow(agent.stoppingDistance, 2))
-        {
             obstacle.enabled = false;
-            agent.enabled = true;
         }
     }
 

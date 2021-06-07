@@ -27,6 +27,7 @@ public class Hunter : InfectedController
         pinRange = 3.5f;
         maxJumpDistance = 36f;
         healthBar.SetMaxHealth(health);
+        height = 1.5f;
     }
     protected override void Update()
     {

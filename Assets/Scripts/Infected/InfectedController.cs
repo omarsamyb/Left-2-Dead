@@ -54,6 +54,9 @@ public class InfectedController : MonoBehaviour
     private Rage playerRage;
     private bool stealthAlerted;
     private LayerMask ignorableMasks;
+    private Transform originalParent;
+    [SerializeField] public Transform skeleton;
+    private RagdollHelper ragdollHelper;
     // Events
     public delegate void HordeDetectPlayerEventHandler();
     public event HordeDetectPlayerEventHandler HordeDetectPlayer;
@@ -114,6 +117,9 @@ public class InfectedController : MonoBehaviour
     private bool inFireRoutine;
     private const float fireTimerRef = 1.1f;
     private float fireTimer;
+    protected LayerMask collisionLayers;
+    protected bool isForwardDeathAnimation;
+    protected float height;
 
     private void Awake()
     {
@@ -126,8 +132,11 @@ public class InfectedController : MonoBehaviour
         playerRage = PlayerController.instance.transform.GetComponent<Rage>();
         path = new NavMeshPath();
         rootCollider = GetComponent<Collider>();
+        originalParent = transform.parent;
+        ragdollHelper = GetComponent<RagdollHelper>();
         infectedLayer = 1 << LayerMask.NameToLayer("Enemy");
         ignorableMasks = 1 << LayerMask.NameToLayer("CharacterCollisionBlocker");
+        collisionLayers = 1 << LayerMask.NameToLayer("World") | 1 << LayerMask.NameToLayer("Ground");
 
         patrolDelay = new WaitForSeconds(patrolDelayTime);
         chaseDelay = new WaitForSeconds(0.1f);
@@ -234,7 +243,7 @@ public class InfectedController : MonoBehaviour
                     break;
                 yield return null;
             }
-            if(patrolPoints.Length != 0)
+            if (patrolPoints.Length != 0)
                 patrolPointIndex = (patrolPointIndex + 1) % patrolPoints.Length;
             Idle();
             yield return patrolDelay;
@@ -300,12 +309,12 @@ public class InfectedController : MonoBehaviour
             {
                 playerVisiblityRoutine = StartCoroutine(PlayerVisiblity());
             }
-        } 
-    } 
+        }
+    }
     private IEnumerator PlayerVisiblity()
     {
         inPlayerVisiblityRoutine = true;
-        if(Physics.Raycast(transform.position + transform.up * 1.5f, ((PlayerController.instance.transform.position + PlayerController.instance.transform.up) - (transform.position + transform.up * 1.5f)).normalized, out visionHit, visionRange, ~(infectedLayer | ignorableMasks), QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position + transform.up * 1.5f, ((PlayerController.instance.transform.position + PlayerController.instance.transform.up) - (transform.position + transform.up * 1.5f)).normalized, out visionHit, visionRange, ~(infectedLayer | ignorableMasks), QueryTriggerInteraction.Ignore))
         {
             if (visionHit.collider.CompareTag("Player"))
             {
@@ -335,7 +344,7 @@ public class InfectedController : MonoBehaviour
                     state = InfectedState.attack;
                 }
             }
-            else if(state == InfectedState.attack && !inAttackSequence)
+            else if (state == InfectedState.attack && !inAttackSequence)
             {
                 if (bileTimer > 0f || permenantBile)
                     ResetRoutines("bileRoutine");
@@ -351,7 +360,7 @@ public class InfectedController : MonoBehaviour
             target = null;
         if (target)
             distanceToTarget = Vector3.SqrMagnitude(target.position - transform.position);
-        else if(inAttackRoutine)
+        else if (inAttackRoutine)
         {
             print(gameObject.name + " Stopping Attack Routine - target died");
             inAttackRoutine = false;
@@ -364,7 +373,7 @@ public class InfectedController : MonoBehaviour
     {
         if (bileTimer > 0f || permenantBile)
         {
-            if(bileTimer > 0f)
+            if (bileTimer > 0f)
                 bileTimer -= Time.deltaTime;
             if (!inBileRoutine)
                 Bile(true);
@@ -372,12 +381,12 @@ public class InfectedController : MonoBehaviour
         else if (bileEffect.activeSelf && !inBileRoutine)
             bileEffect.SetActive(false);
 
-        if(pipeSources.Count > 0)
+        if (pipeSources.Count > 0)
         {
             pipeSources.RemoveAll(source => !source || source.localScale == Vector3.zero);
             foreach (Transform source in pipeSources)
             {
-                if(!inPipeRoutine)
+                if (!inPipeRoutine)
                     Pipe(pipeSources[0], true);
             }
         }
@@ -401,7 +410,7 @@ public class InfectedController : MonoBehaviour
     }
     private IEnumerator NoiseRoutine(Vector3 source)
     {
-        print(gameObject.name +" Started Noise Routine");
+        print(gameObject.name + " Started Noise Routine");
         inNoiseRoutine = true;
         agent.stoppingDistance = 0.5f;
         yield return null;
@@ -409,7 +418,7 @@ public class InfectedController : MonoBehaviour
         agent.speed = suspiciousWalkSpeed;
         if (agent.enabled && agent.CalculatePath(source, path) && path.status == NavMeshPathStatus.PathComplete)
             agent.SetPath(path);
-        else if(RandomReachablePoint())
+        else if (RandomReachablePoint())
         {
             Debug.LogWarning("Unreachable target during Noise Routine of " + gameObject.name + "retrying using random close point");
         }
@@ -475,7 +484,7 @@ public class InfectedController : MonoBehaviour
             state = preDistractionState;
             preDistractionState = InfectedState.empty;
         }
-        
+
         inStunRoutine = false;
         print(gameObject.name + " Stopping Stun Routine");
     }
@@ -527,7 +536,7 @@ public class InfectedController : MonoBehaviour
             yield return null;
         }
 
-        if(!criticalEvent)
+        if (!criticalEvent)
             animator.SetTrigger("isCheckingPipe");
         yield return new WaitUntil(() => pipeExploaded);
 
@@ -538,11 +547,11 @@ public class InfectedController : MonoBehaviour
             state = preDistractionState;
             preDistractionState = InfectedState.empty;
         }
-        
+
         inPipeRoutine = false;
         print(gameObject.name + " Stopping Pipe Routine");
     }
-    public void Bile(bool resume=false, bool permenant = false)
+    public void Bile(bool resume = false, bool permenant = false)
     {
         if (!resume)
             bileTimer = bileTimerRef;
@@ -567,18 +576,18 @@ public class InfectedController : MonoBehaviour
         inBileRoutine = true;
         bool targetFound;
         bileEffect.SetActive(true);
-        while(bileTimer > 0f || permenantBile)
+        while (bileTimer > 0f || permenantBile)
         {
             targetFound = false;
             yield return new WaitUntil(() => !isPartiallyPinned && !isPinned);
             Collider[] colliders = Physics.OverlapBox(transform.position + transform.up, proximity, Quaternion.identity, infectedLayer);
-            if(colliders.Length > 1)
+            if (colliders.Length > 1)
             {
                 float minDistance = float.MaxValue;
                 float distance;
                 foreach (Collider collider in colliders)
                 {
-                    if(!ReferenceEquals(collider.transform, transform))
+                    if (!ReferenceEquals(collider.transform, transform))
                     {
                         distance = Vector3.SqrMagnitude(collider.transform.position - transform.position);
                         if (distance < minDistance || permenantBile)
@@ -648,7 +657,7 @@ public class InfectedController : MonoBehaviour
             state = preDistractionState;
             preDistractionState = InfectedState.empty;
         }
-        
+
         inBileRoutine = false;
         print(gameObject.name + " Stopping Bile Routine");
     }
@@ -656,7 +665,7 @@ public class InfectedController : MonoBehaviour
     // Pinning
     public void GetPartiallyPinned(Vector3 chargerPos, Vector3 position)
     {
-        if(inResetPositionRoutine) 
+        if (inResetPositionRoutine)
             ResetRoutines();
         else
             ResetRoutines("bileRoutine");
@@ -706,7 +715,7 @@ public class InfectedController : MonoBehaviour
     }
 
     // Health
-    public void ApplyDamage(int mode=0)
+    public void ApplyDamage(int mode = 0)
     {
         if (target && state == InfectedState.attack && !GameManager.instance.inMenu)
         {
@@ -715,13 +724,13 @@ public class InfectedController : MonoBehaviour
             bool targetDied = false;
             if (targetType)
             {
-                PlayerController.instance.TakeDamage(mode == 0? Mathf.CeilToInt(dps * attackTime) : dph);
+                PlayerController.instance.TakeDamage(mode == 0 ? Mathf.CeilToInt(dps * attackTime) : dph);
                 if (PlayerController.instance.health <= 0)
                     targetDied = true;
             }
             else
             {
-                attackedInfected.TakeDamage(mode == 0? Mathf.CeilToInt(dps * attackTime) : dph, -1);
+                attackedInfected.TakeDamage(mode == 0 ? Mathf.CeilToInt(dps * attackTime) : dph, -1);
                 if (attackedInfected.health <= 0)
                 {
                     targetDied = true;
@@ -758,7 +767,7 @@ public class InfectedController : MonoBehaviour
             // Bullet
             case 0:
                 Noise(PlayerController.instance.transform.position);
-                if(!animator.IsInTransition(1) && animator.GetCurrentAnimatorStateInfo(1).IsName("Hit"))
+                if (!animator.IsInTransition(1) && animator.GetCurrentAnimatorStateInfo(1).IsName("Hit"))
                 {
                     if (Random.Range(0, 1) == 0)
                         animator.SetTrigger("isHit");
@@ -815,12 +824,26 @@ public class InfectedController : MonoBehaviour
         if (health <= 0)
             animator.SetBool("isDamageDead", true);
         RandomRotation();
-        animator.SetTrigger("isExploaded");
-        yield return new WaitForEndOfFrame();
-        yield return new WaitWhile(() => animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
+        if (ExplosionBoundriesAvailable())
+        {
+            animator.SetTrigger("isExploaded");
+            yield return new WaitForEndOfFrame();
+            yield return new WaitWhile(() => animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
+        }
+        else
+        {
+            ActivateRagdoll();
+        }
         if (state != InfectedState.dead)
         {
-            yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
+            if (ragdollHelper.state == RagdollHelper.RagdollState.ragdolled)
+            {
+                yield return new WaitForSeconds(3f);
+                DeactivateRagdoll();
+                yield return new WaitWhile(() => animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
+            }
+            else
+                yield return new WaitUntil(() => !animator.IsInTransition(0) && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
             criticalEvent = false;
             yield return resetPositionRoutine = StartCoroutine(ResetPosition());
             if (preDistractionState != InfectedState.empty)
@@ -845,12 +868,12 @@ public class InfectedController : MonoBehaviour
         state = InfectedState.distraction;
         ResetRoutines();
         RandomRotation();
-        animator.SetBool("burningMirror", Random.Range(0, 2) == 0? true: false);
+        animator.SetBool("burningMirror", Random.Range(0, 2) == 0 ? true : false);
         animator.SetFloat("burningMultiplier", Random.Range(0.8f, 1.2f));
         animator.SetTrigger("isBurning");
         while (fireTimer > 0f)
         {
-            if(state == InfectedState.dead)
+            if (state == InfectedState.dead)
             {
                 inFireRoutine = false;
                 criticalEvent = false;
@@ -874,18 +897,21 @@ public class InfectedController : MonoBehaviour
     }
     private IEnumerator Die()
     {
-        if(playerDetected)
+        if (playerDetected)
             FightKills?.Invoke();
         infectedEffects.Dead();
         animator.SetBool("isDead", true);
         state = InfectedState.dead;
-        rootCollider.enabled = false;
         DisableColliders();
-        if(healthBar)
+        if (healthBar)
             Destroy(healthBar.transform.parent.gameObject);
         yield return new WaitUntil(() => !criticalEvent);
+        if (ragdollHelper.state == RagdollHelper.RagdollState.animated && !DeathBoundriesAvailable())
+        {
+            ActivateRagdoll();
+        }
         ResetRoutines();
-        Destroy(gameObject, 6f);
+        Destroy(gameObject, Random.Range(25, 50));
     }
 
     // Helpers
@@ -949,10 +975,10 @@ public class InfectedController : MonoBehaviour
         }
         return true;
     }
-    private void ResetRoutines(string exception="")
+    private void ResetRoutines(string exception = "")
     {
         agent.updateRotation = true;
-        if(agent.enabled)
+        if (agent.enabled)
             agent.ResetPath();
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
         if ((bileTimer <= 0f && !permenantBile) && PlayerController.instance.health > 0)
@@ -1096,7 +1122,7 @@ public class InfectedController : MonoBehaviour
     private IEnumerator Reposition(Vector3 position)
     {
         Vector3 oldPos = transform.position;
-        for(float t = 0f; t < 1f; t+= Time.deltaTime)
+        for (float t = 0f; t < 1f; t += Time.deltaTime)
         {
             transform.position = Vector3.Lerp(oldPos, position, t);
             yield return null;
@@ -1105,10 +1131,13 @@ public class InfectedController : MonoBehaviour
     protected void DisableColliders()
     {
         agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-        foreach (Collider collider in meshColliders)
-        {
-            collider.enabled = false;
-        }
+        agent.enabled = false;
+        rootCollider.enabled = false;
+        meshColliders[meshColliders.Length - 1].enabled = false;
+        //foreach (Collider collider in meshColliders)
+        //{
+        //    collider.enabled = false;
+        //}
     }
     protected void EnableColliders()
     {
@@ -1120,7 +1149,7 @@ public class InfectedController : MonoBehaviour
     }
     protected void ResetTriggers()
     {
-        foreach(AnimatorControllerParameter param in animator.parameters)
+        foreach (AnimatorControllerParameter param in animator.parameters)
         {
             if (param.type == AnimatorControllerParameterType.Trigger)
                 animator.ResetTrigger(param.name);
@@ -1139,7 +1168,7 @@ public class InfectedController : MonoBehaviour
     {
         GameObject[] normalEnemy = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject[] specialEnemy = GameObject.FindGameObjectsWithTag("SpecialEnemy");
-        foreach(GameObject normal in normalEnemy)
+        foreach (GameObject normal in normalEnemy)
         {
             normal.GetComponent<InfectedController>().ChasePlayer();
         }
@@ -1148,5 +1177,38 @@ public class InfectedController : MonoBehaviour
             special.GetComponent<InfectedController>().ChasePlayer();
         }
 
+    }
+    private void ActivateRagdoll()
+    {
+        ragdollHelper.ActivateRagdoll();
+    }
+    private void DeactivateRagdoll()
+    {
+        if (NavMesh.SamplePosition(skeleton.position, out navMeshHit, 4.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
+        {
+            skeleton.SetParent(DynamicObjects.instance.transform, true);
+            transform.position = navMeshHit.position;
+            skeleton.SetParent(transform, true);
+        }
+        ragdollHelper.DeactivateRagdoll();
+    }
+    private bool DeathBoundriesAvailable()
+    {
+        Ray ray = new Ray(transform.position + transform.up, isForwardDeathAnimation ? transform.forward : -transform.forward);
+        Debug.DrawRay(ray.origin, ray.direction * height, Color.red, 6f);
+        if (Physics.Raycast(transform.position + transform.up, isForwardDeathAnimation ? transform.forward : -transform.forward, height, collisionLayers))
+        {
+            return false;
+        }
+        return true;
+    }
+    private bool ExplosionBoundriesAvailable()
+    {
+        float explosionRaduis = 3f;
+        if (Physics.Raycast(transform.position + transform.up, -transform.forward, explosionRaduis, collisionLayers))
+        {
+            return false;
+        }
+        return true;
     }
 }

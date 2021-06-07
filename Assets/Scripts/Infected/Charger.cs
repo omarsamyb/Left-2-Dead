@@ -26,6 +26,7 @@ public class Charger : InfectedController
         pinRange = 3.5f;
         punchStateName = "Punch";
         healthBar.SetMaxHealth(health);
+        height = 2.2f;
     }
     protected override void Update()
     {

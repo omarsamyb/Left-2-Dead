@@ -44,6 +44,8 @@ public class Boomer : InfectedController
         zombieSpawnRate = 2;
         puddleSource = vomitPuddleGO.GetComponent<AudioSource>();
         healthBar.SetMaxHealth(health);
+        isForwardDeathAnimation = true;
+        height = 2.4f;
     }
     protected override void Update()
     {

@@ -35,6 +35,8 @@ public class Spitter : InfectedController
         playerLayer = 1 << LayerMask.NameToLayer("Player");
         puddleSource = spitPuddleGO.GetComponent<AudioSource>();
         healthBar.SetMaxHealth(health);
+        isForwardDeathAnimation = true;
+        height = 1.5f;
     }
     protected override void Update()
     {
