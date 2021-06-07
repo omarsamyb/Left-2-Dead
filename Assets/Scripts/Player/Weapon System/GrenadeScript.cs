@@ -94,7 +94,13 @@ public class GrenadeScript : MonoBehaviour
         foreach (Collider cur in hits)
         {
             InfectedController enemy = cur.GetComponent<InfectedController>();
+            Rigidbody[] rigidBodies = cur.GetComponents<Rigidbody>();
             enemy.TakeDamage(100, 1);
+            foreach(Rigidbody rb in rigidBodies)
+            {
+                if (rb != null)
+                    rb.AddExplosionForce(1000.0f, transform.position, explosionRadius, 3.0f);
+            }          
             if (enemy.health <= 0)
             {
                 rage.UpdateRage(enemy.transform.tag);

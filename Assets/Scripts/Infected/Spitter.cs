@@ -116,13 +116,13 @@ public class Spitter : InfectedController
         {
             if (savedTargetType)
             {
-                Collider[] hits = Physics.OverlapBox(spitHitPos, new Vector3(spitPuddleRadius, 0.4f, spitPuddleRadius), Quaternion.identity, playerLayer);
+                Collider[] hits = Physics.OverlapBox(spitHitPos, new Vector3(spitPuddleRadius, 0.6f, spitPuddleRadius), Quaternion.identity, playerLayer);
                 if (hits.Length > 0)
                     PlayerController.instance.TakeDamage(20);
             }
             else
             {
-                Collider[] hits = Physics.OverlapBox(spitHitPos, new Vector3(spitPuddleRadius, 0.4f, spitPuddleRadius), Quaternion.identity, infectedLayer);
+                Collider[] hits = Physics.OverlapBox(spitHitPos, new Vector3(spitPuddleRadius, 0.6f, spitPuddleRadius), Quaternion.identity, infectedLayer);
                 foreach (Collider collider in hits)
                 {
                     InfectedController infected = collider.GetComponent<InfectedController>();

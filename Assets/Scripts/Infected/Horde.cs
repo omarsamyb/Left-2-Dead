@@ -23,17 +23,17 @@ public class Horde : MonoBehaviour
     {
         if (NavMesh.SamplePosition(transform.position, out navMeshHit, 2.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
         {
-            infectedController = Instantiate(zombiePrefab, navMeshHit.position, Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f)).GetComponent<InfectedController>();
+            infectedController = Instantiate(zombiePrefab, navMeshHit.position, Quaternion.Euler(0f, transform.rotation.eulerAngles.y, 0f), DynamicObjects.instance.transform).GetComponent<InfectedController>();
             infectedController.HordeDetectPlayer += AlarmZombies;
             spawned.Add(infectedController);
             count--;
         }
-        while(count > 0)
+        while (count > 0)
         {
             randomPoint = (transform.position - transform.forward * spawnRadius) + Random.insideUnitSphere * spawnRadius;
             if (NavMesh.SamplePosition(randomPoint, out navMeshHit, 2.0f, 1 << NavMesh.GetAreaFromName("Walkable")))
             {
-                infectedController = Instantiate(zombiePrefab, navMeshHit.position, Quaternion.Euler(0f, transform.rotation.eulerAngles.y + Random.Range(-40f, 40f), 0f)).GetComponent<InfectedController>();
+                infectedController = Instantiate(zombiePrefab, navMeshHit.position, Quaternion.Euler(0f, transform.rotation.eulerAngles.y + Random.Range(-40f, 40f), 0f), DynamicObjects.instance.transform).GetComponent<InfectedController>();
                 infectedController.HordeDetectPlayer += AlarmZombies;
                 spawned.Add(infectedController);
                 count--;

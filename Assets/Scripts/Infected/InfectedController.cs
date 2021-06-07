@@ -800,6 +800,10 @@ public class InfectedController : MonoBehaviour
                         fireRoutine = StartCoroutine(Fire());
                 }
                 break;
+            // Melee
+            case 3:
+                ChasePlayer();
+                break;
         }
         if (health <= 0)
             StartCoroutine(Die());
@@ -824,7 +828,7 @@ public class InfectedController : MonoBehaviour
         if (health <= 0)
             animator.SetBool("isDamageDead", true);
         RandomRotation();
-        if (ExplosionBoundriesAvailable())
+        if (ragdollHelper.state == RagdollHelper.RagdollState.animated && ExplosionBoundriesAvailable())
         {
             animator.SetTrigger("isExploaded");
             yield return new WaitForEndOfFrame();
@@ -832,14 +836,16 @@ public class InfectedController : MonoBehaviour
         }
         else
         {
-            ActivateRagdoll();
+            if(ragdollHelper.state != RagdollHelper.RagdollState.ragdolled)
+                ActivateRagdoll();
+            yield return new WaitForSeconds(3f);
         }
         if (state != InfectedState.dead)
         {
             if (ragdollHelper.state == RagdollHelper.RagdollState.ragdolled)
             {
-                yield return new WaitForSeconds(3f);
                 DeactivateRagdoll();
+                yield return new WaitForEndOfFrame();
                 yield return new WaitWhile(() => animator.IsInTransition(0) || animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f);
             }
             else
@@ -905,8 +911,9 @@ public class InfectedController : MonoBehaviour
         DisableColliders();
         if (healthBar)
             Destroy(healthBar.transform.parent.gameObject);
+        bool isNormalDeath = !inExplosionRoutine;
         yield return new WaitUntil(() => !criticalEvent);
-        if (ragdollHelper.state == RagdollHelper.RagdollState.animated && !DeathBoundriesAvailable())
+        if (isNormalDeath && ragdollHelper.state == RagdollHelper.RagdollState.animated && !DeathBoundriesAvailable())
         {
             ActivateRagdoll();
         }
@@ -1194,8 +1201,6 @@ public class InfectedController : MonoBehaviour
     }
     private bool DeathBoundriesAvailable()
     {
-        Ray ray = new Ray(transform.position + transform.up, isForwardDeathAnimation ? transform.forward : -transform.forward);
-        Debug.DrawRay(ray.origin, ray.direction * height, Color.red, 6f);
         if (Physics.Raycast(transform.position + transform.up, isForwardDeathAnimation ? transform.forward : -transform.forward, height, collisionLayers))
         {
             return false;

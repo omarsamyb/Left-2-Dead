@@ -400,15 +400,18 @@ public class GunScript : MonoBehaviour
             InfectedController enemy = hitInfo.transform.GetComponentInParent<InfectedController>();
             if (enemy)
             {
-                enemy.TakeDamage((int)damage, 0);
                 Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
-                if (enemy.health <= 0)
+                if (enemy.health > 0)
                 {
-                    rage.UpdateRage(enemy.transform.tag);
-                    CompanionController.instance.killCounter++;
-                    if (enemy.transform.tag[0] == 'S')
+                    enemy.TakeDamage((int)damage, 0);
+                    if (enemy.health <= 0)
                     {
-                        ingredientInventory.container[1].addAmount(1);
+                        rage.UpdateRage(enemy.transform.tag);
+                        CompanionController.instance.killCounter++;
+                        if (enemy.transform.tag[0] == 'S')
+                        {
+                            ingredientInventory.container[1].addAmount(1);
+                        }
                     }
                 }
             }
@@ -521,14 +524,18 @@ public class GunScript : MonoBehaviour
             InfectedController enemy = hitInfo.transform.GetComponentInParent<InfectedController>();
             if (enemy)
             {
-                enemy.TakeDamage(meleeDamage, 0);
-                if (enemy.health <= 0)
+                Instantiate(bloodEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal));
+                if (enemy.health > 0)
                 {
-                    rage.UpdateRage(enemy.transform.tag);
-                    CompanionController.instance.killCounter++;
-                    if (enemy.transform.tag[0] == 'S')
+                    enemy.TakeDamage(meleeDamage, 3);
+                    if (enemy.health <= 0)
                     {
-                        ingredientInventory.container[1].addAmount(1);
+                        rage.UpdateRage(enemy.transform.tag);
+                        CompanionController.instance.killCounter++;
+                        if (enemy.transform.tag[0] == 'S')
+                        {
+                            ingredientInventory.container[1].addAmount(1);
+                        }
                     }
                 }
             }

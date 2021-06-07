@@ -414,10 +414,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 8ee59086d853b854ab8c6f614b4c39dd, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.12767386
+  m_Radius: 0.07
   m_Height: 0.51069546
   m_Direction: 1
-  m_Center: {x: 0, y: -0.25534773, z: 0}
+  m_Center: {x: 0, y: -0.25534773, z: -0.03}
 --- !u!54 &3599247407715831706
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1567,7 +1567,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 8ee59086d853b854ab8c6f614b4c39dd, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.12365776
+  m_Radius: 0.1
   m_Height: 0.41219252
   m_Direction: 1
   m_Center: {x: 0, y: -0.20609626, z: 0}
@@ -1676,10 +1676,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 8ee59086d853b854ab8c6f614b4c39dd, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.12767303
+  m_Radius: 0.07
   m_Height: 0.5106921
   m_Direction: 1
-  m_Center: {x: 0, y: -0.25534606, z: 0}
+  m_Center: {x: 0, y: -0.25534606, z: -0.03}
 --- !u!54 &4350264546683149982
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2325,8 +2325,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.47337863, y: 0.19558907, z: 0.31058156}
-  m_Center: {x: -0.00000022351742, y: 0.0160532, z: -0.04882002}
+  m_Size: {x: 0.3817614, y: 0.19558907, z: 0.24729463}
+  m_Center: {x: -0.00000022351742, y: 0.0160532, z: -0.017176539}
 --- !u!54 &2220000715753232099
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2448,7 +2448,7 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 8ee59086d853b854ab8c6f614b4c39dd, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.123657815
+  m_Radius: 0.1
   m_Height: 0.4121927
   m_Direction: 1
   m_Center: {x: 0, y: -0.20609635, z: 0}
@@ -2847,7 +2847,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.15
+  m_Radius: 0.13
   m_Center: {x: 0, y: 0.06, z: 0.04}
 --- !u!54 &1508157311961486203
 Rigidbody:
@@ -3172,8 +3172,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.47337863, y: 0.56709886, z: 0.31058154}
-  m_Center: {x: -0.000000014901161, y: 0.28354943, z: -0.04524438}
+  m_Size: {x: 0.41957164, y: 0.52817345, z: 0.23787484}
+  m_Center: {x: -0.000000014901161, y: 0.26408672, z: -0.030330643}
 --- !u!54 &2512660247818902136
 Rigidbody:
   m_ObjectHideFlags: 0
