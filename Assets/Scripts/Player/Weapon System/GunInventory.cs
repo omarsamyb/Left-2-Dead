@@ -35,7 +35,7 @@ public class GunInventory : MonoBehaviour
     //  0       1      2     3        4
     public GameObject[] grenadePrefabs;
     public GameObject[] weaponPrefabs;
- 
+
     private void Start()
     {
         AudioManager.instance.Play("SwitchWeaponSFX");
@@ -43,9 +43,9 @@ public class GunInventory : MonoBehaviour
     }
     void Update()
     {
-        if(GetComponent<PlayerController>().health>0)
+        if (GetComponent<PlayerController>().health > 0)
         {
-            if(!GameManager.instance.inMenu)
+            if (!GameManager.instance.inMenu)
                 Controls();
             switchWeaponCooldown += 1 * Time.deltaTime;
         }
@@ -176,27 +176,29 @@ public class GunInventory : MonoBehaviour
     GameObject getWeapon(string name)
     {
         string weaponName = name;
-        if(weaponName == "Assault Rifle")
+        if (weaponName == "Assault Rifle")
             return weaponPrefabs[0];
-        else if(weaponName == "Hunting Rifle")
+        else if (weaponName == "Hunting Rifle")
             return weaponPrefabs[1];
-        else if(weaponName == "Pistol")
+        else if (weaponName == "Pistol")
             return weaponPrefabs[2];
-        else if(weaponName == "Submachine Gun")
+        else if (weaponName == "Submachine Gun")
             return weaponPrefabs[3];
-        else if(weaponName == "Tactical Shotgun")
+        else if (weaponName == "Tactical Shotgun")
             return weaponPrefabs[4];
+        else if (weaponName == "Rocket Launcher")
+            return weaponPrefabs[5];
         return null;
     }
     GameObject getGrenade(string name)
     {
-        if(name=="Bile Bomb")
+        if (name == "Bile Bomb")
             return grenadePrefabs[0];
-        else if(name=="Molotov Cocktail")
+        else if (name == "Molotov Cocktail")
             return grenadePrefabs[1];
-        else if(name=="Pipe Bomb")
+        else if (name == "Pipe Bomb")
             return grenadePrefabs[2];
-        else if(name == "Stun Grenade")
+        else if (name == "Stun Grenade")
             return grenadePrefabs[3];
         return null;
     }
@@ -300,13 +302,14 @@ public class GunInventory : MonoBehaviour
             return true;
         }
     }
-    
-    void removeFromInvObj(string grenade){
-        if(grenade == "Bile Bomb")
+
+    void removeFromInvObj(string grenade)
+    {
+        if (grenade == "Bile Bomb")
             CraftableInventory.container[0].addAmount(-1);
-        else if(grenade == "Molotov Cocktail")
+        else if (grenade == "Molotov Cocktail")
             CraftableInventory.container[1].addAmount(-1);
-        else if(grenade == "Pipe Bomb")
+        else if (grenade == "Pipe Bomb")
             CraftableInventory.container[2].addAmount(-1);
         else
             CraftableInventory.container[3].addAmount(-1);

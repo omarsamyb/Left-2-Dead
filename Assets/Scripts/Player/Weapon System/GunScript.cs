@@ -121,15 +121,14 @@ public class GunScript : MonoBehaviour
     [Tooltip("Value of forward rotation multiplier.")]
     [HideInInspector] public Vector2 forwardRotationAmount = Vector2.one;
 
-    [HideInInspector]
     public Vector3 currentGunPosition;
     [Header("Gun Positioning")]
     [Tooltip("Vector 3 position from player SETUP for NON AIMING values")]
-    [HideInInspector] public Vector3 restPlacePosition = new Vector3(-0.07f, -0.06f, 0.4f);
+    public Vector3 restPlacePosition = new Vector3(-0.07f, -0.06f, 0.4f);
     [Tooltip("Vector 3 position from player SETUP for AIMING values")]
-    [HideInInspector] public Vector3 aimPlacePosition = new Vector3(0f, -0.05f, 0.29f);
+    public Vector3 aimPlacePosition = new Vector3(0f, -0.05f, 0.29f);
     [Tooltip("Time that takes for gun to get into aiming stance.")]
-    [HideInInspector] public float gunAimTime = 0.05f;
+    public float gunAimTime = 0.05f;
     private Vector3 gunPosVelocity;
     private float cameraZoomVelocity;
     private float secondCameraZoomVelocity;
